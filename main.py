@@ -19,7 +19,6 @@ import logging
 
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from collections import defaultdict
 from peewee import *
 from secret import TOKEN
 

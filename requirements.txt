@@ -1,0 +1,2 @@
+peewee<3.15
+python-telegram-bot<13.7
