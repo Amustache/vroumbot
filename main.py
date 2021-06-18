@@ -125,7 +125,7 @@ def userid(update: Update, context: CallbackContext) -> None:
 
 
 def get_user(userid, chatid):
-    user = User.get_or_create(userid=userid, chatid=chatid)
+    user, _ = User.get_or_create(userid=userid, chatid=chatid)
 
     return user
 
