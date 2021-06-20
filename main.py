@@ -16,31 +16,22 @@ bot.
 """
 
 import logging
-
-from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from peewee import *
-from secret import TOKEN
-import random
 import os
+import random
+
+
+from telegram import ForceReply, Update
+from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandler, Updater
+
+
+from helpers import DB, get_user, User
+from secret import TOKEN
+
 
 # Enable logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
-
-db = SqliteDatabase("./main.db")
-
-class User(Model):
-    userid = BigIntegerField()
-    chatid = BigIntegerField()
-    karma = IntegerField(default=0)
-
-    class Meta:
-        database = db
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -49,7 +40,7 @@ def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     update.message.reply_markdown_v2(
-        fr'Bonjour {user.mention_markdown_v2()} \!',
+        fr"Bonjour {user.mention_markdown_v2()} \!",
         reply_markup=ForceReply(selective=True),
     )
 
@@ -58,21 +49,21 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+    update.message.reply_text("Help!")
 
     logger.info("%s needs help!", update.effective_user.first_name)
 
 
 def vroum(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Vroum!')
+    update.message.reply_text("Vroum!")
 
     logger.info("%s gets a Vroum!", update.effective_user.first_name)
 
 
 def vroom(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('😠')
+    update.message.reply_text("😠")
 
     logger.info("%s gets a 😠!", update.effective_user.first_name)
 
@@ -151,8 +142,57 @@ def userid(update: Update, context: CallbackContext) -> None:
 def random_cat(update: Update, context: CallbackContext) -> None:
     folder = "./cats"
     filename = os.path.join(folder, random.choice(os.listdir(folder)))
-    meow = random.choice(["meo", "meong", "meow", "mèu", "miaau", "miaou", "miau", "miauw", "喵", "喵", "喵", "miao", "miaow", "miyav", "miav", "mjau", "միյաւ", "ম্যাঁও", "meogre", "miaŭ", "ngiyaw", "میاؤں", "mjá", "mňau", "ngeung", "კნავილი", "njäu", "ņau", "nyav", "mi'au", "νιάου", "にゃー", "야옹", "냥", "מיאו", "מיאַו", "мјау", "miáú", "miau", "nyaú", "мяу", "ngiau", "mijav", "mia'wj", "میو", "مُواء"])
-    update.message.reply_photo(photo=open(filename, 'rb'), caption=meow)
+    meow = random.choice(
+        [
+            "meo",
+            "meong",
+            "meow",
+            "mèu",
+            "miaau",
+            "miaou",
+            "miau",
+            "miauw",
+            "喵",
+            "喵",
+            "喵",
+            "miao",
+            "miaow",
+            "miyav",
+            "miav",
+            "mjau",
+            "միյաւ",
+            "ম্যাঁও",
+            "meogre",
+            "miaŭ",
+            "ngiyaw",
+            "میاؤں",
+            "mjá",
+            "mňau",
+            "ngeung",
+            "კნავილი",
+            "njäu",
+            "ņau",
+            "nyav",
+            "mi'au",
+            "νιάου",
+            "にゃー",
+            "야옹",
+            "냥",
+            "מיאו",
+            "מיאַו",
+            "мјау",
+            "miáú",
+            "miau",
+            "nyaú",
+            "мяу",
+            "ngiau",
+            "mijav",
+            "mia'wj",
+            "میو",
+            "مُواء",
+        ]
+    )
+    update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
 
     logger.info("%s wants a cat pic!", update.effective_user.first_name)
 
@@ -161,7 +201,7 @@ def brrou(update: Update, context: CallbackContext) -> None:
     folder = "./brrou"
     filename = os.path.join(folder, random.choice(os.listdir(folder)))
     meow = random.choice(["brrou", "Brrou", "b r r o u", "BROU", "B R R O U", "tut"])
-    update.message.reply_photo(photo=open(filename, 'rb'), caption=meow)
+    update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
 
     logger.info("%s wants a Brrou pic!", update.effective_user.first_name)
 
@@ -187,15 +227,9 @@ def tut(update: Update, context: CallbackContext) -> None:
     logger.info("%s gets a tut!", update.effective_user.first_name)
 
 
-def get_user(userid, chatid):
-    user, _ = User.get_or_create(userid=userid, chatid=chatid)
-
-    return user
-
-
 def main() -> None:
-    db.connect()
-    db.create_tables([User])
+    DB.connect()
+    DB.create_tables([User])
 
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -250,5 +284,5 @@ def main() -> None:
     updater.idle()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

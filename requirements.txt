@@ -1,2 +1,6 @@
 peewee<3.15
 python-telegram-bot<13.7
+black<21.7.*
+isort<5.9
+pre-commit<2.14
+pre-commit-hooks<4.1

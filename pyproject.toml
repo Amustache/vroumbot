@@ -1,0 +1,35 @@
+[tool.black]
+line-length = 150
+
+[tool.isort]
+# When imports are broken into multi-line, use the "Vertical Hanging Indent" layout.
+multi_line_output = 3
+
+# Always add a trailing comma to import lists (default: False).
+include_trailing_comma = true
+
+# Always put imports lists into vertical mode (0 = none allowed on first line)
+force_grid_wrap = 0
+
+# When multi-lining imports, use parentheses for line-continuation instead of default \.
+use_parentheses = true
+
+# Max import line length.
+line_length = 150
+
+# Regardless of what follows the imports, force 2 blank lines after the import list
+lines_after_imports = 2
+
+# Insert 2 blank lines between each section
+lines_between_sections = 2
+
+# Alphabetical sort in sections (inside a line or in ())
+force_alphabetical_sort_within_sections = true
+
+# Sort by lexicographical
+lexicographical = true
+
+# Put all from before import
+from_first = true
+
+ensure_newline_before_comments = true
