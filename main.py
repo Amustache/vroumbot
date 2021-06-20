@@ -133,6 +133,13 @@ def random_cat(update: Update, context: CallbackContext) -> None:
     update.message.reply_photo(photo=open(filename, 'rb'), caption=meow)
 
 
+def brrou(update: Update, context: CallbackContext) -> None:
+    folder = "./brrou"
+    filename = os.path.join(folder, random.choice(os.listdir(folder)))
+    meow = random.choice(["brrou", "Brrou", "b r r o u", "BROU", "B R R O U", "tut"])
+    update.message.reply_photo(photo=open(filename, 'rb'), caption=meow)
+
+
 def get_user(userid, chatid):
     user, _ = User.get_or_create(userid=userid, chatid=chatid)
 
@@ -175,6 +182,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("cat", random_cat))
     dispatcher.add_handler(CommandHandler("chat", random_cat))
     dispatcher.add_handler(CommandHandler("kot", random_cat))
+
+    dispatcher.add_handler(CommandHandler("brrou", brrou))
     # dispatcher.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram
