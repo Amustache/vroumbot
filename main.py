@@ -21,6 +21,8 @@ from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from peewee import *
 from secret import TOKEN
+import random
+import os
 
 # Enable logging
 logging.basicConfig(
@@ -85,7 +87,7 @@ def plus(update: Update, context: CallbackContext) -> None:
         dbuser.karma += 1
         dbuser.save()
 
-        update.message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
+        update.message.reply_to_message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
 
 
 def moins(update: Update, context: CallbackContext) -> None:
@@ -101,7 +103,7 @@ def moins(update: Update, context: CallbackContext) -> None:
         dbuser.karma -= 1
         dbuser.save()
 
-        update.message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
+        update.message.reply_to_message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
 
 
 def getkarma(update: Update, context: CallbackContext) -> None:
@@ -122,6 +124,13 @@ def userid(update: Update, context: CallbackContext) -> None:
     else:
         user = update.effective_user
         update.message.reply_text(user.id)
+
+
+def random_cat(update: Update, context: CallbackContext) -> None:
+    folder = "./cats"
+    filename = os.path.join(folder, random.choice(os.listdir(folder)))
+    meow = random.choice(["meo", "meong", "meow", "mèu", "miaau", "miaou", "miau", "miauw", "喵", "喵", "喵", "miao", "miaow", "miyav", "miav", "mjau", "միյաւ", "ম্যাঁও", "meogre", "miaŭ", "ngiyaw", "میاؤں", "mjá", "mňau", "ngeung", "კნავილი", "njäu", "ņau", "nyav", "mi'au", "νιάου", "にゃー", "야옹", "냥", "מיאו", "מיאַו", "мјау", "miáú", "miau", "nyaú", "мяу", "ngiau", "mijav", "mia'wj", "میو", "مُواء"])
+    update.message.reply_photo(photo=open(filename, 'rb'), caption=meow)
 
 
 def get_user(userid, chatid):
@@ -146,18 +155,26 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("hello", start))
     dispatcher.add_handler(CommandHandler("hi", start))
     dispatcher.add_handler(CommandHandler("bonjour", start))
+
     dispatcher.add_handler(CommandHandler("vroum", vroum))
     dispatcher.add_handler(CommandHandler("vroom", vroom))
+
     dispatcher.add_handler(CommandHandler("plus", plus))
     dispatcher.add_handler(CommandHandler("pos", plus))
     dispatcher.add_handler(CommandHandler("moins", moins))
     dispatcher.add_handler(CommandHandler("minus", moins))
     dispatcher.add_handler(CommandHandler("min", moins))
     dispatcher.add_handler(CommandHandler("neg", moins))
+
     dispatcher.add_handler(CommandHandler("userid", userid))
     dispatcher.add_handler(CommandHandler("id", userid))
+
     dispatcher.add_handler(CommandHandler("getkarma", getkarma))
     dispatcher.add_handler(CommandHandler("karma", getkarma))
+
+    dispatcher.add_handler(CommandHandler("cat", random_cat))
+    dispatcher.add_handler(CommandHandler("chat", random_cat))
+    dispatcher.add_handler(CommandHandler("kot", random_cat))
     # dispatcher.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram
