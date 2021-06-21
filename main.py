@@ -1,20 +1,6 @@
 #!/usr/bin/env python
 # pylint: disable=C0116,W0613
 # This program is dedicated to the public domain under the CC0 license.
-
-"""
-Simple Bot to reply to Telegram messages.
-
-First, a few handler functions are defined. Then, those functions are passed to
-the Dispatcher and registered at their respective places.
-Then, the bot is started and runs until we press Ctrl-C on the command line.
-
-Usage:
-Basic Echobot example, repeats messages.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
-
 import logging
 import os
 import random
@@ -25,7 +11,7 @@ from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandle
 
 
 from helpers import DB, get_user, User
-from secret import TOKEN
+from secret import ADMIN_ID, TOKEN
 
 
 # Enable logging
@@ -34,10 +20,7 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-# Define a few command handlers. These usually take the two arguments update and
-# context.
 def start(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /start is issued."""
     user = update.effective_user
     update.message.reply_markdown_v2(
         fr"Bonjour {user.mention_markdown_v2()} \!",
@@ -48,35 +31,30 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /help is issued."""
     update.message.reply_text("Help!")
 
     logger.info("%s needs help!", update.effective_user.first_name)
 
 
 def vroum(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /help is issued."""
     update.message.reply_text("Vroum!")
 
     logger.info("%s gets a Vroum!", update.effective_user.first_name)
 
 
 def vroom(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /help is issued."""
     update.message.reply_text("😠")
 
     logger.info("%s gets a 😠!", update.effective_user.first_name)
 
 
 def echo(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
     update.message.reply_text(update.message.text)
 
     logger.info("%s want an echo!", update.effective_user.first_name)
 
 
 def plus(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
     if update.message.reply_to_message:
         user = update.message.reply_to_message.from_user
 
@@ -96,7 +74,6 @@ def plus(update: Update, context: CallbackContext) -> None:
 
 
 def moins(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
     if update.message.reply_to_message:
         user = update.message.reply_to_message.from_user
 
@@ -116,7 +93,6 @@ def moins(update: Update, context: CallbackContext) -> None:
 
 
 def getkarma(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
     if update.message.reply_to_message:
         user = update.message.reply_to_message.from_user
     else:
@@ -136,7 +112,13 @@ def userid(update: Update, context: CallbackContext) -> None:
         user = update.effective_user
         update.message.reply_text(user.id)
 
-    logger.info("%s wants their ID! It is .", user.first_name, user.id)
+    logger.info("%s wants their ID! It is %d.", user.first_name, user.id)
+
+
+def chatid(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text(update.message.chat.id)
+
+    logger.info("%s wants the chat ID! It is %d.", update.effective_user.first_name, update.message.chat.id)
 
 
 def random_cat(update: Update, context: CallbackContext) -> None:
@@ -207,7 +189,6 @@ def brrou(update: Update, context: CallbackContext) -> None:
 
 
 def boop(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
     if "/beep" in update.message.text:
         text = "boop"
     elif "/boop" in update.message.text:
@@ -221,10 +202,18 @@ def boop(update: Update, context: CallbackContext) -> None:
 
 
 def tut(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
     update.message.reply_text("tut")
 
     logger.info("%s gets a tut!", update.effective_user.first_name)
+
+
+def feedback(update: Update, context: CallbackContext) -> None:
+    user = update.effective_user.first_name
+    _, message = update.message.text.split(" ", 1)
+    message = '{} says "{}"'.format(user, message)
+    context.bot.sendMessage(chat_id=ADMIN_ID, text=message)
+
+    logger.info("%s", message)
 
 
 def main() -> None:
@@ -256,6 +245,8 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("userid", userid))
     dispatcher.add_handler(CommandHandler("id", userid))
+    dispatcher.add_handler(CommandHandler("chatid", chatid))
+    dispatcher.add_handler(CommandHandler("here", chatid))
 
     dispatcher.add_handler(CommandHandler("getkarma", getkarma))
     dispatcher.add_handler(CommandHandler("karma", getkarma))
@@ -270,6 +261,10 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("boop", boop))
     dispatcher.add_handler(CommandHandler("beep", boop))
+
+    dispatcher.add_handler(CommandHandler("feedback", feedback))
+    dispatcher.add_handler(CommandHandler("suggestion", feedback))
+    dispatcher.add_handler(CommandHandler("suggest", feedback))
     # dispatcher.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram

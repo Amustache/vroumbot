@@ -1,3 +1,8 @@
+from email.message import EmailMessage
+import smtplib
+import ssl
+
+
 from peewee import *
 
 
