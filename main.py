@@ -207,6 +207,12 @@ def tut(update: Update, context: CallbackContext) -> None:
     logger.info("%s gets a tut!", update.effective_user.first_name)
 
 
+def toutoutoutou(update: Update, context: CallbackContext) -> None:
+    update.message.reply_sticker("CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE")
+
+    logger.info("%s gets a toutoutoutou!", update.effective_user.first_name)
+
+
 def feedback(update: Update, context: CallbackContext) -> None:
     user = update.effective_user.first_name
     _, message = update.message.text.split(" ", 1)
@@ -265,6 +271,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("feedback", feedback))
     dispatcher.add_handler(CommandHandler("suggestion", feedback))
     dispatcher.add_handler(CommandHandler("suggest", feedback))
+
+    dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))
     # dispatcher.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram
