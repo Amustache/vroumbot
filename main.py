@@ -191,7 +191,7 @@ def brrou(update: Update, context: CallbackContext) -> None:
 def froj(update: Update, context: CallbackContext) -> None:
     folder = "./froj"
     filename = os.path.join(folder, random.choice(os.listdir(folder)))
-    meow = random.choice("https://frogdetective.net/")
+    meow = "https://frogdetective.net/"
     update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
 
     logger.info("%s wants a froj pic!", update.effective_user.first_name)
