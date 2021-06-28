@@ -326,7 +326,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("toutoutoutoum4a", toutoutoutoum4a))
     dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))
 
-    dispatcher.add_handler(CommandHandler("help", help_command))
+    dispatcher.add_handler(CommandHandler("all_commands", help_command))
 
     commands = ""
     for handler in dispatcher.handlers[0]:
