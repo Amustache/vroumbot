@@ -213,6 +213,14 @@ def toutoutoutou(update: Update, context: CallbackContext) -> None:
     logger.info("%s gets a toutoutoutou!", update.effective_user.first_name)
 
 
+def toutoutoutoum4a(update: Update, context: CallbackContext) -> None:
+    update.message.reply_audio(audio=open("./toutoutoutou/toutoutoutou.m4a", "rb")).reply_sticker(
+        "CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE"
+    )
+
+    logger.info("%s gets a toutoutoutou!", update.effective_user.first_name)
+
+
 def feedback(update: Update, context: CallbackContext) -> None:
     user = update.effective_user.first_name
     _, message = update.message.text.split(" ", 1)
@@ -272,6 +280,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("suggestion", feedback))
     dispatcher.add_handler(CommandHandler("suggest", feedback))
 
+    dispatcher.add_handler(CommandHandler("toutoutoutoum4a", toutoutoutoum4a))
     dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))
     # dispatcher.add_handler(CommandHandler("help", help_command))
 
