@@ -31,9 +31,34 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text("Help!")
+    """
+    Don't forget to update this manually.
+    """
 
-    logger.info("%s needs help!", update.effective_user.first_name)
+    text = """Available commands:
+- start, hello, hi => start;
+- bonjour => bonjour;
+- stupid => stupid;
+- trolled => trolled;
+- vroum => vroum;
+- vroom => vroom;
+- plus, pos, bravo => plus;
+- moins, minus, min, neg, non => moins;
+- userid, id => userid;
+- chatid, here => chatid;
+- karma, getkarma => getkarma;
+- cat, chat, kot => random_cat;
+- brrou => brrou;
+- froj => froj;
+- tut => tut;
+- beep, boop => boop;
+- feedback, suggestion, suggest => feedback;
+- toutoutoutoum4a => toutoutoutoum4a;
+- toutoutoutou => toutoutoutou;
+- all_commands => help_command;"""
+    update.message.reply_text(text)
+
+    logger.info("%s wants to see all commands!", update.effective_user.first_name)
 
 
 def vroum(update: Update, context: CallbackContext) -> None:
@@ -269,9 +294,7 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("hello", start))
-    dispatcher.add_handler(CommandHandler("hi", start))
+    dispatcher.add_handler(CommandHandler(["start", "hello", "hi"], start))
 
     dispatcher.add_handler(CommandHandler("bonjour", bonjour))
     dispatcher.add_handler(CommandHandler("stupid", stupid))
@@ -280,24 +303,15 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("vroum", vroum))
     dispatcher.add_handler(CommandHandler("vroom", vroom))
 
-    dispatcher.add_handler(CommandHandler("plus", plus))
-    dispatcher.add_handler(CommandHandler("pos", plus))
-    dispatcher.add_handler(CommandHandler("moins", moins))
-    dispatcher.add_handler(CommandHandler("minus", moins))
-    dispatcher.add_handler(CommandHandler("min", moins))
-    dispatcher.add_handler(CommandHandler("neg", moins))
+    dispatcher.add_handler(CommandHandler(["plus", "pos", "bravo"], plus))
+    dispatcher.add_handler(CommandHandler(["moins", "minus", "min", "neg", "non"], moins))
 
-    dispatcher.add_handler(CommandHandler("userid", userid))
-    dispatcher.add_handler(CommandHandler("id", userid))
-    dispatcher.add_handler(CommandHandler("chatid", chatid))
-    dispatcher.add_handler(CommandHandler("here", chatid))
+    dispatcher.add_handler(CommandHandler(["userid", "id"], userid))
+    dispatcher.add_handler(CommandHandler(["chatid", "here"], chatid))
 
-    dispatcher.add_handler(CommandHandler("getkarma", getkarma))
-    dispatcher.add_handler(CommandHandler("karma", getkarma))
+    dispatcher.add_handler(CommandHandler(["karma", "getkarma"], getkarma))
 
-    dispatcher.add_handler(CommandHandler("cat", random_cat))
-    dispatcher.add_handler(CommandHandler("chat", random_cat))
-    dispatcher.add_handler(CommandHandler("kot", random_cat))
+    dispatcher.add_handler(CommandHandler(["cat", "chat", "kot"], random_cat))
 
     dispatcher.add_handler(CommandHandler("brrou", brrou))
 
@@ -305,19 +319,19 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("tut", tut))
 
-    dispatcher.add_handler(CommandHandler("boop", boop))
-    dispatcher.add_handler(CommandHandler("beep", boop))
+    dispatcher.add_handler(CommandHandler(["beep", "boop"], boop))
 
-    dispatcher.add_handler(CommandHandler("feedback", feedback))
-    dispatcher.add_handler(CommandHandler("suggestion", feedback))
-    dispatcher.add_handler(CommandHandler("suggest", feedback))
+    dispatcher.add_handler(CommandHandler(["feedback", "suggestion", "suggest"], feedback))
 
     dispatcher.add_handler(CommandHandler("toutoutoutoum4a", toutoutoutoum4a))
     dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))
-    # dispatcher.add_handler(CommandHandler("help", help_command))
 
-    # on non command i.e message - echo the message on Telegram
-    # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(CommandHandler("help", help_command))
+
+    commands = ""
+    for handler in dispatcher.handlers[0]:
+        commands += "- {} => {};\n".format(", ".join(handler.command), handler.callback.__name__)
+    print("Available commands:\n{}".format(commands))
 
     # Start the Bot
     updater.start_polling()
