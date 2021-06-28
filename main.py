@@ -188,6 +188,15 @@ def brrou(update: Update, context: CallbackContext) -> None:
     logger.info("%s wants a Brrou pic!", update.effective_user.first_name)
 
 
+def froj(update: Update, context: CallbackContext) -> None:
+    folder = "./froj"
+    filename = os.path.join(folder, random.choice(os.listdir(folder)))
+    meow = random.choice("https://frogdetective.net/")
+    update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
+
+    logger.info("%s wants a froj pic!", update.effective_user.first_name)
+
+
 def boop(update: Update, context: CallbackContext) -> None:
     if "/beep" in update.message.text:
         text = "boop"
@@ -270,6 +279,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("kot", random_cat))
 
     dispatcher.add_handler(CommandHandler("brrou", brrou))
+
+    dispatcher.add_handler(CommandHandler("froj", froj))
 
     dispatcher.add_handler(CommandHandler("tut", tut))
 
