@@ -223,11 +223,29 @@ def toutoutoutou(update: Update, context: CallbackContext) -> None:
 
 
 def toutoutoutoum4a(update: Update, context: CallbackContext) -> None:
-    update.message.reply_audio(audio=open("./toutoutoutou/toutoutoutou.m4a", "rb")).reply_sticker(
+    update.message.reply_audio(audio=open("./media/toutoutoutou.m4a", "rb")).reply_sticker(
         "CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE"
     )
 
     logger.info("%s gets a toutoutoutou!", update.effective_user.first_name)
+
+
+def bonjour(update: Update, context: CallbackContext) -> None:
+    update.message.reply_video(video=open("./media/setup.mp4", "rb"))
+
+    logger.info("%s gets a bonjour à toutes et tous!", update.effective_user.first_name)
+
+
+def stupid(update: Update, context: CallbackContext) -> None:
+    update.message.reply_video(video=open("./media/stupid.mp4", "rb"))
+
+    logger.info("%s is being really stupid right now!", update.effective_user.first_name)
+
+
+def trolled(update: Update, context: CallbackContext) -> None:
+    update.message.reply_video(video=open("./media/troll.mp4", "rb"))
+
+    logger.info("%s's just been trolled!", update.effective_user.first_name)
 
 
 def feedback(update: Update, context: CallbackContext) -> None:
@@ -254,7 +272,10 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("hello", start))
     dispatcher.add_handler(CommandHandler("hi", start))
-    dispatcher.add_handler(CommandHandler("bonjour", start))
+
+    dispatcher.add_handler(CommandHandler("bonjour", bonjour))
+    dispatcher.add_handler(CommandHandler("stupid", stupid))
+    dispatcher.add_handler(CommandHandler("trolled", trolled))
 
     dispatcher.add_handler(CommandHandler("vroum", vroum))
     dispatcher.add_handler(CommandHandler("vroom", vroom))
