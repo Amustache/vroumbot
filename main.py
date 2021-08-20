@@ -267,6 +267,54 @@ def stupid(update: Update, context: CallbackContext) -> None:
     logger.info("%s is being really stupid right now!", update.effective_user.first_name)
 
 
+def keysmash(update: Update, context: CallbackContext) -> None:
+    letters_normal = ["j", "h", "l", "r", "d", "s", "m", "J", "f", "k", "g"]
+    letters_frustration = ["l", "h", "r", "m", "g"]
+
+    letters = letters_frustration if random.randint(1, 9) == 1 else letters_normal
+
+    mu = 12.777777777778
+    sigma = 2.1998877636915
+    length = int(random.gauss(mu, sigma))
+    result = oldletter = newletter = random.choice(letters)
+
+    for i in range(length):
+        while oldletter == newletter:
+            newletter = random.choice(letters)
+        result += newletter
+        oldletter = newletter
+
+    update.message.reply_text(result)
+
+
+def oh(update: Update, context: CallbackContext) -> None:
+    mu = 3
+    sigma = 2
+    length = -1
+    while length < 1:
+        length = int(random.gauss(mu, sigma))
+
+    result = "o" * length + "h"
+    result = [l.upper() if random.randint(1, 6) == 1 else l for l in result]
+
+    update.message.reply_text(result)
+
+
+def xd(update: Update, context: CallbackContext) -> None:
+    mu = 3
+    sigma = 2
+    length = -1
+    while length < 1:
+        length = int(random.gauss(mu, sigma))
+
+    if random.randint(1, 2) == 1:
+        result = "X" + "D" * length
+    else:
+        result = "a" + "y" * length
+
+    update.message.reply_text(result)
+
+
 def trolled(update: Update, context: CallbackContext) -> None:
     update.message.reply_video(video=open("./media/troll.mp4", "rb"))
 
@@ -325,6 +373,10 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("toutoutoutoum4a", toutoutoutoum4a))
     dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))
+
+    dispatcher.add_handler(CommandHandler(["keysmash", "bottom"], keysmash))
+    dispatcher.add_handler(CommandHandler(["oh", "ooh", "oooh"], oh))
+    dispatcher.add_handler(CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], xd))
 
     dispatcher.add_handler(CommandHandler("all_commands", help_command))
 
