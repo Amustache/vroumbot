@@ -295,7 +295,7 @@ def oh(update: Update, context: CallbackContext) -> None:
         length = int(random.gauss(mu, sigma))
 
     result = "o" * length + "h"
-    result = [l.upper() if random.randint(1, 6) == 1 else l for l in result]
+    result = "".join([l.upper() if random.randint(1, 6) == 1 else l for l in result])
 
     update.message.reply_text(result)
 
