@@ -273,6 +273,12 @@ def heretic(update: Update, context: CallbackContext) -> None:
     logger.info("%s likes being a heretic!", update.effective_user.first_name)
 
 
+def bricole(update: Update, context: CallbackContext) -> None:
+    update.message.reply_video(video=open("./media/bricole.mp4", "rb"))
+
+    logger.info("%s wants to BRICOLE!", update.effective_user.first_name)
+
+
 def keysmash(update: Update, context: CallbackContext) -> None:
     letters_normal = ["j", "h", "l", "r", "d", "s", "m", "J", "f", "k", "g"]
     letters_frustration = ["l", "h", "r", "m", "g"]
@@ -354,6 +360,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("stupid", stupid))
     dispatcher.add_handler(CommandHandler("trolled", trolled))
     dispatcher.add_handler(CommandHandler("heretic", heretic))
+    dispatcher.add_handler(CommandHandler("bricole", bricole))
 
     dispatcher.add_handler(CommandHandler("vroum", vroum))
     dispatcher.add_handler(CommandHandler("vroom", vroom))
