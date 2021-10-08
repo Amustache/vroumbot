@@ -27,7 +27,7 @@ def start(update: Update, context: CallbackContext) -> None:
         reply_markup=ForceReply(selective=True),
     )
 
-    logger.info("%s says hi!", user.first_name)
+    logger.info("{} says hi!".format(user.first_name))
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
@@ -40,12 +40,15 @@ def help_command(update: Update, context: CallbackContext) -> None:
 - bonjour => bonjour;
 - stupid => stupid;
 - trolled => trolled;
+- heretic => heretic;
+- bricole => bricole;
 - vroum => vroum;
 - vroom => vroom;
 - plus, pos, bravo => plus;
 - moins, minus, min, neg, non => moins;
 - userid, id => userid;
 - chatid, here => chatid;
+- messageid, this, that => messageid;
 - karma, getkarma => getkarma;
 - cat, chat, kot => random_cat;
 - brrou => brrou;
@@ -55,28 +58,32 @@ def help_command(update: Update, context: CallbackContext) -> None:
 - feedback, suggestion, suggest => feedback;
 - toutoutoutoum4a => toutoutoutoum4a;
 - toutoutoutou => toutoutoutou;
+- keysmash, bottom => keysmash;
+- oh, ooh, oooh => oh;
+- ay, ayy, ayyy, xd, xdd, xddd => xd;
+- genre, gender, sexe, sex, sexx, genr => gender;
 - all_commands => help_command;"""
     update.message.reply_text(text)
 
-    logger.info("%s wants to see all commands!", update.effective_user.first_name)
+    logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
 
 
 def vroum(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("Vroum!")
 
-    logger.info("%s gets a Vroum!", update.effective_user.first_name)
+    logger.info("{} gets a Vroum!".format(update.effective_user.first_name))
 
 
 def vroom(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("😠")
 
-    logger.info("%s gets a 😠!", update.effective_user.first_name)
+    logger.info("{} gets a 😠!".format(update.effective_user.first_name))
 
 
 def echo(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(update.message.text)
 
-    logger.info("%s want an echo!", update.effective_user.first_name)
+    logger.info("{} want an echo!".format(update.effective_user.first_name))
 
 
 def plus(update: Update, context: CallbackContext) -> None:
@@ -86,7 +93,7 @@ def plus(update: Update, context: CallbackContext) -> None:
         if user == update.effective_user:
             update.message.reply_text("Humble bragging, amarite?")
 
-            logger.info("%s wants to pos themselves!", user.first_name)
+            logger.info("{} wants to pos themselves!".format(user.first_name))
             return
 
         dbuser = get_user(user.id, update.message.chat.id)
@@ -95,7 +102,7 @@ def plus(update: Update, context: CallbackContext) -> None:
 
         update.message.reply_to_message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
 
-        logger.info("%s gets a +1!", user.first_name)
+        logger.info("{} gets a +1!".format(user.first_name))
 
 
 def moins(update: Update, context: CallbackContext) -> None:
@@ -105,7 +112,7 @@ def moins(update: Update, context: CallbackContext) -> None:
         if user == update.effective_user:
             update.message.reply_text("Don't be so harsh on yourself.")
 
-            logger.info("%s wants to neg themselves!", user.first_name)
+            logger.info("{} wants to neg themselves!".format(user.first_name))
             return
 
         dbuser = get_user(user.id, update.message.chat.id)
@@ -114,7 +121,7 @@ def moins(update: Update, context: CallbackContext) -> None:
 
         update.message.reply_to_message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
 
-        logger.info("%s gets a -1!", user.first_name)
+        logger.info("{} gets a -1!".format(user.first_name))
 
 
 def getkarma(update: Update, context: CallbackContext) -> None:
@@ -126,7 +133,7 @@ def getkarma(update: Update, context: CallbackContext) -> None:
     karma = get_user(user.id, update.message.chat.id).karma
     update.message.reply_text("{} has {} points.".format(user.first_name, karma))
 
-    logger.info("%s has %d karma!", user.first_name, karma)
+    logger.info("{} has {} karma!".format(user.first_name, karma))
 
 
 def userid(update: Update, context: CallbackContext) -> None:
@@ -137,13 +144,22 @@ def userid(update: Update, context: CallbackContext) -> None:
         user = update.effective_user
         update.message.reply_text(user.id)
 
-    logger.info("%s wants their ID! It is %d.", user.first_name, user.id)
+    logger.info("{} wants their ID! It is {}.".format(user.first_name, user.id))
 
 
 def chatid(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(update.message.chat.id)
 
-    logger.info("%s wants the chat ID! It is %d.", update.effective_user.first_name, update.message.chat.id)
+    logger.info("{} wants the chat ID! It is {}.".format(update.effective_user.first_name, update.message.chat.id))
+
+
+def messageid(update: Update, context: CallbackContext) -> None:
+    if update.message.reply_to_message:
+        update.message.reply_text("{} in {}".format(update.message.reply_to_message.message_id, update.message.chat.id))
+
+        logger.info(
+            "{} wants the message ID! It is {} in {}.".format(update.effective_user.first_name, update.message.message_id, update.message.chat.id)
+        )
 
 
 def random_cat(update: Update, context: CallbackContext) -> None:
@@ -201,7 +217,7 @@ def random_cat(update: Update, context: CallbackContext) -> None:
     )
     update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
 
-    logger.info("%s wants a cat pic!", update.effective_user.first_name)
+    logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
 
 
 def brrou(update: Update, context: CallbackContext) -> None:
@@ -210,7 +226,7 @@ def brrou(update: Update, context: CallbackContext) -> None:
     meow = random.choice(["brrou", "Brrou", "b r r o u", "BROU", "B R R O U", "tut"])
     update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
 
-    logger.info("%s wants a Brrou pic!", update.effective_user.first_name)
+    logger.info("{} wants a Brrou pic!".format(update.effective_user.first_name))
 
 
 def froj(update: Update, context: CallbackContext) -> None:
@@ -219,7 +235,7 @@ def froj(update: Update, context: CallbackContext) -> None:
     meow = "https://frogdetective.net/"
     update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
 
-    logger.info("%s wants a froj pic!", update.effective_user.first_name)
+    logger.info("{} wants a froj pic!".format(update.effective_user.first_name))
 
 
 def boop(update: Update, context: CallbackContext) -> None:
@@ -232,19 +248,19 @@ def boop(update: Update, context: CallbackContext) -> None:
 
     update.message.reply_text(text)
 
-    logger.info("%s gets a %s!", update.effective_user.first_name, text)
+    logger.info("{} gets a {}!".format(update.effective_user.first_name, text))
 
 
 def tut(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("tut")
 
-    logger.info("%s gets a tut!", update.effective_user.first_name)
+    logger.info("{} gets a tut!".format(update.effective_user.first_name))
 
 
 def toutoutoutou(update: Update, context: CallbackContext) -> None:
     update.message.reply_sticker("CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE")
 
-    logger.info("%s gets a toutoutoutou!", update.effective_user.first_name)
+    logger.info("{} gets a toutoutoutou!".format(update.effective_user.first_name))
 
 
 def toutoutoutoum4a(update: Update, context: CallbackContext) -> None:
@@ -252,31 +268,31 @@ def toutoutoutoum4a(update: Update, context: CallbackContext) -> None:
         "CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE"
     )
 
-    logger.info("%s gets a toutoutoutou!", update.effective_user.first_name)
+    logger.info("{} gets a toutoutoutou!".format(update.effective_user.first_name))
 
 
 def bonjour(update: Update, context: CallbackContext) -> None:
     update.message.reply_video(video=open("./media/setup.mp4", "rb"))
 
-    logger.info("%s gets a bonjour à toutes et tous!", update.effective_user.first_name)
+    logger.info("{} gets a bonjour à toutes et tous!".format(update.effective_user.first_name))
 
 
 def stupid(update: Update, context: CallbackContext) -> None:
     update.message.reply_video(video=open("./media/stupid.mp4", "rb"))
 
-    logger.info("%s is being really stupid right now!", update.effective_user.first_name)
+    logger.info("{} is being really stupid right now!".format(update.effective_user.first_name))
 
 
 def heretic(update: Update, context: CallbackContext) -> None:
     update.message.reply_video(video=open("./media/heretic.mp4", "rb"))
 
-    logger.info("%s likes being a heretic!", update.effective_user.first_name)
+    logger.info("{} likes being a heretic!".format(update.effective_user.first_name))
 
 
 def bricole(update: Update, context: CallbackContext) -> None:
     update.message.reply_video(video=open("./media/bricole.mp4", "rb"))
 
-    logger.info("%s wants to BRICOLE!", update.effective_user.first_name)
+    logger.info("{} wants to BRICOLE!".format(update.effective_user.first_name))
 
 
 def keysmash(update: Update, context: CallbackContext) -> None:
@@ -298,6 +314,8 @@ def keysmash(update: Update, context: CallbackContext) -> None:
 
     update.message.reply_text(result)
 
+    logger.info("{} is keysmashing!".format(update.effective_user.first_name))
+
 
 def oh(update: Update, context: CallbackContext) -> None:
     mu = 3
@@ -310,6 +328,8 @@ def oh(update: Update, context: CallbackContext) -> None:
     result = "".join([l.upper() if random.randint(1, 6) == 1 else l for l in result])
 
     update.message.reply_text(result)
+
+    logger.info("{} is in awe!".format(update.effective_user.first_name))
 
 
 def xd(update: Update, context: CallbackContext) -> None:
@@ -326,11 +346,20 @@ def xd(update: Update, context: CallbackContext) -> None:
 
     update.message.reply_text(result)
 
+    logger.info("{} is in XDing real hard!".format(update.effective_user.first_name))
+
 
 def trolled(update: Update, context: CallbackContext) -> None:
     update.message.reply_video(video=open("./media/troll.mp4", "rb"))
 
-    logger.info("%s's just been trolled!", update.effective_user.first_name)
+    logger.info("{}'s just been trolled!".format(update.effective_user.first_name))
+
+
+def gender(update: Update, context: CallbackContext) -> None:
+    context.bot.forward_message(update.message.chat.id, "59804991", "2626")
+    context.bot.forward_message(update.message.chat.id, "59804991", "2627")
+
+    logger.info("{} got gendered!".format(update.effective_user.first_name))
 
 
 def feedback(update: Update, context: CallbackContext) -> None:
@@ -339,7 +368,7 @@ def feedback(update: Update, context: CallbackContext) -> None:
     message = '{} says "{}"'.format(user, message)
     context.bot.sendMessage(chat_id=ADMIN_ID, text=message)
 
-    logger.info("%s", message)
+    logger.info("{}".format(message))
 
 
 def main() -> None:
@@ -370,6 +399,7 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler(["userid", "id"], userid))
     dispatcher.add_handler(CommandHandler(["chatid", "here"], chatid))
+    dispatcher.add_handler(CommandHandler(["messageid", "this", "that"], messageid))
 
     dispatcher.add_handler(CommandHandler(["karma", "getkarma"], getkarma))
 
@@ -391,6 +421,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["keysmash", "bottom"], keysmash))
     dispatcher.add_handler(CommandHandler(["oh", "ooh", "oooh"], oh))
     dispatcher.add_handler(CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], xd))
+
+    dispatcher.add_handler(CommandHandler(["genre", "gender", "sexe", "sex", "sexx", "genr"], gender))
 
     dispatcher.add_handler(CommandHandler("all_commands", help_command))
 
