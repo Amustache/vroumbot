@@ -371,6 +371,12 @@ def feedback(update: Update, context: CallbackContext) -> None:
     logger.info("{}".format(message))
 
 
+def carpe(update: Update, context: CallbackContext) -> None:
+    """Echo the user message."""
+    if update.effective_user.username == "ReallyCrazyMan" and random.randint(1, 6) == 6:
+        update.message.reply_photo(photo=open("./media/opinion.jpg", "rb"))
+
+
 def main() -> None:
     DB.connect()
     DB.create_tables([User])
@@ -423,6 +429,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], xd))
 
     dispatcher.add_handler(CommandHandler(["genre", "gender", "sexe", "sex", "sexx", "genr"], gender))
+
+    dispatcher.add_handler(MessageHandler(~Filters.command, carpe))
 
     dispatcher.add_handler(CommandHandler("all_commands", help_command))
 
