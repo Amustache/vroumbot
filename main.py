@@ -257,6 +257,12 @@ def tut(update: Update, context: CallbackContext) -> None:
     logger.info("{} gets a tut!".format(update.effective_user.first_name))
 
 
+def spin(update: Update, context: CallbackContext) -> None:
+    update.message.reply_audio(audio=open("./media/spin.mp3", "rb"))
+
+    logger.info("{} gets a SPEEN!".format(update.effective_user.first_name))
+
+
 def toutoutoutou(update: Update, context: CallbackContext) -> None:
     update.message.reply_sticker("CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE")
 
@@ -424,6 +430,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("toutoutoutoum4a", toutoutoutoum4a))
     dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))
 
+    dispatcher.add_handler(CommandHandler(["spin", "speen"], spin))
+
     dispatcher.add_handler(CommandHandler(["keysmash", "bottom"], keysmash))
     dispatcher.add_handler(CommandHandler(["oh", "ooh", "oooh"], oh))
     dispatcher.add_handler(CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], xd))
@@ -436,7 +444,10 @@ def main() -> None:
 
     commands = ""
     for handler in dispatcher.handlers[0]:
-        commands += "- {} => {};\n".format(", ".join(handler.command), handler.callback.__name__)
+        try:
+            commands += "- {} => {};\n".format(", ".join(handler.command), handler.callback.__name__)
+        except:
+            continue
     print("Available commands:\n{}".format(commands))
 
     # Start the Bot
