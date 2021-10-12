@@ -58,6 +58,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 - feedback, suggestion, suggest => feedback;
 - toutoutoutoum4a => toutoutoutoum4a;
 - toutoutoutou => toutoutoutou;
+- spin, speen => spin;
 - keysmash, bottom => keysmash;
 - oh, ooh, oooh => oh;
 - ay, ayy, ayyy, xd, xdd, xddd => xd;
