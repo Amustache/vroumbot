@@ -12,7 +12,7 @@ from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandle
 import requests
 
 
-from helpers import DB, get_user, User
+from helpers import DB, get_karma, get_user, User
 from secret import ADMIN_ID, TOKEN
 
 
@@ -101,6 +101,7 @@ def plus(update: Update, context: CallbackContext) -> None:
 
         dbuser = get_user(user.id, update.message.chat.id)
         dbuser.karma += 1
+        dbuser.userfirstname = user.first_name
         dbuser.save()
 
         update.message.reply_to_message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
@@ -120,6 +121,7 @@ def moins(update: Update, context: CallbackContext) -> None:
 
         dbuser = get_user(user.id, update.message.chat.id)
         dbuser.karma -= 1
+        dbuser.userfirstname = user.first_name
         dbuser.save()
 
         update.message.reply_to_message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
@@ -130,13 +132,19 @@ def moins(update: Update, context: CallbackContext) -> None:
 def getkarma(update: Update, context: CallbackContext) -> None:
     if update.message.reply_to_message:
         user = update.message.reply_to_message.from_user
+
+        dbuser = get_user(user.id, update.message.chat.id)
+        dbuser.userfirstname = user.first_name
+        dbuser.save()
+        update.message.reply_text("{} has {} points.".format(dbuser.userfirstname, dbuser.karma))
+
+        logger.info("{} has {} karma!".format(dbuser.userfirstname, dbuser.karma))
     else:
-        user = update.effective_user
+        karmas = get_karma(update.message.chat.id)
 
-    karma = get_user(user.id, update.message.chat.id).karma
-    update.message.reply_text("{} has {} points.".format(user.first_name, karma))
+        all = ["- {}: {} points.".format(user, karma) for user, karma in karmas.items()]
 
-    logger.info("{} has {} karma!".format(user.first_name, karma))
+        update.message.reply_text("\n".join(all))
 
 
 def userid(update: Update, context: CallbackContext) -> None:
