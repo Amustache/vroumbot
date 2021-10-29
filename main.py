@@ -65,7 +65,9 @@ def help_command(update: Update, context: CallbackContext) -> None:
 - oh, ooh, oooh => oh;
 - ay, ayy, ayyy, xd, xdd, xddd => xd;
 - genre, gender, sexe, sex, sexx, genr => gender;
-- all_commands => help_command;"""
+- whois, whoissciper, sciper => whoissciper;
+- whoisnsfw, whoisscipernsfw, scipernsfw => whoisscipernsfw;
+- help, all_commands => help_command;"""
     update.message.reply_text(text)
 
     logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
@@ -512,7 +514,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["whois", "whoissciper", "sciper"], whoissciper))
     dispatcher.add_handler(CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], whoisscipernsfw))
 
-    dispatcher.add_handler(CommandHandler("all_commands", help_command))
+    dispatcher.add_handler(CommandHandler(["help", "all_commands"], help_command))
 
     commands = ""
     for handler in dispatcher.handlers[0]:
