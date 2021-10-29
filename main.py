@@ -142,7 +142,13 @@ def getkarma(update: Update, context: CallbackContext) -> None:
     else:
         karmas = get_karma(update.message.chat.id)
 
-        all = ["- {}: {} points.".format(user, karma) for user, karma in karmas.items()]
+        all = []
+        for id, data in karmas.items():
+            username, karma = data
+            if not username:
+                username = "<please trigger karma action for name>"
+
+            all.append("- {}: {} points.".format(username, karma))
 
         update.message.reply_text("\n".join(all))
 

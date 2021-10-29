@@ -23,4 +23,4 @@ def get_user(userid, chatid):
 def get_karma(chatid):
     users = User.select().where(User.chatid == chatid).order_by(User.karma.desc())
 
-    return {user.userfirstname: user.karma for user in users}
+    return {user.userid: [user.userfirstname, user.karma] for user in users}
