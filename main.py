@@ -73,6 +73,12 @@ def help_command(update: Update, context: CallbackContext) -> None:
     logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
 
 
+def contribute(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("Want to contribute? Use `/feedback <your proposition>` or go to https://github.com/Amustache/vroumbot!")
+
+    logger.info("{} wants to contribute!".format(update.effective_user.first_name))
+
+
 def vroum(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("Vroum!")
 
@@ -467,6 +473,8 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler(["start", "hello", "hi"], start))
+
+    dispatcher.add_handler(CommandHandler(["contribute", "github", "source", "git", "contrib"], contribute))
 
     dispatcher.add_handler(CommandHandler("bonjour", bonjour))
     dispatcher.add_handler(CommandHandler("stupid", stupid))
