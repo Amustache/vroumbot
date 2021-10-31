@@ -151,8 +151,8 @@ def getkarma(update: Update, context: CallbackContext) -> None:
             username, karma = data
             if not username:
                 username = "<please trigger karma action for name>"
-
-            all.append("- {}: {} points.".format(username, karma))
+            if karma != 0:
+                all.append("- {}: {} points.".format(username, karma))
 
         update.message.reply_text("\n".join(all))
         logger.info("{} wants to know the karmas!".format(dbuser.userfirstname))
