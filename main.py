@@ -98,55 +98,51 @@ def echo(update: Update, context: CallbackContext) -> None:
 
 
 def plus(update: Update, context: CallbackContext) -> None:
-    if update.message.reply_to_message:
-        user = update.message.reply_to_message.from_user
+    user = update.message.reply_to_message.from_user
+    dbuser = get_user(user.id, update.message.chat.id)
 
+    if update.message.reply_to_message:
         if user == update.effective_user:
             update.message.reply_text("Humble bragging, amarite?")
-
             logger.info("{} wants to pos themselves!".format(user.first_name))
-            return
 
-        dbuser = get_user(user.id, update.message.chat.id)
-        dbuser.karma += 1
-        dbuser.userfirstname = user.first_name
-        dbuser.save()
+        else:
+            dbuser.karma += 1
+            update.message.reply_to_message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
+            logger.info("{} gets a +1!".format(user.first_name))
 
-        update.message.reply_to_message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
-
-        logger.info("{} gets a +1!".format(user.first_name))
+    dbuser.userfirstname = user.first_name
+    dbuser.save()
 
 
 def moins(update: Update, context: CallbackContext) -> None:
-    if update.message.reply_to_message:
-        user = update.message.reply_to_message.from_user
+    user = update.message.reply_to_message.from_user
+    dbuser = get_user(user.id, update.message.chat.id)
 
+    if update.message.reply_to_message:
         if user == update.effective_user:
             update.message.reply_text("Don't be so harsh on yourself.")
-
             logger.info("{} wants to neg themselves!".format(user.first_name))
-            return
 
-        dbuser = get_user(user.id, update.message.chat.id)
-        dbuser.karma -= 1
-        dbuser.userfirstname = user.first_name
-        dbuser.save()
+        else:
+            dbuser.karma -= 1
+            update.message.reply_to_message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
+            logger.info("{} gets a -1!".format(user.first_name))
 
-        update.message.reply_to_message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
-
-        logger.info("{} gets a -1!".format(user.first_name))
+    dbuser.userfirstname = user.first_name
+    dbuser.save()
 
 
 def getkarma(update: Update, context: CallbackContext) -> None:
+    user = update.message.reply_to_message.from_user
+    dbuser = get_user(user.id, update.message.chat.id)
+    dbuser.userfirstname = user.first_name
+    dbuser.save()
+
     if update.message.reply_to_message:
-        user = update.message.reply_to_message.from_user
-
-        dbuser = get_user(user.id, update.message.chat.id)
-        dbuser.userfirstname = user.first_name
-        dbuser.save()
         update.message.reply_text("{} has {} points.".format(dbuser.userfirstname, dbuser.karma))
-
         logger.info("{} has {} karma!".format(dbuser.userfirstname, dbuser.karma))
+
     else:
         karmas = get_karma(update.message.chat.id)
 
@@ -159,6 +155,7 @@ def getkarma(update: Update, context: CallbackContext) -> None:
             all.append("- {}: {} points.".format(username, karma))
 
         update.message.reply_text("\n".join(all))
+        logger.info("{} wants to know the karmas!".format(dbuser.userfirstname))
 
 
 def userid(update: Update, context: CallbackContext) -> None:
