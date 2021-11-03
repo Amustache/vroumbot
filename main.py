@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from telegram import ForceReply, Update
 from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandler, Updater
 import requests
+from PIL import Image
 
 
 from helpers import DB, get_karma, get_user, User
@@ -457,6 +458,63 @@ def whoisscipernsfw(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("{} is a secretive pervert.".format(sciper))
 
 
+def nft(update: Update, context: CallbackContext) -> None:
+    if update.message.reply_to_message:
+        user = update.message.reply_to_message.from_user
+    else:
+        user = update.effective_user
+
+    userid = user.id
+
+    filename = "./nft/{}.png".format(userid)
+
+    if not os.path.isfile(filename):
+        binuserid = bin(userid)[2:].zfill(64)
+
+        vroumbot = "vroumbot"
+        binvroumbot = "".join(format(ord(x), "b").zfill(8) for x in vroumbot)
+
+        img = Image.new("RGBA", (64, 64), "black")
+        pixels = img.load()
+
+        def magic(i, j, userid):
+            ij = i * j
+            iju = i * j * userid
+            pix1 = hash(vroumbot[iju % len(vroumbot)] + str(iju)) % 256
+            pix2 = hash(vroumbot[iju % len(vroumbot)] + str(ij)) % 256
+            pix3 = hash(vroumbot[ij % len(vroumbot)] + str(iju)) % 256
+            transp = 255
+
+            if pix1 == pix2 == pix3:
+                transp = 0
+
+            return (pix1, pix2, pix3, transp)
+
+        for i in range(img.size[0]):
+            for j in range(img.size[1]):
+                pixels[i, j] = magic(i, j, userid)
+
+        for i, p in enumerate(binuserid):
+            if p == "1":
+                pixels[i, 0] = (0, 0, 0, 255)
+            else:
+                pixels[i, 0] = (0, 0, 0, 0)
+
+        for j, p in enumerate(binvroumbot):
+            if p == "1":
+                pixels[0, j] = (0, 0, 0, 255)
+            else:
+                pixels[0, j] = (0, 0, 0, 0)
+
+        img.resize((512, 512), Image.NEAREST).save(filename)
+
+    update.message.reply_photo(
+        photo=open(filename, "rb"), caption="This is {}'s exclusive NFT, do not use without permission!".format(user.first_name)
+    )
+
+    logger.info("{} now has an NFT!".format(user.first_name))
+
+
 def main() -> None:
     DB.connect()
     DB.create_tables([User])
@@ -518,6 +576,8 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler(["whois", "whoissciper", "sciper"], whoissciper))
     dispatcher.add_handler(CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], whoisscipernsfw))
+
+    dispatcher.add_handler(CommandHandler(["nft", "scam"], nft))
 
     dispatcher.add_handler(CommandHandler(["help", "all_commands"], help_command))
 
