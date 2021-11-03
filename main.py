@@ -99,10 +99,10 @@ def echo(update: Update, context: CallbackContext) -> None:
 
 
 def plus(update: Update, context: CallbackContext) -> None:
-    user = update.message.reply_to_message.from_user
-    dbuser = get_user(user.id, update.message.chat.id)
-
     if update.message.reply_to_message:
+        user = update.message.reply_to_message.from_user
+        dbuser = get_user(user.id, update.message.chat.id)
+
         if user == update.effective_user:
             update.message.reply_text("Humble bragging, amarite?")
             logger.info("{} wants to pos themselves!".format(user.first_name))
@@ -112,15 +112,17 @@ def plus(update: Update, context: CallbackContext) -> None:
             update.message.reply_to_message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
             logger.info("{} gets a +1!".format(user.first_name))
 
-    dbuser.userfirstname = user.first_name
-    dbuser.save()
+        dbuser.userfirstname = user.first_name
+        dbuser.save()
+    else:
+        update.message.reply_text("You must respond to a message to give karma.")
 
 
 def moins(update: Update, context: CallbackContext) -> None:
-    user = update.message.reply_to_message.from_user
-    dbuser = get_user(user.id, update.message.chat.id)
-
     if update.message.reply_to_message:
+        user = update.message.reply_to_message.from_user
+        dbuser = get_user(user.id, update.message.chat.id)
+
         if user == update.effective_user:
             update.message.reply_text("Don't be so harsh on yourself.")
             logger.info("{} wants to neg themselves!".format(user.first_name))
@@ -130,8 +132,10 @@ def moins(update: Update, context: CallbackContext) -> None:
             update.message.reply_to_message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
             logger.info("{} gets a -1!".format(user.first_name))
 
-    dbuser.userfirstname = user.first_name
-    dbuser.save()
+        dbuser.userfirstname = user.first_name
+        dbuser.save()
+    else:
+        update.message.reply_text("You must respond to a message to give karma.")
 
 
 def getkarma(update: Update, context: CallbackContext) -> None:
