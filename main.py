@@ -135,12 +135,12 @@ def moins(update: Update, context: CallbackContext) -> None:
 
 
 def getkarma(update: Update, context: CallbackContext) -> None:
-    user = update.message.reply_to_message.from_user
-    dbuser = get_user(user.id, update.message.chat.id)
-    dbuser.userfirstname = user.first_name
-    dbuser.save()
-
     if update.message.reply_to_message:
+        user = update.message.reply_to_message.from_user
+        dbuser = get_user(user.id, update.message.chat.id)
+        dbuser.userfirstname = user.first_name
+        dbuser.save()
+
         update.message.reply_text("{} has {} points.".format(dbuser.userfirstname, dbuser.karma))
         logger.info("{} has {} karma!".format(dbuser.userfirstname, dbuser.karma))
 
@@ -156,7 +156,7 @@ def getkarma(update: Update, context: CallbackContext) -> None:
                 all.append("- {}: {} points.".format(username, karma))
 
         update.message.reply_text("\n".join(all))
-        logger.info("{} wants to know the karmas!".format(dbuser.userfirstname))
+        logger.info("{} wants to know the karmas!".format(update.effective_user.first_name))
 
 
 def userid(update: Update, context: CallbackContext) -> None:
