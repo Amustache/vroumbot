@@ -7,10 +7,10 @@ import random
 
 
 from bs4 import BeautifulSoup
-from telegram import ForceReply, Update
-from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandler, Updater
-import requests
 from PIL import Image
+from telegram import constants, ForceReply, Update
+from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, Filters, MessageHandler, Updater
+import requests
 
 
 from helpers import DB, get_karma, get_user, User
@@ -161,6 +161,19 @@ def getkarma(update: Update, context: CallbackContext) -> None:
 
         update.message.reply_text("\n".join(all))
         logger.info("{} wants to know the karmas!".format(update.effective_user.first_name))
+
+
+def dad(update: Update, context: CallbackContext) -> None:
+    endpoint = "http://dadjokes.online/noecho"
+    resp = requests.get(url=endpoint)
+    try:
+        data = resp.json()
+        opener, punchline, _ = data["Joke"].values()
+    except:
+        update.message.reply_text("No more dad jokes )':.")
+        return
+
+    update.message.reply_text(opener).reply_text(punchline)
 
 
 def userid(update: Update, context: CallbackContext) -> None:
@@ -582,6 +595,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], whoisscipernsfw))
 
     dispatcher.add_handler(CommandHandler(["nft", "scam"], nft))
+
+    dispatcher.add_handler(CommandHandler(["dad", "dadjoke"], dad))
 
     dispatcher.add_handler(CommandHandler(["help", "all_commands"], help_command))
 
