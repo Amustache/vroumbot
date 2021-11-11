@@ -43,3 +43,4 @@ tzlocal==2.1
 urllib3==1.26.7
 virtualenv==20.4.7
 zipp==3.4.1
+py-trello==0.18.0

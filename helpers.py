@@ -1,5 +1,7 @@
 from peewee import *
+from trello import TrelloClient
 
+from secret import TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST
 
 DB = SqliteDatabase("./main.db")
 
@@ -78,3 +80,33 @@ def naturaltime(delta):
                 return time_strings["hour"][0]
             else:
                 return time_strings["hour"][1].format(delta.seconds // 60 // 60)
+
+
+def add_feedback_to_trello(feedback):
+    client = TrelloClient(
+        api_key=TRELLO_API_KEY,
+        api_secret=TRELLO_API_SECRET,
+    )
+
+    try:
+        for board in client.list_boards():
+            if board.name == TRELLO_FEEDBACK_BOARD:
+                break
+
+        if not board:
+            print("Trello is not configured properly: board not found.")
+            return
+
+        for liste in board.list_lists():
+            if liste.name == TRELLO_FEEDBACK_LIST:
+                break
+
+        if not liste:
+            print("Trello is not configured properly: list not found.")
+            return
+    except:
+        print("Trello is not configured properly: invalid credentials.")
+
+    content, description = feedback
+
+    liste.add_card(content, desc=description)

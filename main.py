@@ -6,7 +6,6 @@ import logging
 import os
 import random
 
-
 from bs4 import BeautifulSoup
 from PIL import Image
 from telegram import constants, ForceReply, Update
@@ -14,10 +13,8 @@ from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, F
 import dateparser
 import requests
 
-
-from helpers import DB, get_karma, get_user, naturaltime, User
+from helpers import DB, get_karma, get_user, naturaltime, User, add_feedback_to_trello
 from secret import ADMIN_ID, TOKEN
-
 
 # Enable logging
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -412,11 +409,18 @@ def gender(update: Update, context: CallbackContext) -> None:
 
 def feedback(update: Update, context: CallbackContext) -> None:
     user = update.effective_user.first_name
+    message_id = update.message.message_id
+    chat_id = update.message.chat.id
+    date = str(datetime.datetime.today())
     _, message = update.message.text.split(" ", 1)
-    message = '{} says "{}"'.format(user, message)
-    context.bot.sendMessage(chat_id=ADMIN_ID, text=message)
 
-    logger.info("{}".format(message))
+    feedback = message, "Date: {}\nChat: {}\nMessage: {}\nUser: {}".format(date, chat_id, message_id, user)
+
+    context.bot.sendMessage(chat_id=ADMIN_ID, text='{} says "{}"'.format(user, message))
+
+    add_feedback_to_trello(feedback)
+
+    logger.info("New feedback! {}".format(message))
 
 
 def carpe(update: Update, context: CallbackContext) -> None:
