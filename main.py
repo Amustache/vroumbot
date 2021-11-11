@@ -13,7 +13,7 @@ from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, F
 import dateparser
 import requests
 
-from helpers import DB, get_karma, get_user, naturaltime, User, add_feedback_to_trello
+from helpers import DB, get_karma, get_user, naturaltime, User, add_feedback_to_trello, get_feedbacks_from_trello
 from secret import ADMIN_ID, TOKEN
 
 # Enable logging
@@ -39,6 +39,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
     text = """Available commands:
 - start, hello, hi => start;
+- contribute, github, source, git, contrib => contribute;
 - bonjour => bonjour;
 - stupid => stupid;
 - trolled => trolled;
@@ -58,6 +59,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 - tut => tut;
 - beep, boop => boop;
 - feedback, suggestion, suggest => feedback;
+- feedbacks, listfeedbacks => feedbacks;
 - toutoutoutoum4a => toutoutoutoum4a;
 - toutoutoutou => toutoutoutou;
 - spin, speen => spin;
@@ -67,6 +69,10 @@ def help_command(update: Update, context: CallbackContext) -> None:
 - genre, gender, sexe, sex, sexx, genr => gender;
 - whois, whoissciper, sciper => whoissciper;
 - whoisnsfw, whoisscipernsfw, scipernsfw => whoisscipernsfw;
+- nft, scam => nft;
+- dad, dadjoke => dad;
+- remindme, remind_me, set, alarm => remindme;
+- listremindme, listjobs, listalarms => allremindme;
 - help, all_commands => help_command;"""
     update.message.reply_text(text)
 
@@ -423,6 +429,14 @@ def feedback(update: Update, context: CallbackContext) -> None:
     logger.info("New feedback! {}".format(message))
 
 
+def feedbacks(update: Update, context: CallbackContext) -> None:
+    result = "\n".join(get_feedbacks_from_trello())
+
+    update.message.reply_text(result)
+
+    logger.info("{} wants to know the feedbacks!".format(update.effective_user.first_name))
+
+
 def carpe(update: Update, context: CallbackContext) -> None:
     if update.effective_user.username == "ReallyCrazyMan" and random.randint(1, 6) == 6:
         update.message.reply_photo(photo=open("./media/opinion.jpg", "rb"))
@@ -633,6 +647,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["beep", "boop"], boop))
 
     dispatcher.add_handler(CommandHandler(["feedback", "suggestion", "suggest"], feedback))
+    dispatcher.add_handler(CommandHandler(["feedbacks", "listfeedbacks"], feedbacks))
 
     dispatcher.add_handler(CommandHandler("toutoutoutoum4a", toutoutoutoum4a))
     dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))

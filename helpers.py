@@ -5,6 +5,11 @@ from secret import TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRE
 
 DB = SqliteDatabase("./main.db")
 
+TRELLO_CLIENT = TrelloClient(
+    api_key=TRELLO_API_KEY,
+    api_secret=TRELLO_API_SECRET,
+)
+
 
 class User(Model):
     userid = BigIntegerField()
@@ -82,20 +87,15 @@ def naturaltime(delta):
                 return time_strings["hour"][1].format(delta.seconds // 60 // 60)
 
 
-def add_feedback_to_trello(feedback):
-    client = TrelloClient(
-        api_key=TRELLO_API_KEY,
-        api_secret=TRELLO_API_SECRET,
-    )
-
+def access_feedback_list():
     try:
-        for board in client.list_boards():
+        for board in TRELLO_CLIENT.list_boards():
             if board.name == TRELLO_FEEDBACK_BOARD:
                 break
 
         if not board:
             print("Trello is not configured properly: board not found.")
-            return
+            return None
 
         for liste in board.list_lists():
             if liste.name == TRELLO_FEEDBACK_LIST:
@@ -103,10 +103,42 @@ def add_feedback_to_trello(feedback):
 
         if not liste:
             print("Trello is not configured properly: list not found.")
-            return
+            return None
     except:
         print("Trello is not configured properly: invalid credentials.")
+        return None
 
-    content, description = feedback
+    return liste
 
-    liste.add_card(content, desc=description)
+
+def add_feedback_to_trello(feedback):
+    liste = access_feedback_list()
+
+    if liste:
+        content, description = feedback
+        liste.add_card(content, desc=description)
+        return True
+    else:
+        return False
+
+
+def get_feedbacks_from_trello():
+    liste = access_feedback_list()
+
+    if liste:
+        retour = []
+        remaining = 0
+
+        cards = liste.list_cards_iter()
+        for i, card in enumerate(cards):
+            retour.append("{}. {}".format(i + 1, card.name))
+            if i >= 9:
+                break
+        for _ in cards:
+            remaining += 1
+        if remaining > 0:
+            retour.append("... And {} more!".format(remaining))
+
+        return retour
+    else:
+        return None
