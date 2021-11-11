@@ -154,15 +154,27 @@ def getkarma(update: Update, context: CallbackContext) -> None:
         logger.info("{} has {} karma!".format(dbuser.userfirstname, dbuser.karma))
 
     else:
+        try:
+            _, n = update.message.text.split(" ", 1)
+            n = int(n)
+            if n < 1:
+                n = 10
+        except:
+            n = 10
+
         karmas = get_karma(update.message.chat.id)
+        n = min(len(karmas), n)
 
         all = []
-        for id, data in karmas.items():
-            username, karma = data
-            if not username:
-                username = "<please trigger karma action for name>"
-            if karma != 0:
-                all.append("- {}: {} points.".format(username, karma))
+        for i, (id, data) in enumerate(karmas.items()):
+            if i < n:
+                username, karma = data
+                if not username:
+                    username = "<please trigger karma action for name>"
+                if karma != 0:
+                    all.append("{number:0{width}d}. {}: {} points.".format(username, karma, number=1 + i, width=1 + n // 10))
+            else:
+                break
 
         update.message.reply_text("\n".join(all))
         logger.info("{} wants to know the karmas!".format(update.effective_user.first_name))
