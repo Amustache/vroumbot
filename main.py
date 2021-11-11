@@ -567,6 +567,23 @@ def remindme(update: Update, context: CallbackContext) -> None:
         update.message.reply_text("It seems like you used that command wrong. (:.")
 
 
+def allremindme(update: Update, context: CallbackContext) -> None:
+    jobs = context.job_queue.jobs()
+    if update.message.chat.type == constants.CHAT_SUPERGROUP:
+        liste = [
+            "- #<a href='https://t.me/c/{}/{}'>{}</a>: {}.".format(
+                str(job.context["chat_id"])[4:], job.context["message_id"], job.context["message_id"], str(job.next_t).split(".")[0]
+            )
+            for job in jobs
+            if job.context["chat_id"] == update.message.chat_id
+        ]
+    else:
+        liste = [
+            "- #{}: {}.".format(i, str(job.next_t).split(".")[0]) for i, job in enumerate(jobs) if job.context["chat_id"] == update.message.chat_id
+        ]
+    update.message.reply_text("List of reminders:\n{}".format("\n".join(liste)), parse_mode=constants.PARSEMODE_HTML)
+
+
 def main() -> None:
     DB.connect()
     DB.create_tables([User])
@@ -634,6 +651,16 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["dad", "dadjoke"], dad))
 
     dispatcher.add_handler(CommandHandler(["remindme", "remind_me", "set", "alarm"], remindme))
+    dispatcher.add_handler(
+        CommandHandler(
+            [
+                "listremindme",
+                "listjobs",
+                "listalarms",
+            ],
+            allremindme,
+        )
+    )
 
     dispatcher.add_handler(CommandHandler(["help", "all_commands"], help_command))
 
