@@ -24,3 +24,57 @@ def get_karma(chatid):
     users = User.select().where(User.chatid == chatid).order_by(User.karma.desc())
 
     return {user.userid: [user.userfirstname, user.karma] for user in users}
+
+
+# Borrowed from https://github.com/django/django/blob/main/django/contrib/humanize/templatetags/humanize.py#L169, but worse
+def naturaltime(delta):
+    time_strings = {
+        "now": "now",
+        "second": ("in a second", "in {} seconds"),
+        "minute": ("in a minute", "in {} minutes"),
+        "hour": ("in an hour", "in {} hours"),
+        "day": ("in a day", "in {} days"),
+        "week": ("in a week", "in {} weeks"),
+        "month": ("in a month", "in {} months"),
+        "year": ("in a year", "in {} years"),
+    }
+
+    if delta.days != 0:
+        if delta.days < 7:
+            if delta.days == 1:
+                return time_strings["day"][0]
+            else:
+                return time_strings["day"][1].format(delta.days)
+        elif delta.days // 7 < 4:
+            if delta.days // 7 == 1:
+                return time_strings["week"][0]
+            else:
+                return time_strings["week"][1].format(delta.days // 7)
+        elif delta.days // 7 // 4 < 12:
+            if delta.days // 7 // 4 == 1:
+                return time_strings["month"][0]
+            else:
+                return time_strings["month"][1].format(delta.days // 7 // 4)
+        else:
+            if delta.days // 7 // 4 // 12 == 1:
+                return time_strings["year"][0]
+            else:
+                return time_strings["year"][1].format(delta.days // 7 // 4 // 12)
+    else:
+        if delta.seconds == 0:
+            return time_strings["now"]
+        elif delta.seconds < 60:
+            if delta.seconds == 1:
+                return time_strings["second"][0]
+            else:
+                return time_strings["second"][1].format(delta.seconds)
+        elif delta.seconds // 60 < 60:
+            if delta.seconds // 60 == 1:
+                return time_strings["minute"][0]
+            else:
+                return time_strings["minute"][1].format(delta.seconds // 60)
+        elif delta.seconds // 60 // 60 < 24:
+            if delta.seconds // 60 // 60 == 1:
+                return time_strings["hour"][0]
+            else:
+                return time_strings["hour"][1].format(delta.seconds // 60 // 60)

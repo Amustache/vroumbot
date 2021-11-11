@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # pylint: disable=C0116,W0613
 # This program is dedicated to the public domain under the CC0 license.
+import datetime
 import logging
 import os
 import random
@@ -10,10 +11,11 @@ from bs4 import BeautifulSoup
 from PIL import Image
 from telegram import constants, ForceReply, Update
 from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, Filters, MessageHandler, Updater
+import dateparser
 import requests
 
 
-from helpers import DB, get_karma, get_user, User
+from helpers import DB, get_karma, get_user, naturaltime, User
 from secret import ADMIN_ID, TOKEN
 
 
@@ -532,6 +534,39 @@ def nft(update: Update, context: CallbackContext) -> None:
     logger.info("{} now has an NFT!".format(user.first_name))
 
 
+def alarm(context: CallbackContext) -> None:
+    job = context.job
+    context.bot.send_message(job.context["chat_id"], text="Reminder!", reply_to_message_id=job.context["message_id"])
+
+
+def remindme(update: Update, context: CallbackContext) -> None:
+    chat_id = update.message.chat_id
+    message_id = update.message.message_id
+
+    try:
+        _, message = update.message.text.split(" ", 1)
+        interpreted = dateparser.parse(message)
+        if not interpreted:
+            update.message.reply_text("I didn't understand, sorry...")
+            return
+
+        delta = (interpreted - datetime.datetime.now()) + datetime.timedelta(seconds=1)
+        if delta.total_seconds() < 0:
+            if delta.total_seconds() < -1:
+                update.message.reply_text("Sorry we can not go back to future!")
+            else:
+                update.message.reply_text("Okay, that may be a bit too close anyway.")
+            return
+
+        context.job_queue.run_once(
+            alarm, delta.total_seconds(), context={"chat_id": chat_id, "message_id": message_id}, name="{}_{}".format(chat_id, message_id)
+        )
+
+        update.message.reply_text("I will remind you this {} ({})!".format(naturaltime(delta), str(delta).split(".")[0]))
+    except (IndexError, ValueError):
+        update.message.reply_text("It seems like you used that command wrong. (:.")
+
+
 def main() -> None:
     DB.connect()
     DB.create_tables([User])
@@ -597,6 +632,8 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["nft", "scam"], nft))
 
     dispatcher.add_handler(CommandHandler(["dad", "dadjoke"], dad))
+
+    dispatcher.add_handler(CommandHandler(["remindme", "remind_me", "set", "alarm"], remindme))
 
     dispatcher.add_handler(CommandHandler(["help", "all_commands"], help_command))
 
