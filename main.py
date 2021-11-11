@@ -172,7 +172,7 @@ def getkarma(update: Update, context: CallbackContext) -> None:
                 if not username:
                     username = "<please trigger karma action for name>"
                 if karma != 0:
-                    all.append("{number:0{width}d}. {}: {} points.".format(username, karma, number=1 + i, width=1 + n // 10))
+                    all.append("{}. {}: {} points.".format(i, username, karma))
             else:
                 break
 
