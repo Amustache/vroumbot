@@ -320,6 +320,12 @@ def spin(update: Update, context: CallbackContext) -> None:
     logger.info("{} gets a SPEEN!".format(update.effective_user.first_name))
 
 
+def saisine(update: Update, context: CallbackContext) -> None:
+    update.message.reply_audio(audio=open("./media/saisine.mp3", "rb"))
+
+    logger.info("{} gets a SAISINE!".format(update.effective_user.first_name))
+
+
 def toutoutoutou(update: Update, context: CallbackContext) -> None:
     update.message.reply_sticker("CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE")
 
@@ -665,6 +671,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("toutoutoutou", toutoutoutou))
 
     dispatcher.add_handler(CommandHandler(["spin", "speen"], spin))
+    dispatcher.add_handler(CommandHandler(["saisine", "ccg"], saisine))
 
     dispatcher.add_handler(CommandHandler(["keysmash", "bottom"], keysmash))
     dispatcher.add_handler(CommandHandler(["oh", "ooh", "oooh"], oh))
