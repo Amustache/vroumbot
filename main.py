@@ -9,6 +9,7 @@ from telegram.ext import Updater
 
 from secret import TOKEN
 from modules.special import Special
+from modules.bot import Bot
 
 # Enable logging
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -25,6 +26,7 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Commands
+    Bot(logger).add_commands_to_dispatcher(dispatcher)
     Special(logger).add_commands_to_dispatcher(dispatcher)
 
     # Start the Bot
