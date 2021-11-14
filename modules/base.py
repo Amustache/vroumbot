@@ -1,13 +1,15 @@
 class Base:
-    def __init__(self, logger=None, commandhandlers=None):
+    def __init__(self, logger=None, commandhandlers=None, table=None):
         """
-        :param logger: logging.getLogger
-        :param commandhandlers: [telegram.ext.CommandHandler]
+        :param logger: logging.getLogger, when using a logger.
+        :param commandhandlers: [telegram.ext.CommandHandler], for command handling.
+        :param table: peewee.ModelBase, when using a table in the bot's database.
         """
         self.logger = logger
         self.commandhandlers = commandhandlers
+        self.table = table
 
-    def add_commands_to_dispatcher(self, dispatcher):
+    def add_commands(self, dispatcher):
         """
         Add all self.commandhandlers to the provided dispatcher.
         :param dispatcher: telegram.ext.Dispatcher

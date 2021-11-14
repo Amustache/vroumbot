@@ -5,16 +5,37 @@
 import logging
 
 
+from peewee import BigIntegerField, CharField, IntegerField, Model, SqliteDatabase
 from telegram.ext import Updater
 
-from secret import TOKEN
-from modules.special import Special
+
 from modules.bot import Bot
+from modules.karma import Karma
+from modules.special import Special
+from secret import TOKEN
+
 
 # Enable logging
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+# Database
+main_db = SqliteDatabase("./databases/main.db")
+
+
+class User(Model):
+    userid = BigIntegerField()
+    userfirstname = CharField(null=True)
+    chatid = BigIntegerField()
+    karma = IntegerField(default=0)
+
+    class Meta:
+        database = main_db
+
+
+main_db.connect()
+main_db.create_tables([User])
 
 
 def main() -> None:
@@ -26,8 +47,9 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Commands
-    Bot(logger).add_commands_to_dispatcher(dispatcher)
-    Special(logger).add_commands_to_dispatcher(dispatcher)
+    Bot(logger).add_commands(dispatcher)
+    Special(logger).add_commands(dispatcher)
+    Karma(logger, table=User).add_commands(dispatcher)
 
     # Start the Bot
     updater.start_polling()
