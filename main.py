@@ -6,6 +6,7 @@ import logging
 import os
 import random
 
+
 from bs4 import BeautifulSoup
 from PIL import Image
 from telegram import constants, ForceReply, Update
@@ -13,8 +14,10 @@ from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, F
 import dateparser
 import requests
 
-from helpers import DB, get_karma, get_user, naturaltime, User, add_feedback_to_trello, get_feedbacks_from_trello
+
+from helpers import add_feedback_to_trello, DB, get_feedbacks_from_trello, get_karma, get_user, naturaltime, User
 from secret import ADMIN_ID, TOKEN
+
 
 # Enable logging
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -431,6 +434,12 @@ def gender(update: Update, context: CallbackContext) -> None:
     logger.info("{} got gendered!".format(update.effective_user.first_name))
 
 
+def horny(update: Update, context: CallbackContext) -> None:
+    context.bot.forward_message(update.message.chat.id, "59804991", "4168")
+
+    logger.info("{} found horny!".format(update.effective_user.first_name))
+
+
 def feedback(update: Update, context: CallbackContext) -> None:
     user = update.effective_user.first_name
     message_id = update.message.message_id
@@ -678,6 +687,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], xd))
 
     dispatcher.add_handler(CommandHandler(["genre", "gender", "sexe", "sex", "sexx", "genr"], gender))
+    dispatcher.add_handler(CommandHandler(["horny"], horny))
 
     dispatcher.add_handler(MessageHandler(~Filters.command, carpe))
 
