@@ -11,6 +11,7 @@ from telegram.ext import Updater
 
 from modules.bot import Bot
 from modules.karma import Karma
+from modules.remindme import RemindMe
 from modules.special import Special
 from secret import TOKEN
 
@@ -50,6 +51,7 @@ def main() -> None:
     Bot(logger).add_commands(dispatcher)
     Special(logger).add_commands(dispatcher)
     Karma(logger, table=User).add_commands(dispatcher)
+    RemindMe(logger).add_commands(dispatcher)
 
     # Start the Bot
     updater.start_polling()
