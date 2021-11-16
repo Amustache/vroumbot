@@ -1,5 +1,8 @@
+import os
+
+
 class Base:
-    def __init__(self, logger=None, commandhandlers=None, table=None):
+    def __init__(self, logger=None, commandhandlers=None, table=None, mediafolder=None):
         """
         :param logger: logging.getLogger, when using a logger.
         :param commandhandlers: [telegram.ext.CommandHandler], for command handling.
@@ -8,6 +11,13 @@ class Base:
         self.logger = logger
         self.commandhandlers = commandhandlers
         self.table = table
+        self.mediafolder = mediafolder
+
+    def _media(self, filename=""):
+        if self.mediafolder:
+            return os.path.join(self.mediafolder, filename)
+        else:
+            return None
 
     def add_commands(self, dispatcher):
         """

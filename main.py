@@ -12,6 +12,9 @@ from telegram.ext import Updater
 from modules.bot import Bot
 from modules.karma import Karma
 from modules.remindme import RemindMe
+from modules.spam.media import Media
+from modules.spam.privatejokes import PrivateJoke
+from modules.spam.text import Text
 from modules.special import Special
 from secret import TOKEN
 
@@ -52,6 +55,11 @@ def main() -> None:
     Special(logger).add_commands(dispatcher)
     Karma(logger, table=User).add_commands(dispatcher)
     RemindMe(logger).add_commands(dispatcher)
+
+    # Spam commands
+    PrivateJoke(logger).add_commands(dispatcher)
+    Text(logger).add_commands(dispatcher)
+    Media(logger).add_commands(dispatcher)
 
     # Start the Bot
     updater.start_polling()
