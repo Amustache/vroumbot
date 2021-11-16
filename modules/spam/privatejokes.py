@@ -19,6 +19,8 @@ class PrivateJoke(Base):
             CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], self.whoisscipernsfw),
             CommandHandler(["genre", "gender", "sexe", "sex", "sexx", "genr"], self.gender),
             MessageHandler(~Filters.command, self.carpe),
+            CommandHandler(["saisine", "ccg"], self.saisine),
+            CommandHandler(["horny"], self.horny),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -94,3 +96,13 @@ class PrivateJoke(Base):
     def carpe(self, update: Update, context: CallbackContext) -> None:
         if update.effective_user.username == "ReallyCrazyMan" and random.randint(1, 6) == 6:
             update.message.reply_photo(photo=open(self._media("opinion.jpg"), "rb"))
+
+    def saisine(self, update: Update, context: CallbackContext) -> None:
+        update.message.reply_audio(audio=open(self._media("saisine.mp3"), "rb"))
+
+        self.logger.info("{} gets a SAISINE!".format(update.effective_user.first_name))
+
+    def horny(self, update: Update, context: CallbackContext) -> None:
+        context.bot.forward_message(update.message.chat.id, "59804991", "4168")
+
+        self.logger.info("{} found horny!".format(update.effective_user.first_name))
