@@ -1,3 +1,6 @@
+"""
+Karma module is used to handle karma in groupchats.
+"""
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
@@ -6,6 +9,10 @@ from .base import Base
 
 
 class Karma(Base):
+    """
+    Karma module is used to handle karma in groupchats.
+    """
+
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(["plus", "pos", "bravo"], self.plus),
@@ -31,7 +38,9 @@ class Karma(Base):
         :param chatid: Telegram chatid.
         :return: {user_id: Int: [user_firstname: String, user_karma: Int]}
         """
-        users = self.table.select().where(self.table.chatid == chatid).order_by(self.table.karma.desc())
+        users = (
+            self.table.select().where(self.table.chatid == chatid).order_by(self.table.karma.desc())
+        )
 
         return {user.userid: [user.userfirstname, user.karma] for user in users}
 
@@ -49,7 +58,9 @@ class Karma(Base):
 
             else:
                 dbuser.karma += 1
-                update.message.reply_to_message.reply_text("+1 for {} ({} points).".format(user.first_name, dbuser.karma))
+                update.message.reply_to_message.reply_text(
+                    "+1 for {} ({} points).".format(user.first_name, dbuser.karma)
+                )
                 self.logger.info("{} gets a +1!".format(user.first_name))
 
             dbuser.userfirstname = user.first_name
@@ -71,7 +82,9 @@ class Karma(Base):
 
             else:
                 dbuser.karma -= 1
-                update.message.reply_to_message.reply_text("-1 for {} ({} points).".format(user.first_name, dbuser.karma))
+                update.message.reply_to_message.reply_text(
+                    "-1 for {} ({} points).".format(user.first_name, dbuser.karma)
+                )
                 self.logger.info("{} gets a -1!".format(user.first_name))
 
             dbuser.userfirstname = user.first_name
@@ -89,31 +102,35 @@ class Karma(Base):
             dbuser.userfirstname = user.first_name
             dbuser.save()
 
-            update.message.reply_text("{} has {} points.".format(dbuser.userfirstname, dbuser.karma))
+            update.message.reply_text(
+                "{} has {} points.".format(dbuser.userfirstname, dbuser.karma)
+            )
             self.logger.info("{} has {} karma!".format(dbuser.userfirstname, dbuser.karma))
 
         else:
             try:
-                _, n = update.message.text.split(" ", 1)
-                n = int(n)
-                if n < 1:
-                    n = 10
-            except:
-                n = 10
+                _, num_people = update.message.text.split(" ", 1)
+                num_people = int(num_people)
+                if num_people < 1:
+                    num_people = 10
+            except ValueError:
+                num_people = 10
 
             karmas = self._get_karma(update.message.chat.id)
-            n = min(len(karmas), n)
+            num_people = min(len(karmas), num_people)
 
-            all = []
-            for i, (id, data) in enumerate(karmas.items()):
-                if i < n:
+            all_people = []
+            for i, (_, data) in enumerate(karmas.items()):
+                if i < num_people:
                     username, karma = data
                     if not username:
                         username = "<please trigger karma action for name>"
                     if karma != 0:
-                        all.append("{}. {}: {} points.".format(i + 1, username, karma))
+                        all_people.append("{}. {}: {} points.".format(i + 1, username, karma))
                 else:
                     break
 
-            update.message.reply_text("\n".join(all))
-            self.logger.info("{} wants to know the karmas!".format(update.effective_user.first_name))
+            update.message.reply_text("\n".join(all_people))
+            self.logger.info(
+                "{} wants to know the karmas!".format(update.effective_user.first_name)
+            )

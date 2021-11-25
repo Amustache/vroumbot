@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # pylint: disable=C0116,W0613
 # This program is dedicated to the public domain under the CC0 license.
+"""
+Main! yay!
+"""
 
 import logging
 
@@ -20,7 +23,9 @@ from secret import TOKEN
 
 
 # Enable logging
-logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
 
 logger = logging.getLogger(__name__)
 
@@ -29,12 +34,20 @@ main_db = SqliteDatabase("./databases/main.db")
 
 
 class User(Model):
+    """
+    User model to access the database.
+    """
+
     userid = BigIntegerField()
     userfirstname = CharField(null=True)
     chatid = BigIntegerField()
     karma = IntegerField(default=0)
 
     class Meta:
+        """
+        Basically which database.
+        """
+
         database = main_db
 
 

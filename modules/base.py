@@ -1,7 +1,14 @@
+"""
+Base class to add new features in the bot.
+"""
 import os
 
 
 class Base:
+    """
+    Base class to add new features in the bot.
+    """
+
     def __init__(self, logger=None, commandhandlers=None, table=None, mediafolder=None):
         """
         :param logger: logging.getLogger, when using a logger.
@@ -16,8 +23,6 @@ class Base:
     def _media(self, filename=""):
         if self.mediafolder:
             return os.path.join(self.mediafolder, filename)
-        else:
-            return None
 
     def add_commands(self, dispatcher):
         """
@@ -34,7 +39,9 @@ class Base:
         commands = ""
         for handler in self.commandhandlers:
             try:
-                commands += "- {} => {};\n".format(", ".join(handler.command), handler.callback.__name__)
+                commands += "- {} => {};\n".format(
+                    ", ".join(handler.command), handler.callback.__name__
+                )
             except:
                 continue
 
@@ -45,6 +52,9 @@ class Base:
         commands = ""
         for handler in self.commandhandlers:
             try:
-                commands += ["{} - {}\n".format(command, handler.callback.__name__) for command in handler.command]
+                commands += [
+                    "{} - {}\n".format(command, handler.callback.__name__)
+                    for command in handler.command
+                ]
             except:
                 continue

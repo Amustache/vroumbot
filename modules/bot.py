@@ -1,14 +1,25 @@
+"""
+Functionalities directly related to the bot.
+"""
 import datetime
+
 
 from telegram import ForceReply, Update
 from telegram.ext import CallbackContext, CommandHandler
 from trello import TrelloClient
 
-from .base import Base
+
 from secret import ADMIN_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST
 
 
+from .base import Base
+
+
 class Bot(Base):
+    """
+    Functionalities directly related to the bot.
+    """
+
     MAX_FEEDBACKS = 10
 
     def __init__(self, logger=None):
@@ -32,6 +43,7 @@ class Bot(Base):
         :return: trello.trellolist.List
         """
         try:
+            board = None
             for board in self.__trello_client.list_boards():
                 if board.name == TRELLO_FEEDBACK_BOARD:
                     break
@@ -40,6 +52,7 @@ class Bot(Base):
                 print("Trello is not configured properly: board not found.")
                 return None
 
+            liste = None
             for liste in board.list_lists():
                 if liste.name == TRELLO_FEEDBACK_LIST:
                     break
@@ -65,8 +78,8 @@ class Bot(Base):
             content, description = feedback
             liste.add_card(content, desc=description)
             return True
-        else:
-            return False
+
+        return False
 
     def _get_feedbacks_from_trello(self):
         """
@@ -90,8 +103,6 @@ class Bot(Base):
                 retour.append("... And {} more!".format(remaining))
 
             return retour
-        else:
-            return None
 
     def start(self, update: Update, context: CallbackContext) -> None:
         """
@@ -110,43 +121,7 @@ class Bot(Base):
         Don't forget to update this manually.
         """
 
-        text = """Available commands:
-- start, hello, hi => start;
-- contribute, github, source, git, contrib => contribute;
-- bonjour => bonjour;
-- stupid => stupid;
-- trolled => trolled;
-- heretic => heretic;
-- bricole => bricole;
-- vroum => vroum;
-- vroom => vroom;
-- plus, pos, bravo => plus;
-- moins, minus, min, neg, non => moins;
-- userid, id => userid;
-- chatid, here => chatid;
-- messageid, this, that => messageid;
-- karma, getkarma => getkarma;
-- cat, chat, kot => random_cat;
-- brrou => brrou;
-- froj => froj;
-- tut => tut;
-- beep, boop => boop;
-- feedback, suggestion, suggest => feedback;
-- feedbacks, listfeedbacks => feedbacks;
-- toutoutoutoum4a => toutoutoutoum4a;
-- toutoutoutou => toutoutoutou;
-- spin, speen => spin;
-- keysmash, bottom => keysmash;
-- oh, ooh, oooh => oh;
-- ay, ayy, ayyy, xd, xdd, xddd => xd;
-- genre, gender, sexe, sex, sexx, genr => gender;
-- whois, whoissciper, sciper => whoissciper;
-- whoisnsfw, whoisscipernsfw, scipernsfw => whoisscipernsfw;
-- nft, scam => nft;
-- dad, dadjoke => dad;
-- remindme, remind_me, set, alarm => remindme;
-- listremindme, listjobs, listalarms => allremindme;
-- help, all_commands => help_command;"""
+        text = "Available commands: TODO"
         update.message.reply_text(text)
 
         self.logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
@@ -155,7 +130,9 @@ class Bot(Base):
         """
         To get the Git, basically.
         """
-        update.message.reply_text("Want to contribute? Use `/feedback <your proposition>` or go to https://github.com/Amustache/vroumbot!")
+        update.message.reply_text(
+            "Want to contribute? Use `/feedback <your proposition>` or go to https://github.com/Amustache/vroumbot!"
+        )
 
         self.logger.info("{} wants to contribute!".format(update.effective_user.first_name))
 
@@ -169,7 +146,9 @@ class Bot(Base):
         date = str(datetime.datetime.today())
         _, message = update.message.text.split(" ", 1)
 
-        feedback = message, "Date: {}\nChat: {}\nMessage: {}\nUser: {}".format(date, chat_id, message_id, user)
+        feedback = message, "Date: {}\nChat: {}\nMessage: {}\nUser: {}".format(
+            date, chat_id, message_id, user
+        )
 
         try:
             context.bot.sendMessage(chat_id=ADMIN_ID, text='{} says "{}"'.format(user, message))

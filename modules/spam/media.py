@@ -1,3 +1,6 @@
+"""
+Media spam! Yay!
+"""
 import os
 import random
 
@@ -11,13 +14,16 @@ from ..base import Base
 
 
 class Media(Base):
+    """
+    Media spam! Yay!
+    """
+
     def __init__(self, logger=None):
         commandhandlers = [
             CommandHandler(["cat", "chat", "kot"], self.random_cat),
             CommandHandler("brrou", self.brrou),
             CommandHandler("froj", self.froj),
             CommandHandler(["spin", "speen"], self.spin),
-            CommandHandler(["saisine", "ccg"], self.saisine),
             CommandHandler("bonjour", self.bonjour),
             CommandHandler("stupid", self.stupid),
             CommandHandler("heretic", self.heretic),
@@ -28,6 +34,9 @@ class Media(Base):
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
     def random_cat(self, update: Update, context: CallbackContext) -> None:
+        """
+        Random cat from a currated list.
+        """
         folder = self._media("cats")
         filename = os.path.join(folder, random.choice(os.listdir(folder)))
         meow = random.choice(
@@ -80,62 +89,97 @@ class Media(Base):
                 "مُواء",
             ]
         )
-        update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
+        with open(filename, "rb") as file:
+            update.message.reply_photo(photo=file, caption=meow)
 
         self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
 
     def brrou(self, update: Update, context: CallbackContext) -> None:
+        """
+        A very special cat.
+        """
         folder = self._media("brrou")
         filename = os.path.join(folder, random.choice(os.listdir(folder)))
         meow = random.choice(["brrou", "Brrou", "b r r o u", "BROU", "B R R O U", "tut"])
-        update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
+        with open(filename, "rb") as file:
+            update.message.reply_photo(photo=file, caption=meow)
 
         self.logger.info("{} wants a Brrou pic!".format(update.effective_user.first_name))
 
     def froj(self, update: Update, context: CallbackContext) -> None:
+        """
+        FROJ
+        """
         folder = self._media("froj")
         filename = os.path.join(folder, random.choice(os.listdir(folder)))
         meow = "https://frogdetective.net/"
-        update.message.reply_photo(photo=open(filename, "rb"), caption=meow)
+        with open(filename, "rb") as file:
+            update.message.reply_photo(photo=file, caption=meow)
 
         self.logger.info("{} wants a froj pic!".format(update.effective_user.first_name))
 
     def spin(self, update: Update, context: CallbackContext) -> None:
-        update.message.reply_audio(audio=open(self._media("spin.mp3"), "rb"))
+        """
+        SPIN
+        """
+        with open(self._media("spin.mp3"), "rb") as file:
+            update.message.reply_audio(audio=file)
 
         self.logger.info("{} gets a SPEEN!".format(update.effective_user.first_name))
 
-    def saisine(self, update: Update, context: CallbackContext) -> None:
-        update.message.reply_audio(audio=open(self._media("saisine.mp3"), "rb"))
-
-        self.logger.info("{} gets a SAISINE!".format(update.effective_user.first_name))
-
     def bonjour(self, update: Update, context: CallbackContext) -> None:
-        update.message.reply_video(video=open(self._media("setup.mp4"), "rb"))
+        """
+        BONJOUR A TOUTES ET TOUT
+        """
+        with open(self._media("setup.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
 
-        self.logger.info("{} gets a bonjour à toutes et tous!".format(update.effective_user.first_name))
+        self.logger.info(
+            "{} gets a bonjour à toutes et tous!".format(update.effective_user.first_name)
+        )
 
     def stupid(self, update: Update, context: CallbackContext) -> None:
-        update.message.reply_video(video=open(self._media("stupid.mp4"), "rb"))
+        """
+        A little song for a little dumb
+        """
+        with open(self._media("stupid.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
 
-        self.logger.info("{} is being really stupid right now!".format(update.effective_user.first_name))
+        self.logger.info(
+            "{} is being really stupid right now!".format(update.effective_user.first_name)
+        )
 
     def heretic(self, update: Update, context: CallbackContext) -> None:
-        update.message.reply_video(video=open(self._media("heretic.mp4"), "rb"))
+        """
+        HERESY TIME
+        """
+        with open(self._media("heretic.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
 
         self.logger.info("{} likes being a heretic!".format(update.effective_user.first_name))
 
     def bricole(self, update: Update, context: CallbackContext) -> None:
-        update.message.reply_video(video=open(self._media("bricole.mp4"), "rb"))
+        """
+        Best song
+        """
+        with open(self._media("bricole.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
 
         self.logger.info("{} wants to BRICOLE!".format(update.effective_user.first_name))
 
     def trolled(self, update: Update, context: CallbackContext) -> None:
-        update.message.reply_video(video=open(self._media("troll.mp4"), "rb"))
+        """
+        A little song when someone gets trolled
+        """
+        with open(self._media("troll.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
 
         self.logger.info("{}'s just been trolled!".format(update.effective_user.first_name))
 
     def nft(self, update: Update, context: CallbackContext) -> None:
+        """
+        Your very own NFT!
+        """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
         else:
@@ -185,8 +229,12 @@ class Media(Base):
 
             img.resize((512, 512), Image.NEAREST).save(filename)
 
-        update.message.reply_photo(
-            photo=open(filename, "rb"), caption="This is {}'s exclusive NFT, do not use without permission!".format(user.first_name)
-        )
+        with open(filename, "rb") as file:
+            update.message.reply_photo(
+                photo=file,
+                caption="This is {}'s exclusive NFT, do not use without permission!".format(
+                    user.first_name
+                ),
+            )
 
         self.logger.info("{} now has an NFT!".format(user.first_name))

@@ -1,10 +1,18 @@
+"""
+Basic Telegram information and administration.
+"""
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
+
 
 from .base import Base
 
 
 class Special(Base):
+    """
+    Basic Telegram information and administration.
+    """
+
     def __init__(self, logger=None):
         commandhandlers = [
             CommandHandler(["userid", "id"], self.userid),
@@ -32,15 +40,27 @@ class Special(Base):
         """
         update.message.reply_text(update.message.chat.id)
 
-        self.logger.info("{} wants the chat ID! It is {}.".format(update.effective_user.first_name, update.message.chat.id))
+        self.logger.info(
+            "{} wants the chat ID! It is {}.".format(
+                update.effective_user.first_name, update.message.chat.id
+            )
+        )
 
     def messageid(self, update: Update, context: CallbackContext) -> None:
         """
         Get replied message's messageid.
         """
         if update.message.reply_to_message:
-            update.message.reply_text("{} in {}".format(update.message.reply_to_message.message_id, update.message.chat.id))
+            update.message.reply_text(
+                "{} in {}".format(
+                    update.message.reply_to_message.message_id, update.message.chat.id
+                )
+            )
 
             self.logger.info(
-                "{} wants the message ID! It is {} in {}.".format(update.effective_user.first_name, update.message.message_id, update.message.chat.id)
+                "{} wants the message ID! It is {} in {}.".format(
+                    update.effective_user.first_name,
+                    update.message.message_id,
+                    update.message.chat.id,
+                )
             )
