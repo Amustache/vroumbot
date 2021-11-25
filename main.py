@@ -126,6 +126,11 @@ def plus(update: Update, context: CallbackContext) -> None:
         update.message.reply_text("You must respond to a message to give karma.")
 
 
+def angrypos(update: Update, context: CallbackContext) -> None:
+    plus(update, context)
+    update.message.reply_photo(photo=open("./media/angrypost.jpg", "rb"))
+
+
 def moins(update: Update, context: CallbackContext) -> None:
     if update.message.reply_to_message:
         user = update.message.reply_to_message.from_user
@@ -655,6 +660,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("vroom", vroom))
 
     dispatcher.add_handler(CommandHandler(["plus", "pos", "bravo"], plus))
+    dispatcher.add_handler(CommandHandler(["angrypos", "angrpos", "angry"], angrypos))
     dispatcher.add_handler(CommandHandler(["moins", "minus", "min", "neg", "non"], moins))
 
     dispatcher.add_handler(CommandHandler(["userid", "id"], userid))
