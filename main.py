@@ -128,7 +128,8 @@ def plus(update: Update, context: CallbackContext) -> None:
 
 def angrypos(update: Update, context: CallbackContext) -> None:
     plus(update, context)
-    update.message.reply_photo(photo=open("./media/angrypost.jpg", "rb"))
+    if update.message.reply_to_message:
+        update.message.reply_photo(photo=open("./media/angrypost.jpg", "rb"))
 
 
 def moins(update: Update, context: CallbackContext) -> None:
