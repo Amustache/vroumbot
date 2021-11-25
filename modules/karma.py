@@ -16,6 +16,7 @@ class Karma(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(["plus", "pos", "bravo"], self.plus),
+            CommandHandler(["angryplus", "angrypos", "angrybravo", "angry"], self.angryplus),
             CommandHandler(["moins", "minus", "min", "neg", "non"], self.moins),
             CommandHandler(["karma", "getkarma"], self.getkarma),
         ]
@@ -67,6 +68,14 @@ class Karma(Base):
             dbuser.save()
         else:
             update.message.reply_text("You must respond to a message to give karma.")
+
+    def angryplus(self, update: Update, context: CallbackContext) -> None:
+        self.plus(update, context)
+        if update.message.reply_to_message:
+            with open(self._media("angrypos.jpg"), "rb") as file:
+                update.message.reply_audio(audio=file)
+
+                self.logger.info("{} gets an angry +1!".format(update.effective_user.first_name))
 
     def moins(self, update: Update, context: CallbackContext) -> None:
         """
