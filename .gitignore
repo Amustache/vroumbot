@@ -1,5 +1,4 @@
 secret.py
-*.db
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,pycharm+all,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,pycharm+all,python

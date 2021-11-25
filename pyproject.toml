@@ -1,5 +1,5 @@
 [tool.black]
-line-length = 150
+line-length = 100
 
 [tool.isort]
 # When imports are broken into multi-line, use the "Vertical Hanging Indent" layout.
