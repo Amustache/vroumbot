@@ -1,5 +1,5 @@
-from peewee import *
-from playhouse.migrate import *
+from peewee import CharField, SqliteDatabase
+from playhouse.migrate import migrate, SqliteMigrator
 
 
 my_db = SqliteDatabase("main.db")
