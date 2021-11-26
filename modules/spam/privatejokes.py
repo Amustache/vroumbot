@@ -138,7 +138,7 @@ class PrivateJoke(Base):
             with open(self._media("opinion.jpg"), "rb") as file:
                 update.message.reply_photo(photo=file)
 
-        self.logger.info("{} said ew!".format(update.effective_user.first_name))
+            self.logger.info("{} said ew!".format(update.effective_user.first_name))
 
     def saisine(self, update: Update, context: CallbackContext) -> None:
         """
