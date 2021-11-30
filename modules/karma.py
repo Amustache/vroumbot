@@ -20,7 +20,7 @@ class Karma(Base):
             CommandHandler(["moins", "minus", "min", "neg", "non"], self.moins),
             CommandHandler(["karma", "getkarma"], self.getkarma),
         ]
-        super().__init__(logger, commandhandlers, table)
+        super().__init__(logger, commandhandlers, table, mediafolder="./media")
 
     def _get_user(self, userid, chatid):
         """
@@ -73,7 +73,7 @@ class Karma(Base):
         self.plus(update, context)
         if update.message.reply_to_message:
             with open(self._media("angrypos.jpg"), "rb") as file:
-                update.message.reply_audio(audio=file)
+                update.message.reply_photo(photo=file, caption="Now get tf outta here.")
 
                 self.logger.info("{} gets an angry +1!".format(update.effective_user.first_name))
 
