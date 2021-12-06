@@ -28,6 +28,7 @@ class PrivateJoke(Base):
             MessageHandler(~Filters.command, self.carpe),
             CommandHandler(["saisine", "ccg"], self.saisine),
             CommandHandler(["horny"], self.horny),
+            CommandHandler(["crypto", "bully"], self.crypto),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -156,3 +157,13 @@ class PrivateJoke(Base):
         context.bot.forward_message(update.message.chat.id, "59804991", "4168")
 
         self.logger.info("{} found horny!".format(update.effective_user.first_name))
+
+    def crypto(self, update: Update, context: CallbackContext) -> None:
+        """
+        bullying cryptobros is never unethical.
+        """
+        context.bot.forward_message(update.message.chat.id, "59804991", "7139").reply_text(
+            "(But please don't actually bully people.)"
+        )
+
+        self.logger.info("{} wants to bully!".format(update.effective_user.first_name))
