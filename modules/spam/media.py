@@ -30,6 +30,7 @@ class Media(Base):
             CommandHandler("bricole", self.bricole),
             CommandHandler("trolled", self.trolled),
             CommandHandler(["nft", "scam"], self.nft),
+            CommandHandler(["pointeur", "baisepointeur"], self.pointeur),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
