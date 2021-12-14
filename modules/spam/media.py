@@ -238,3 +238,12 @@ class Media(Base):
             )
 
         self.logger.info("{} now has an NFT!".format(user.first_name))
+
+    def pointeur(self, update: Update, context: CallbackContext) -> None:
+        """
+        Ici,on baise tous les pointeurs.
+        """
+        with open(self._media("pointeur.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
+
+        self.logger.info("{} baise tous les pointeurs!".format(update.effective_user.first_name))
