@@ -6,6 +6,12 @@ from telegram.ext import CallbackContext, CommandHandler
 
 
 from ..base import Base
+from .helpers import get_user
+
+
+angrypos_commands = ["angryplus", "angrypos", "angrybravo", "angry"]
+pos_commands = ["plus", "pos", "bravo"]
+neg_commands = ["moins", "minus", "min", "neg", "non"]
 
 
 class Karma(Base):
@@ -15,23 +21,12 @@ class Karma(Base):
 
     def __init__(self, logger=None, table=None):
         commandhandlers = [
-            CommandHandler(["plus", "pos", "bravo"], self.plus),
-            CommandHandler(["angryplus", "angrypos", "angrybravo", "angry"], self.angryplus),
-            CommandHandler(["moins", "minus", "min", "neg", "non"], self.moins),
+            CommandHandler(
+                pos_commands + angrypos_commands + neg_commands + ["meh"], self.change_karma
+            ),
             CommandHandler(["karma", "getkarma"], self.getkarma),
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media")
-
-    def _get_user(self, userid, chatid):
-        """
-        Return the user from the database.
-        :param userid: Telegram userid.
-        :param chatid: Telegram chatid.
-        :return: Model: User
-        """
-        user, _ = self.table.get_or_create(userid=userid, chatid=chatid)
-
-        return user
 
     def _get_karma(self, chatid):
         """
@@ -45,56 +40,54 @@ class Karma(Base):
 
         return {user.userid: [user.userfirstname, user.karma] for user in users}
 
-    def plus(self, update: Update, context: CallbackContext) -> None:
+    def change_karma(self, update: Update, context: CallbackContext) -> None:
         """
         Add karma to user by replying to a message.
         """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
-            dbuser = self._get_user(user.id, update.message.chat.id)
+            dbuser = get_user(self.table, user.id, update.message.chat.id)
+            command = update.message.text.split(" ", 1)[0][1:]
 
+            # Self
             if user == update.effective_user:
-                update.message.reply_text("Humble bragging, amarite?")
-                self.logger.info("{} wants to pos themselves!".format(user.first_name))
+                if command in pos_commands + angrypos_commands:
+                    reply = "Humble bragging, amarite?"
+                    log = "{} wants to pos themselves!".format(user.first_name)
+                elif command in neg_commands:
+                    reply = "Don't be so harsh on yourself."
+                    log = "{} wants to neg themselves!".format(user.first_name)
+                else:
+                    reply = "Sooo... Nothing?"
+                    log = "{} doesn't know what to do with their karma!".format(user.first_name)
+                update.message.reply_text(reply)
+                self.logger.info(log)
 
+            # To a reply
             else:
-                dbuser.karma += 1
+                if command in pos_commands:
+                    operator = +1
+                    resp = "+1"
+                elif command in angrypos_commands:
+                    operator = +1
+                    resp = "Angry +1"
+                elif command in neg_commands:
+                    operator = -1
+                    resp = "-1"
+                else:
+                    operator = 0
+                    resp = "Meh"
+                dbuser.karma += operator
                 update.message.reply_to_message.reply_text(
-                    "+1 for {} ({} points).".format(user.first_name, dbuser.karma)
+                    "{} for {} ({} points).".format(resp, user.first_name, dbuser.karma)
                 )
-                self.logger.info("{} gets a +1!".format(user.first_name))
 
-            dbuser.userfirstname = user.first_name
-            dbuser.save()
-        else:
-            update.message.reply_text("You must respond to a message to give karma.")
+                # Special, if needed
+                if command in angrypos_commands:
+                    with open(self._media("angrypos.jpg"), "rb") as file:
+                        update.message.reply_photo(photo=file, caption="Now get tf outta here.")
 
-    def angryplus(self, update: Update, context: CallbackContext) -> None:
-        self.plus(update, context)
-        if update.message.reply_to_message:
-            with open(self._media("angrypos.jpg"), "rb") as file:
-                update.message.reply_photo(photo=file, caption="Now get tf outta here.")
-
-                self.logger.info("{} gets an angry +1!".format(update.effective_user.first_name))
-
-    def moins(self, update: Update, context: CallbackContext) -> None:
-        """
-        Remove karma to user by replying to a message.
-        """
-        if update.message.reply_to_message:
-            user = update.message.reply_to_message.from_user
-            dbuser = self._get_user(user.id, update.message.chat.id)
-
-            if user == update.effective_user:
-                update.message.reply_text("Don't be so harsh on yourself.")
-                self.logger.info("{} wants to neg themselves!".format(user.first_name))
-
-            else:
-                dbuser.karma -= 1
-                update.message.reply_to_message.reply_text(
-                    "-1 for {} ({} points).".format(user.first_name, dbuser.karma)
-                )
-                self.logger.info("{} gets a -1!".format(user.first_name))
+                self.logger.info("{} gets a {}!".format(user.first_name, resp))
 
             dbuser.userfirstname = user.first_name
             dbuser.save()
@@ -107,7 +100,7 @@ class Karma(Base):
         """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
-            dbuser = self._get_user(user.id, update.message.chat.id)
+            dbuser = get_user(self.table, user.id, update.message.chat.id)
             dbuser.userfirstname = user.first_name
             dbuser.save()
 
