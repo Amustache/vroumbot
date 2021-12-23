@@ -2,7 +2,7 @@ from peewee import CharField, SqliteDatabase
 from playhouse.migrate import migrate, SqliteMigrator
 
 
-my_db = SqliteDatabase("main.db")
+my_db = SqliteDatabase("../databases/main.db")
 migrator = SqliteMigrator(my_db)
 
 # Add migration here
