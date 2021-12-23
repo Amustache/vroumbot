@@ -13,7 +13,7 @@ from telegram.ext import Updater
 
 
 from modules.bot import Bot
-from modules.karma import Karma
+from modules.community.karma import Karma
 from modules.remindme import RemindMe
 from modules.spam.media import Media
 from modules.spam.privatejokes import PrivateJoke
