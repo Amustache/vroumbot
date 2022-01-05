@@ -12,6 +12,11 @@ from .helpers import get_user
 angrypos_commands = ["angryplus", "angrypos", "angrybravo", "angry"]
 pos_commands = ["plus", "pos", "bravo"]
 neg_commands = ["moins", "minus", "min", "neg", "non"]
+meh_commands = ["meh"]
+
+for commands in [angrypos_commands, pos_commands, neg_commands, meh_commands]:
+    # pos and pos@vroumbot are the same
+    commands.extend([c+"@vroumbot" for c in commands])
 
 
 class Karma(Base):
@@ -22,7 +27,8 @@ class Karma(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(
-                pos_commands + angrypos_commands + neg_commands + ["meh"], self.change_karma
+                pos_commands + angrypos_commands + neg_commands + meh_commands,
+                self.change_karma
             ),
             CommandHandler(["karma", "getkarma"], self.getkarma),
         ]
@@ -57,9 +63,12 @@ class Karma(Base):
                 elif command in neg_commands:
                     reply = "Don't be so harsh on yourself."
                     log = "{} wants to neg themselves!".format(user.first_name)
-                else:
+                elif command in meh_commands:
                     reply = "Sooo... Nothing?"
                     log = "{} doesn't know what to do with their karma!".format(user.first_name)
+                else:
+                    reply="I deadass don't know how to respond"
+                    log = "Command {} couldn't be interpreted"
                 update.message.reply_text(reply)
                 self.logger.info(log)
 
@@ -74,9 +83,12 @@ class Karma(Base):
                 elif command in neg_commands:
                     operator = -1
                     resp = "-1"
-                else:
+                elif command in meh_commands:
                     operator = 0
                     resp = "Meh"
+                else:
+                    operator = 0
+                    resp = "Eeh, programmer mistake, what was that?"
                 dbuser.karma += operator
                 update.message.reply_to_message.reply_text(
                     "{} for {} ({} points).".format(resp, user.first_name, dbuser.karma)
