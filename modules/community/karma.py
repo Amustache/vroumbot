@@ -60,12 +60,9 @@ class Karma(Base):
                 elif command in neg_commands:
                     reply = "Don't be so harsh on yourself."
                     log = "{} wants to neg themselves!".format(user.first_name)
-                elif command in meh_commands:
+                else:
                     reply = "Sooo... Nothing?"
                     log = "{} doesn't know what to do with their karma!".format(user.first_name)
-                else:
-                    reply="I deadass don't know how to respond"
-                    log = "Command {} couldn't be interpreted"
                 update.message.reply_text(reply)
                 self.logger.info(log)
 
@@ -80,12 +77,9 @@ class Karma(Base):
                 elif command in neg_commands:
                     operator = -1
                     resp = "-1"
-                elif command in meh_commands:
-                    operator = 0
-                    resp = "Meh"
                 else:
                     operator = 0
-                    resp = "Eeh, programmer mistake, what was that?"
+                    resp = "Meh"
                 dbuser.karma += operator
                 update.message.reply_to_message.reply_text(
                     "{} for {} ({} points).".format(resp, user.first_name, dbuser.karma)
