@@ -14,11 +14,6 @@ pos_commands = ["plus", "pos", "bravo"]
 neg_commands = ["moins", "minus", "min", "neg", "non"]
 meh_commands = ["meh"]
 
-for commands in [angrypos_commands, pos_commands, neg_commands, meh_commands]:
-    # pos and pos@vroumbot are the same
-    commands.extend([c+"@vroumbot" for c in commands])
-
-
 class Karma(Base):
     """
     Karma module is used to handle karma in groupchats.
@@ -54,7 +49,9 @@ class Karma(Base):
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
             command = update.message.text.split(" ", 1)[0][1:]
-
+            if "@" in command:
+                # command may be `somecommand@botname``
+                command = command.split("@")[0]
             # Self
             if user == update.effective_user:
                 if command in pos_commands + angrypos_commands:
