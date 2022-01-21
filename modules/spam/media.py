@@ -31,6 +31,8 @@ class Media(Base):
             CommandHandler("trolled", self.trolled),
             CommandHandler(["nft", "scam"], self.nft),
             CommandHandler(["pointeur", "baisepointeur"], self.pointeur),
+            CommandHandler(["dum", "dumb"], self.dumb),
+            CommandHandler(["srydum", "sorrydumb", "sorrydum", "srydumb"], self.sorrydumb),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -248,3 +250,23 @@ class Media(Base):
             update.message.reply_video(video=file)
 
         self.logger.info("{} baise tous les pointeurs!".format(update.effective_user.first_name))
+
+    def dumb(self, update: Update, context: CallbackContext) -> None:
+        """
+        You are dumb in harmonic.
+        """
+        with open(self._media("dumb.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
+
+        self.logger.info("{} is calling someone dumb!".format(update.effective_user.first_name))
+
+    def sorrydumb(self, update: Update, context: CallbackContext) -> None:
+        """
+        Sorry to calling you dumb in harmonic.
+        """
+        with open(self._media("sorrydumb.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
+
+        self.logger.info(
+            "{} is sorry for calling someone dumb!".format(update.effective_user.first_name)
+        )
