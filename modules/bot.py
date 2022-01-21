@@ -121,7 +121,10 @@ class Bot(Base):
         Don't forget to update this manually.
         """
 
-        text = "Available commands: TODO"
+        text = "Available commands:\n"
+        with open("./commands_for_botfather", "r") as f:
+            for line in f.readlines():
+                text += "/{}".format(line)
         update.message.reply_text(text)
 
         self.logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
