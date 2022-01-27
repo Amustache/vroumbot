@@ -167,3 +167,14 @@ class PrivateJoke(Base):
         )
 
         self.logger.info("{} wants to bully!".format(update.effective_user.first_name))
+
+    def tiktok(self, update: Update, context: CallbackContext) -> None:
+        """
+        It is a statement.
+        """
+        with open(self._media("tiktok.jpg"), "rb") as file:
+            update.message.reply_photo(photo=file, caption="choquer decu")
+
+        self.logger.info(
+            "{} is asking for cammonte's TikTok!".format(update.effective_user.first_name)
+        )
