@@ -29,6 +29,7 @@ class PrivateJoke(Base):
             CommandHandler(["saisine", "ccg"], self.saisine),
             CommandHandler(["horny"], self.horny),
             CommandHandler(["crypto", "bully"], self.crypto),
+            CommandHandler(["stopdoing", "stopdoingstopdoing", "stopdoingstopdoings"], self.stopdoing),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -178,3 +179,11 @@ class PrivateJoke(Base):
         self.logger.info(
             "{} is asking for cammonte's TikTok!".format(update.effective_user.first_name)
         )
+
+    def stopdoing(self, update: Update, context: CallbackContext) -> None:
+        """
+        This meme template was supposed to be satire.
+        """
+        context.bot.forward_message(update.message.chat.id, "59804991", "8467")
+
+        self.logger.info("{} want people to stop doing stop doings!".format(update.effective_user.first_name))
