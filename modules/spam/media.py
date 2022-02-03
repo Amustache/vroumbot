@@ -35,6 +35,7 @@ class Media(Base):
             CommandHandler(["pointeur", "baisepointeur"], self.pointeur),
             CommandHandler(["dum", "dumb"], self.dumb),
             CommandHandler(["srydum", "sorrydumb", "sorrydum", "srydumb"], self.sorrydumb),
+            CommandHandler(["dog", "woof", "dogo", "doggo"], self.random_dog),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -278,3 +279,63 @@ class Media(Base):
         self.logger.info(
             "{} is sorry for calling someone dumb!".format(update.effective_user.first_name)
         )
+
+    def random_dog(self, update: Update, context: CallbackContext) -> None:
+        """
+        Random dog from API.
+        """
+        woof = random.choice(
+            [
+                "woof woof",
+                "ruff ruff",
+                "arf arf",
+                "bow wow",
+                "yap yap",
+                "yip yip",
+                "wuff wuff",
+                "wau wau",
+                "hev hev",
+                "hav hav",
+                "guau guau",
+                "gua gua",
+                "jau jau",
+                "blaf blaf",
+                "woef woef",
+                "keff keff",
+                "гав гав",
+                "тяв тяв",
+                "멍멍",
+                "ワンワン",
+                "キャンキャン",
+                "gav gav",
+                "tyav  tyav ",
+                "meong meong",
+                "wan wan ",
+                "kyan kyan",
+                "bau bau",
+                "bow bow",
+                "voff voff",
+                "blaf blaf",
+                "kef kef",
+                "waf waf",
+                "woef woef",
+                "vov vov",
+                "vuf vuf",
+                "wang wang",
+                "汪汪",
+                "ham ham",
+                "waouh waouh",
+                "ouah ouah",
+                "ouaf ouaf",
+                "vaf vaf",
+                "wouf wouf",
+                "wouaf wouaf",
+                "jappe jappe",
+            ]
+        )
+        url = "https://api.thedogapi.com/v1/images/search"
+        response = urlopen(url)
+        data_json = json.loads(response.read())
+        update.message.reply_photo(photo=data_json[0]["url"], caption=woof)
+
+        self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
