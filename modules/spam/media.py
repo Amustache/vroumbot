@@ -36,6 +36,7 @@ class Media(Base):
             CommandHandler(["dum", "dumb"], self.dumb),
             CommandHandler(["srydum", "sorrydumb", "sorrydum", "srydumb"], self.sorrydumb),
             CommandHandler(["dog", "woof", "dogo", "doggo"], self.random_dog),
+            CommandHandler("misty", self.misty),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -338,4 +339,16 @@ class Media(Base):
         data_json = json.loads(response.read())
         update.message.reply_photo(photo=data_json[0]["url"], caption=woof)
 
-        self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
+        self.logger.info("{} wants a dog pic!".format(update.effective_user.first_name))
+
+    def misty(self, update: Update, context: CallbackContext) -> None:
+        """
+        A very special dog.
+        """
+        folder = self._media("misty")
+        filename = os.path.join(folder, random.choice(os.listdir(folder)))
+        meow = random.choice(["misty", "Misty", "MISTY", "... Misty?", "Misty!", "Mistyyy"])
+        with open(filename, "rb") as file:
+            update.message.reply_photo(photo=file, caption=meow)
+
+        self.logger.info("{} wants a Misty pic!".format(update.effective_user.first_name))
