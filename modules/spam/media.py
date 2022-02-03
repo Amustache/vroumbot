@@ -1,6 +1,8 @@
 """
 Media spam! Yay!
 """
+from urllib.request import urlopen
+import json
 import os
 import random
 
@@ -38,10 +40,8 @@ class Media(Base):
 
     def random_cat(self, update: Update, context: CallbackContext) -> None:
         """
-        Random cat from a currated list.
+        Random cat from a (currated) list.
         """
-        folder = self._media("cats")
-        filename = os.path.join(folder, random.choice(os.listdir(folder)))
         meow = random.choice(
             [
                 "meo",
@@ -92,8 +92,16 @@ class Media(Base):
                 "مُواء",
             ]
         )
-        with open(filename, "rb") as file:
-            update.message.reply_photo(photo=file, caption=meow)
+        if random.randint(1, 6) > 3:
+            folder = self._media("cats")
+            filename = os.path.join(folder, random.choice(os.listdir(folder)))
+            with open(filename, "rb") as file:
+                update.message.reply_photo(photo=file, caption=meow)
+        else:
+            url = "https://api.thecatapi.com/v1/images/search"
+            response = urlopen(url)
+            data_json = json.loads(response.read())
+            update.message.reply_photo(photo=data_json[0]["url"], caption=meow)
 
         self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
 
