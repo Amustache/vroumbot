@@ -43,7 +43,8 @@ class User(Model):
     userfirstname = CharField(null=True)
     chatid = BigIntegerField()
     karma = IntegerField(default=0)
-    nummessages = IntegerField(default=0)
+    num_messages = IntegerField(default=0)
+    level = IntegerField(default=0)
 
     class Meta:
         """
