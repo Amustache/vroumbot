@@ -27,6 +27,7 @@ class Exp(Base):
         commandhandlers = [
             MessageHandler(~Filters.command, self.add_message),
             CommandHandler(["level", "mylevel"], self.get_level),
+            CommandHandler(["levels", "leaderboard"], self.get_leaderboard),
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media/levelup")
 
@@ -34,6 +35,7 @@ class Exp(Base):
         user = update.effective_user
         dbuser = get_user(self.table, user.id, update.message.chat.id)
         dbuser.num_messages += 1
+        dbuser.userfirstname = user.first_name
 
         change = dbuser.level
         while dbuser.num_messages > needed_exp(dbuser.level, dbuser.karma):
@@ -65,6 +67,46 @@ class Exp(Base):
         update.message.reply_text(
             "LEVEL {} ({} messages)".format(dbuser.level, dbuser.num_messages)
         )
+
+    def get_leaderboard(self, update: Update, context: CallbackContext):
+        try:
+            _, num_people = update.message.text.split(" ", 1)
+            num_people = int(num_people)
+            if num_people < 1:
+                num_people = 10
+        except ValueError:
+            num_people = 10
+
+        users = (
+            self.table.select()
+            .where(self.table.chatid == update.message.chat.id)
+            .order_by(self.table.level.desc())
+            .order_by(self.table.num_messages.desc())
+            .limit(num_people)
+        )
+
+        levels = {
+            user.userid: [user.userfirstname, user.level, user.num_messages] for user in users
+        }
+        _ = levels.pop(BOT_ID)
+        num_people = min(len(levels), num_people)
+
+        all_people = []
+        for i, (userid, data) in enumerate(levels.items()):
+            if i < num_people:
+                username, level, num_messages = data
+                if not username:
+                    username = "<No registered username>"
+                all_people.append(
+                    "{}. {}: level {} ({} messages).".format(i + 1, username, level, num_messages)
+                )
+            else:
+                break
+
+        update.message.reply_text("\n".join(all_people))
+
+    def reset_from_history(self, update: Update, context: CallbackContext):
+        pass
 
 
 # TODO
