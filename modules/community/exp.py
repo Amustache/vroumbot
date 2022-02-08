@@ -6,6 +6,9 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandler
 
 
+from secret import BOT_ID
+
+
 from ..base import Base
 from .helpers import get_user
 
@@ -21,7 +24,10 @@ def needed_exp(level, karma):
 
 class Exp(Base):
     def __init__(self, logger=None, table=None):
-        commandhandlers = [MessageHandler(~Filters.command, self.add_message)]
+        commandhandlers = [
+            MessageHandler(~Filters.command, self.add_message),
+            CommandHandler(["level", "mylevel"], self.get_level),
+        ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media/levelup")
 
     def add_message(self, update: Update, context: CallbackContext):
@@ -46,8 +52,15 @@ class Exp(Base):
         dbuser.save()
 
     def get_level(self, update: Update, context: CallbackContext):
-        user = update.effective_user
-        dbuser = get_user(self.table, user.id, update.message.chat.id)
+        if update.message.reply_to_message:
+            user = update.message.reply_to_message.from_user
+            if user.id == BOT_ID:
+                update.message.reply_text("I don't level up, silly ~")
+                return
+            dbuser = get_user(self.table, user.id, update.message.chat.id)
+        else:
+            user = update.effective_user
+            dbuser = get_user(self.table, user.id, update.message.chat.id)
 
         update.message.reply_text(
             "LEVEL {} ({} messages)".format(dbuser.level, dbuser.num_messages)

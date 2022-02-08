@@ -1,6 +1,7 @@
 TOKEN = "your_token"
 
 ADMIN_ID = 42
+BOT_ID = int(TOKEN.split(":")[0])
 
 TRELLO_API_KEY = "api_key"
 TRELLO_API_SECRET = "token"
