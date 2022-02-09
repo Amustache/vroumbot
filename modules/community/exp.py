@@ -1,6 +1,5 @@
 import ast
 import os
-import random
 
 
 from PIL import Image, ImageDraw, ImageFont
