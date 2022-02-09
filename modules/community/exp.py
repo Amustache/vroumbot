@@ -1,16 +1,17 @@
+import ast
 import os
 import random
 
 
-from telegram import Update
-from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandler
+from telegram import ForceReply, Update
+from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, Filters, MessageHandler
 
 
 from secret import BOT_ID
 
 
 from ..base import Base
-from .helpers import get_user
+from .helpers import deobfuscate, get_user
 
 
 def needed_exp(level, karma):
@@ -22,12 +23,16 @@ def needed_exp(level, karma):
     return int((level ** 3.14) * (1 - (karma / (level ** 3.14))))
 
 
+GENDER, PHOTO, LOCATION, BIO = range(4)
+
+
 class Exp(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             MessageHandler(~Filters.command, self.add_message),
             CommandHandler(["level", "mylevel"], self.get_level),
             CommandHandler(["levels", "leaderboard"], self.get_leaderboard),
+            CommandHandler(["reset_levels"], self.reset_from_history),
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media/levelup")
 
@@ -63,6 +68,8 @@ class Exp(Base):
         else:
             user = update.effective_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
+        dbuser.userfirstname = user.first_name
+        dbuser.save()
 
         update.message.reply_text(
             "LEVEL {} ({} messages)".format(dbuser.level, dbuser.num_messages)
@@ -88,7 +95,10 @@ class Exp(Base):
         levels = {
             user.userid: [user.userfirstname, user.level, user.num_messages] for user in users
         }
-        _ = levels.pop(BOT_ID)
+        try:
+            _ = levels.pop(BOT_ID)
+        except:
+            pass
         num_people = min(len(levels), num_people)
 
         all_people = []
@@ -97,6 +107,11 @@ class Exp(Base):
                 username, level, num_messages = data
                 if not username:
                     username = "<No registered username>"
+                    dbuser = get_user(self.table, userid, update.message.chat.id)
+                    while dbuser.num_messages > needed_exp(dbuser.level, dbuser.karma):
+                        dbuser.level += 1
+                    level = dbuser.level
+                    dbuser.save()
                 all_people.append(
                     "{}. {}: level {} ({} messages).".format(i + 1, username, level, num_messages)
                 )
@@ -106,9 +121,15 @@ class Exp(Base):
         update.message.reply_text("\n".join(all_people))
 
     def reset_from_history(self, update: Update, context: CallbackContext):
-        pass
-
-
-# TODO
-# state (start or stop)(if admin?)
-# reset/import chat (with or without file)
+        try:
+            data = ast.literal_eval(deobfuscate(context.args[0]))
+            update.message.delete()
+            for userid, num_messages in data.items():
+                dbuser = get_user(self.table, userid, update.message.chat.id)
+                dbuser.num_messages = num_messages
+                dbuser.save()
+            update.message.reply_text("Levels updated.")
+        except (ValueError, IndexError):
+            update.message.delete()
+            update.message.reply_text("Error while updating levels.")
+            return
