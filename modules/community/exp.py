@@ -176,13 +176,19 @@ class Exp(Base):
             else:
                 break
 
-        update.message.reply_text("\n".join(all_people))
+        if all_people:
+            update.message.reply_text("\n".join(all_people))
+        else:
+            update.message.reply_text("No one talked yet... ):")
+
 
     def reset_from_history(self, update: Update, context: CallbackContext):
         try:
             data = ast.literal_eval(deobfuscate(context.args[0]))
             update.message.delete()
             for userid, num_messages in data.items():
+                if userid == BOT_ID:
+                    continue
                 dbuser = get_user(self.table, userid, update.message.chat.id)
                 dbuser.num_messages = num_messages
                 dbuser.save()
