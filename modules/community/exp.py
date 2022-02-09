@@ -34,7 +34,7 @@ class Exp(Base):
             CommandHandler(["levels", "leaderboard"], self.get_leaderboard),
             CommandHandler(["reset_levels"], self.reset_from_history),
         ]
-        super().__init__(logger, commandhandlers, table, mediafolder="./media/levelup")
+        super().__init__(logger, commandhandlers, table, mediafolder="./media/exp")
 
     def add_message(self, update: Update, context: CallbackContext):
         user = update.effective_user
@@ -47,7 +47,9 @@ class Exp(Base):
             dbuser.level += 1
 
         if change != dbuser.level:
-            filename = os.path.join(self._media(), random.choice(os.listdir(self._media())))
+            filename = os.path.join(
+                self._media("levelup"), random.choice(os.listdir(self._media("levelup")))
+            )
             with open(filename, "rb") as file:
                 update.message.reply_document(
                     document=file,
@@ -132,4 +134,3 @@ class Exp(Base):
         except (ValueError, IndexError):
             update.message.delete()
             update.message.reply_text("Error while updating levels.")
-            return
