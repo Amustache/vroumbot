@@ -151,7 +151,7 @@ class Exp(Base):
         )
 
         levels = {
-            user.userid: [user.userfirstname, user.level, user.num_messages] for user in users
+            user.userid: [user.userfirstname, user.level, user.num_messages, user.karma] for user in users
         }
         try:
             _ = levels.pop(BOT_ID)
@@ -162,7 +162,7 @@ class Exp(Base):
         all_people = []
         for i, (userid, data) in enumerate(levels.items()):
             if i < num_people:
-                username, level, num_messages = data
+                username, level, num_messages, karma = data
                 if not username:
                     username = "<No registered username>"
                     dbuser = get_user(self.table, userid, update.message.chat.id)
@@ -171,7 +171,7 @@ class Exp(Base):
                     level = dbuser.level
                     dbuser.save()
                 all_people.append(
-                    "{}. {}: level {} ({} messages).".format(i + 1, username, level, num_messages)
+                    "{}. {}: Level {} ({} msg, {} krm).".format(i + 1, username, level, num_messages, karma)
                 )
             else:
                 break
