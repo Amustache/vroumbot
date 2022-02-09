@@ -74,9 +74,7 @@ class Exp(Base):
             with open("temp.webp", "rb") as file:
                 update.message.reply_document(
                     document=file,
-                    caption="📈 LEVEL UP 📈!\n{} is now Level {}!".format(
-                        dbuser.userfirstname, dbuser.level
-                    ),
+                    caption=texts,
                 )
 
             os.remove("temp.webp")
@@ -128,9 +126,7 @@ class Exp(Base):
         with open("temp.webp", "rb") as file:
             update.message.reply_document(
                 document=file,
-                caption="📈 LEVEL UP 📈!\n{} is now Level {}!".format(
-                    dbuser.userfirstname, dbuser.level
-                ),
+                caption=text,
             )
 
         os.remove("temp.webp")
