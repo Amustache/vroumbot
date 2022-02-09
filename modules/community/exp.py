@@ -53,8 +53,8 @@ class Exp(Base):
             with open(filename, "rb") as file:
                 update.message.reply_document(
                     document=file,
-                    caption="LEVEL UP!\n{} -> {}\n{} messages for {} karma.".format(
-                        change, dbuser.level, dbuser.num_messages, dbuser.karma
+                    caption="📈 LEVEL UP 📈!\n{} is now Level {}!".format(
+                        dbuser.userfirstname, dbuser.level
                     ),
                 )
 
@@ -71,11 +71,10 @@ class Exp(Base):
             user = update.effective_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
         dbuser.userfirstname = user.first_name
-        dbuser.save()
 
-        update.message.reply_text(
-            "LEVEL {} ({} messages)".format(dbuser.level, dbuser.num_messages)
-        )
+        update.message.reply_text("{} is Level {}!".format(dbuser.userfirstname, dbuser.level))
+
+        dbuser.save()
 
     def get_leaderboard(self, update: Update, context: CallbackContext):
         try:
