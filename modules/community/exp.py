@@ -48,9 +48,7 @@ class Exp(Base):
             dbuser.level += 1
 
         if change != dbuser.level:
-            filename = os.path.join(
-                self._media("basis"), random.choice(os.listdir(self._media("basis")))
-            )
+            filename = os.path.join(self._media("basis"), "({}).png".format(dbuser.level))
             with Image.open(filename).convert("RGBA") as image:
                 font_path = self._media("ReemKufi-Regular.ttf")
                 d1 = ImageDraw.Draw(image)
@@ -98,7 +96,45 @@ class Exp(Base):
             dbuser = get_user(self.table, user.id, update.message.chat.id)
         dbuser.userfirstname = user.first_name
 
-        update.message.reply_text("{} is Level {}!".format(dbuser.userfirstname, dbuser.level))
+        filename = os.path.join(self._media("basis"), "({}).png".format(dbuser.level))
+        with Image.open(filename).convert("RGBA") as image:
+            font_path = self._media("ReemKufi-Regular.ttf")
+            d1 = ImageDraw.Draw(image)
+
+            # Icon
+            icon = Image.open(self._media("icons/info.png")).convert("RGBA")
+            image.paste(icon, box=(45, 46), mask=icon)  # hardcoded
+
+            # Title
+            fontsize = 70  # hardcoded
+            font = ImageFont.truetype(font_path, fontsize)
+            while font.getsize(dbuser.userfirstname)[0] > 575:  # hardcoded
+                fontsize -= 1
+                font = ImageFont.truetype(font_path, fontsize)
+            d1.text((178, 0), dbuser.userfirstname, font=font, fill=(0, 0, 0))
+
+            # Info
+            text = "Level {} ({} msg, {} krm)".format(
+                dbuser.level, dbuser.num_messages, dbuser.karma
+            )
+            fontsize = 1
+            font = ImageFont.truetype(font_path, fontsize)
+            while font.getsize(text)[0] < 575:  # hardcoded
+                fontsize += 1
+                font = ImageFont.truetype(font_path, fontsize)
+            d1.text((178, 90), text, font=font, fill=(0, 0, 0))  # hardcoded
+
+            image.save("temp.webp", "WEBP")
+
+        with open("temp.webp", "rb") as file:
+            update.message.reply_document(
+                document=file,
+                caption="📈 LEVEL UP 📈!\n{} is now Level {}!".format(
+                    dbuser.userfirstname, dbuser.level
+                ),
+            )
+
+        os.remove("temp.webp")
 
         dbuser.save()
 
