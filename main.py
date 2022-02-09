@@ -67,18 +67,18 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Commands
-    # Bot(logger).add_commands(dispatcher)
-    # RemindMe(logger).add_commands(dispatcher)
-    # Special(logger).add_commands(dispatcher)
+    Bot(logger).add_commands(dispatcher)
+    RemindMe(logger).add_commands(dispatcher)
+    Special(logger).add_commands(dispatcher)
 
     # Community commands
     Exp(logger, table=User).add_commands(dispatcher)
-    # Karma(logger, table=User).add_commands(dispatcher)
+    Karma(logger, table=User).add_commands(dispatcher)
 
     # Spam commands
-    # Media(logger).add_commands(dispatcher)
-    # PrivateJoke(logger).add_commands(dispatcher)
-    # Text(logger).add_commands(dispatcher)
+    Media(logger).add_commands(dispatcher)
+    PrivateJoke(logger).add_commands(dispatcher)
+    Text(logger).add_commands(dispatcher)
 
     # Start the Bot
     updater.start_polling()
