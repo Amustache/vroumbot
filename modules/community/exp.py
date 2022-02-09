@@ -3,6 +3,7 @@ import os
 import random
 
 
+from PIL import Image, ImageDraw, ImageFont
 from telegram import ForceReply, Update
 from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, Filters, MessageHandler
 
@@ -48,15 +49,40 @@ class Exp(Base):
 
         if change != dbuser.level:
             filename = os.path.join(
-                self._media("levelup"), random.choice(os.listdir(self._media("levelup")))
+                self._media("basis"), random.choice(os.listdir(self._media("basis")))
             )
-            with open(filename, "rb") as file:
+            with Image.open(filename).convert("RGBA") as image:
+                font_path = self._media("ReemKufi-Regular.ttf")
+                d1 = ImageDraw.Draw(image)
+
+                # Icon
+                icon = Image.open(self._media("icons/stonks.png")).convert("RGBA")
+                image.paste(icon, box=(45, 46), mask=icon)  # hardcoded
+
+                # Title
+                font = ImageFont.truetype(font_path, 70)  # hardcoded
+                d1.text((178, 0), "Level Up!", font=font, fill=(0, 0, 0))
+
+                # Info
+                text = "{} is now Level {}".format(dbuser.userfirstname, dbuser.level)
+                fontsize = 1
+                font = ImageFont.truetype(font_path, fontsize)
+                while font.getsize(text)[0] < 575:  # hardcoded
+                    fontsize += 1
+                    font = ImageFont.truetype(font_path, fontsize)
+                d1.text((178, 90), text, font=font, fill=(0, 0, 0))  # hardcoded
+
+                image.save("temp.webp", "WEBP")
+
+            with open("temp.webp", "rb") as file:
                 update.message.reply_document(
                     document=file,
                     caption="📈 LEVEL UP 📈!\n{} is now Level {}!".format(
                         dbuser.userfirstname, dbuser.level
                     ),
                 )
+
+            os.remove("temp.webp")
 
         dbuser.save()
 
