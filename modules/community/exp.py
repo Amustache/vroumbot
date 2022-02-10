@@ -74,7 +74,7 @@ class Exp(Base):
             with open("temp.webp", "rb") as file:
                 update.message.reply_document(
                     document=file,
-                    caption=texts,
+                    caption=text,
                 )
 
             os.remove("temp.webp")
@@ -155,7 +155,7 @@ class Exp(Base):
         }
         try:
             _ = levels.pop(BOT_ID)
-        except:
+        except KeyError:  # Not the correct bot
             pass
         num_people = min(len(levels), num_people)
 
@@ -163,16 +163,17 @@ class Exp(Base):
         for i, (userid, data) in enumerate(levels.items()):
             if i < num_people:
                 username, level, num_messages, karma = data
-                if not username:
-                    username = "<No registered username>"
-                    dbuser = get_user(self.table, userid, update.message.chat.id)
-                    while dbuser.num_messages > needed_exp(dbuser.level, dbuser.karma):
-                        dbuser.level += 1
-                    level = dbuser.level
-                    dbuser.save()
-                all_people.append(
-                    "{}. {}: Level {} ({} msg, {} krm).".format(i + 1, username, level, num_messages, karma)
-                )
+                if level > 0:
+                    if not username:
+                        username = "<No registered username>"
+                        dbuser = get_user(self.table, userid, update.message.chat.id)
+                        while dbuser.num_messages > needed_exp(dbuser.level, dbuser.karma):
+                            dbuser.level += 1
+                        level = dbuser.level
+                        dbuser.save()
+                    all_people.append(
+                        "{}. {}: Level {} ({} msg, {} krm).".format(i + 1, username, level, num_messages, karma)
+                    )
             else:
                 break
 
@@ -180,7 +181,6 @@ class Exp(Base):
             update.message.reply_text("\n".join(all_people))
         else:
             update.message.reply_text("No one talked yet... ):")
-
 
     def reset_from_history(self, update: Update, context: CallbackContext):
         try:
@@ -192,7 +192,6 @@ class Exp(Base):
                 dbuser = get_user(self.table, userid, update.message.chat.id)
                 dbuser.num_messages = num_messages
                 dbuser.save()
-            update.message.reply_text("Levels updated.")
-        except (ValueError, IndexError):
-            update.message.delete()
+        except (ValueError, IndexError) as e:
+            print(e)
             update.message.reply_text("Error while updating levels.")
