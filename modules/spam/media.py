@@ -1,6 +1,8 @@
 """
 Media spam! Yay!
 """
+import imp
+from typing import Tuple
 from urllib.request import urlopen
 import json
 import os
@@ -190,6 +192,10 @@ class Media(Base):
         self.logger.info("{}'s just been trolled!".format(update.effective_user.first_name))
 
     def nft(self, update: Update, context: CallbackContext) -> None:
+        import random
+
+
+
         """
         Your very own NFT!
         """
@@ -200,45 +206,30 @@ class Media(Base):
 
         userid = user.id
 
+
         filename = os.path.join(self._media("nft"), "{}.png".format(userid))
 
         if not os.path.isfile(filename):
+            random.seed(userid)
+            r_color = lambda: (random.randint(0,255), random.randint(0,255), random.randint(0,255), int(255))
+            black = (0, 0, 0, 255)
+
+            colors = [r_color(), r_color(), r_color(), black, black, black]
+
             binuserid = bin(userid)[2:].zfill(64)
 
             vroumbot = "vroumbot"
             binvroumbot = "".join(format(ord(x), "b").zfill(8) for x in vroumbot)
 
-            img = Image.new("RGBA", (64, 64), "black")
+            img = Image.new("RGBA", (32, 32), "black")
+            
             pixels = img.load()
 
-            def magic(i, j, userid):
-                ij = i * j
-                iju = i * j * userid
-                pix1 = hash(vroumbot[iju % len(vroumbot)] + str(iju)) % 256
-                pix2 = hash(vroumbot[iju % len(vroumbot)] + str(ij)) % 256
-                pix3 = hash(vroumbot[ij % len(vroumbot)] + str(iju)) % 256
-                transp = 255
-
-                if pix1 == pix2 == pix3:
-                    transp = 0
-
-                return (pix1, pix2, pix3, transp)
-
-            for i in range(img.size[0]):
-                for j in range(img.size[1]):
-                    pixels[i, j] = magic(i, j, userid)
-
-            for i, p in enumerate(binuserid):
-                if p == "1":
-                    pixels[i, 0] = (0, 0, 0, 255)
-                else:
-                    pixels[i, 0] = (0, 0, 0, 0)
-
-            for j, p in enumerate(binvroumbot):
-                if p == "1":
-                    pixels[0, j] = (0, 0, 0, 255)
-                else:
-                    pixels[0, j] = (0, 0, 0, 0)
+            for i in range(2, img.size[0] // 2):
+                for j in range(2, img.size[1] - 2):
+                    c = random.choice(colors)
+                    pixels[i, j] = c
+                    pixels[img.size[0] - i -1, j] = c
 
             img.resize((512, 512), Image.NEAREST).save(filename)
 
