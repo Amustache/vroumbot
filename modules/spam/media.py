@@ -37,6 +37,7 @@ class Media(Base):
             CommandHandler(["srydum", "sorrydumb", "sorrydum", "srydumb"], self.sorrydumb),
             CommandHandler(["dog", "woof", "dogo", "doggo"], self.random_dog),
             CommandHandler("misty", self.misty),
+            CommandHandler(["xkcd", "insertRelevantXKCDComicHere"], self.xkcd),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -352,3 +353,48 @@ class Media(Base):
             update.message.reply_photo(photo=file, caption=meow)
 
         self.logger.info("{} wants a Misty pic!".format(update.effective_user.first_name))
+
+    def xkcd(self, update: Update, context: CallbackContext) -> None:
+        """
+        Random XKCD
+        """
+        try:
+            _, num = update.message.text.split(" ", 1)
+            num = int(num)
+            if num < 1:
+                raise ValueError
+        except ValueError:
+            num = None
+
+        if num:
+            try:
+                url = "https://xkcd.com/{}/info.0.json".format(num)
+                response = urlopen(url)
+                data_json = json.loads(response.read())
+            except:
+                update.message.reply_text("This XKCD was not found :/")
+                return
+        else:
+            url_last = "https://xkcd.com/info.0.json"
+            response = urlopen(url_last)
+            data_json = json.loads(response.read())
+            max = data_json["num"]
+            num = random.randint(1, max)
+
+            ok = False
+            while not ok:
+                try:
+                    num = random.randint(1, max)
+                    url = "https://xkcd.com/{}/info.0.json".format(num)
+                    response = urlopen(url)
+                    data_json = json.loads(response.read())
+                    ok = True
+                except:
+                    ok = False
+
+        update.message.reply_photo(
+            photo=data_json["img"],
+            caption="XKCD #{}: {}\n\n{}".format(num, data_json["safe_title"], data_json["alt"]),
+        )
+
+        self.logger.info("{} wants a random XKCD!".format(update.effective_user.first_name))
