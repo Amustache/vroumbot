@@ -2,6 +2,7 @@
 Media spam! Yay!
 """
 from urllib.request import urlopen
+import html
 import json
 import os
 import random
@@ -10,6 +11,7 @@ import random
 from PIL import Image
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
+import requests
 
 
 from ..base import Base
@@ -359,21 +361,48 @@ class Media(Base):
         Random XKCD
         """
         try:
-            _, num = update.message.text.split(" ", 1)
-            num = int(num)
-            if num < 1:
-                raise ValueError
+            _, args = update.message.text.split(" ", 1)
         except ValueError:
-            num = None
+            args = None
 
-        if num:
+        if args:
             try:
-                url = "https://xkcd.com/{}/info.0.json".format(num)
-                response = urlopen(url)
-                data_json = json.loads(response.read())
-            except:
-                update.message.reply_text("This XKCD was not found :/")
-                return
+                num = int(args)
+            except ValueError:
+                num = None
+
+            # If number provided, selected comic
+            if num:
+                try:
+                    url = "https://xkcd.com/{}/info.0.json".format(num)
+                    response = urlopen(url)
+                    data_json = json.loads(response.read())
+                    update.message.reply_photo(
+                        photo=data_json["img"],
+                        caption="XKCD #{}: {}\n\n{}".format(
+                            num, data_json["safe_title"], data_json["alt"]
+                        ),
+                    )
+                except:
+                    update.message.reply_text("This XKCD does not exists :/")
+            # If string provided, search
+            else:
+                args_safe = html.escape(args)
+                try:
+                    url = "https://relevant-xkcd-backend.herokuapp.com/search"
+                    myobj = {"search": args_safe}
+                    response = requests.post(url, data=myobj)
+                    results = json.loads(response.text)["results"]
+                except:
+                    update.message.reply_text("An error has occured :/")
+                    return
+                text = 'Results for "{}" ({} found):\n'.format(args, len(results))
+                for result in results:
+                    text += "- {}: {} ({})\n".format(
+                        result["number"], result["title"], result["url"]
+                    )
+                update.message.reply_text(text, disable_web_page_preview=True)
+        # No args == Random comic
         else:
             url_last = "https://xkcd.com/info.0.json"
             response = urlopen(url_last)
@@ -381,6 +410,7 @@ class Media(Base):
             max = data_json["num"]
             num = random.randint(1, max)
 
+            # We test for existence
             ok = False
             while not ok:
                 try:
@@ -392,9 +422,9 @@ class Media(Base):
                 except:
                     ok = False
 
-        update.message.reply_photo(
-            photo=data_json["img"],
-            caption="XKCD #{}: {}\n\n{}".format(num, data_json["safe_title"], data_json["alt"]),
-        )
+            update.message.reply_photo(
+                photo=data_json["img"],
+                caption="XKCD #{}: {}\n\n{}".format(num, data_json["safe_title"], data_json["alt"]),
+            )
 
-        self.logger.info("{} wants a random XKCD!".format(update.effective_user.first_name))
+        self.logger.info("{} wants some XKCD!".format(update.effective_user.first_name))
