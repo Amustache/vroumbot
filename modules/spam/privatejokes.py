@@ -23,7 +23,7 @@ class PrivateJoke(Base):
             CommandHandler("toutoutoutou", self.toutoutoutou),
             CommandHandler("toutoutoutoum4a", self.toutoutoutoum4a),
             CommandHandler(["whois", "whoissciper", "sciper"], self.whoissciper),
-            # CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], self.whoisscipernsfw),
+            CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], self.whoisscipernsfw),
             CommandHandler(["genre", "gender", "sexe", "sex", "sexx", "genr"], self.gender),
             MessageHandler(~Filters.command, self.carpe),
             CommandHandler(["saisine", "ccg"], self.saisine),
@@ -89,6 +89,7 @@ class PrivateJoke(Base):
         """
         SCIPER to kinks.
         """
+        update.message.reply_text("This command has been disabled.")
         _, sciper = update.message.text.split(" ", 1)
         try:
             sciper = int(sciper)
