@@ -9,7 +9,7 @@ from telegram.ext import CallbackContext, CommandHandler
 from trello import TrelloClient
 
 
-from secret import ADMIN_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST
+from secret import ADMIN_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST, TRELLO_LINK
 
 
 from .base import Base
@@ -168,6 +168,8 @@ class Bot(Base):
         """
         result = "List of first {} feedbacks:\n".format(self.MAX_FEEDBACKS)
         result += "\n".join(self._get_feedbacks_from_trello())
+        result += "\n"
+        result += TRELLO_LINK
 
         update.message.reply_text(result)
 
