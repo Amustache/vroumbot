@@ -23,13 +23,15 @@ class PrivateJoke(Base):
             CommandHandler("toutoutoutou", self.toutoutoutou),
             CommandHandler("toutoutoutoum4a", self.toutoutoutoum4a),
             CommandHandler(["whois", "whoissciper", "sciper"], self.whoissciper),
-            CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], self.whoisscipernsfw),
+            # CommandHandler(["whoisnsfw", "whoisscipernsfw", "scipernsfw"], self.whoisscipernsfw),
             CommandHandler(["genre", "gender", "sexe", "sex", "sexx", "genr"], self.gender),
             MessageHandler(~Filters.command, self.carpe),
             CommandHandler(["saisine", "ccg"], self.saisine),
             CommandHandler(["horny"], self.horny),
             CommandHandler(["crypto", "bully"], self.crypto),
-            CommandHandler(["stopdoing", "stopdoingstopdoing", "stopdoingstopdoings"], self.stopdoing),
+            CommandHandler(
+                ["stopdoing", "stopdoingstopdoing", "stopdoingstopdoings"], self.stopdoing
+            ),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -186,4 +188,6 @@ class PrivateJoke(Base):
         """
         context.bot.forward_message(update.message.chat.id, "59804991", "8467")
 
-        self.logger.info("{} want people to stop doing stop doings!".format(update.effective_user.first_name))
+        self.logger.info(
+            "{} want people to stop doing stop doings!".format(update.effective_user.first_name)
+        )
