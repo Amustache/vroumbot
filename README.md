@@ -7,9 +7,15 @@
 ![vroum](https://img.shields.io/badge/vroum-vroum-CC00FF)
 ![vroum](https://img.shields.io/badge/vroum-vroum-CC00FF)
 
-![vroum](https://cdn4.telesco.pe/file/lLmBw8DlJlP8dzPonc7rwGd4a4-oqn50fw_iIsBRtt5v1Ft4xPxOOWZ4FeqTMZ2KnvBwb3W4n6hfH7EU28fAqFsY6ZA6iR__oLk6mA82QJGz6c-ik-9VLg45dw9LkFowRL2pakZ5DFy4eix8G33XKGaKNSexL6YTCBwfFZFY0YeQKjYO3onfZ5xH2MqGE3onAXLYcRS1kG7pl42qh9VOS3ECz5zvwxtNwugVeY88UJSDpBqfRJN1zusDtKVhNbVNiTAiH3w97Bqm-KbwnFUZ4MUkX39exTtgy97Z6qcsM814TmE1mrxNEsHBIVjboK4lwrLrQwJAmB37VZoCyIkvnw.jpg)
+<p align="center">
+  <img src="./media/logo.jpg" width=256px">
+</p>
 
 Vroumbot is a bot for managing groupchats on Telegram. Basically a famous shitpost, it continues to be an even more famous shitpost, but with some useful management tools sometimes (for example, a karma or reminder system).
+
+<p align="center" style="font-size:32px;">
+  <a href="https://trello.com/b/fTqNq2xu/vroumbot-public" target="_blank"><img src="./media/icon.png" height=32px> A public Trello for feedbacks is available!</a>
+</p>
 
 ## How to use
 ### Available directly
