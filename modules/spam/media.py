@@ -32,7 +32,7 @@ class Media(Base):
             CommandHandler("stupid", self.stupid),
             CommandHandler("heretic", self.heretic),
             CommandHandler("bricole", self.bricole),
-            CommandHandler("trolled", self.trolled),
+            CommandHandler(["trolled", "cliquesurmoi", "playsound"], self.trolled),
             CommandHandler(["nft", "scam"], self.nft),
             CommandHandler(["pointeur", "baisepointeur"], self.pointeur),
             CommandHandler(["dum", "dumb"], self.dumb),
