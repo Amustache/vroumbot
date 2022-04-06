@@ -60,7 +60,10 @@ class PrivateJoke(Base):
         """
         SCIPER to name.
         """
-        _, sciper = update.message.text.split(" ", 1)
+        try:
+            _, sciper = update.message.text.split(" ", 1)
+        except ValueError:
+            update.message.reply_text("Usage: /sciper number.")
         try:
             sciper = int(sciper)
             if sciper < 100000 or sciper > 999999:
