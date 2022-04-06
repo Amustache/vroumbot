@@ -128,6 +128,8 @@ class Bot(Base):
         text += "... And more.\n"
         text += "All the commands and their descriptions is available here: https://github.com/Amustache/vroumbot/wiki/List-of-commands"
 
+        update.message.reply_text(text)
+
         self.logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
 
     def contribute(self, update: Update, context: CallbackContext) -> None:
