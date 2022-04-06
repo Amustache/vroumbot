@@ -122,10 +122,11 @@ class Bot(Base):
         """
 
         text = "Available commands:\n"
-        with open("./commands_for_botfather", "r") as f:
+        with open("./selected_commands", "r") as f:
             for line in f.readlines():
                 text += "/{}".format(line)
-        update.message.reply_text(text)
+        text += "... And more.\n"
+        text += "All the commands and their descriptions is available here: https://github.com/Amustache/vroumbot/wiki/List-of-commands"
 
         self.logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
 
