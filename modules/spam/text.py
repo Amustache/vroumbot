@@ -28,6 +28,7 @@ class Text(Base):
             CommandHandler(["oh", "ooh", "oooh"], self.oh),
             CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], self.xd),
             CommandHandler(["pep", "peptalk", "motivation", "motivational"], self.peptalk),
+            CommandHandler("panik", self.panik),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -244,3 +245,13 @@ class Text(Base):
         )
 
         self.logger.info("{} gets a little motivation!".format(update.effective_user.first_name))
+
+    def panik(self, update: Update, context: CallbackContext) -> None:
+        """
+        pANIK...
+        """
+        update.message.reply_sticker(
+            "CAACAgEAAxkBAAEEY25iTUGwconn0xCbWvaZh_1ts-QgsQACahEAAiPdEAaR2z2lHaX68iME"
+        )
+
+        self.logger.info("{} is pANIK!".format(update.effective_user.first_name))
