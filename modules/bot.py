@@ -125,10 +125,10 @@ class Bot(Base):
         with open("./selected_commands", "r") as f:
             for line in f.readlines():
                 text += "/{}".format(line)
-        text += "... And more.\n"
-        text += "All the commands and their descriptions is available here: https://github.com/Amustache/vroumbot/wiki/List-of-commands"
+        text += "\n... And more.\n"
+        text += "All the commands and their descriptions are available here: https://github.com/Amustache/vroumbot/wiki/List-of-commands"
 
-        update.message.reply_text(text)
+        update.message.reply_text(text, disable_web_page_preview=True)
 
         self.logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
 
