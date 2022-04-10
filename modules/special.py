@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from .base import Base
+from .base import admin_only, Base
 
 
 class Special(Base):
@@ -18,6 +18,7 @@ class Special(Base):
             CommandHandler(["userid", "id"], self.userid),
             CommandHandler(["chatid", "here"], self.chatid),
             CommandHandler(["messageid", "this", "that"], self.messageid),
+            CommandHandler("amiadmin", self.amiadmin),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -64,3 +65,10 @@ class Special(Base):
                     update.message.chat.id,
                 )
             )
+
+    @admin_only
+    def amiadmin(self, update: Update, context: CallbackContext) -> None:
+        """
+        Check if one is admin. This is mainly for testing purposes.
+        """
+        update.message.reply_text("Yes you are (:.")

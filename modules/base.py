@@ -1,7 +1,26 @@
 """
 Base class to add new features in the bot.
 """
+from functools import wraps
 import os
+
+
+def admin_only(func):
+    @wraps(func)
+    def wrapped(self, update, context, *args, **kwargs):
+        is_admin = update.effective_user in [
+            chatmember.user
+            for chatmember in context.bot.get_chat_administrators(update.message.chat.id)
+        ]
+
+        if not is_admin:
+            context.bot.sendMessage(
+                chat_id=update.message.chat.id, text="This command is restricted to admins only."
+            )
+            return
+        return func(self, update, context, *args, **kwargs)
+
+    return wrapped
 
 
 class Base:
