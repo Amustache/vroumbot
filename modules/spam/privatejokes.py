@@ -93,39 +93,40 @@ class PrivateJoke(Base):
         SCIPER to kinks.
         """
         update.message.reply_text("This command has been disabled.")
-        _, sciper = update.message.text.split(" ", 1)
-        try:
-            sciper = int(sciper)
-            if sciper < 100000 or sciper > 999999:
-                raise ValueError
-        except ValueError:
-            update.message.reply_text("Not a valid SCIPER b-baka.")
-            return
-
-        URL = "https://nhentai.to/g/{}".format(sciper)
-        page = requests.get(URL)
-        soup = BeautifulSoup(page.content, "html.parser")
-
-        if soup.title.text == "Not Found":
-            update.message.reply_text("{} seems to be pure and innocent...".format(sciper))
-            return
-
-        tags = [
-            thing
-            for thing in soup.findAll("div", {"class": "tag-container"})
-            if "Tags" in thing.text
-        ]
-        if tags:
-            tags_text = []
-            for tag in [tag.text.strip() for tag in tags[0].findAll("a", {"class": "tag"})]:
-                tags_text.append(tag)
-            if tags_text:
-                update.message.reply_text(
-                    "{} is linked to {}.".format(sciper, ", ".join(tags_text))
-                )
-                return
-
-        update.message.reply_text("{} is a secretive pervert.".format(sciper))
+        return
+        # _, sciper = update.message.text.split(" ", 1)
+        # try:
+        #     sciper = int(sciper)
+        #     if sciper < 100000 or sciper > 999999:
+        #         raise ValueError
+        # except ValueError:
+        #     update.message.reply_text("Not a valid SCIPER b-baka.")
+        #     return
+        #
+        # URL = "https://nhentai.to/g/{}".format(sciper)
+        # page = requests.get(URL)
+        # soup = BeautifulSoup(page.content, "html.parser")
+        #
+        # if soup.title.text == "Not Found":
+        #     update.message.reply_text("{} seems to be pure and innocent...".format(sciper))
+        #     return
+        #
+        # tags = [
+        #     thing
+        #     for thing in soup.findAll("div", {"class": "tag-container"})
+        #     if "Tags" in thing.text
+        # ]
+        # if tags:
+        #     tags_text = []
+        #     for tag in [tag.text.strip() for tag in tags[0].findAll("a", {"class": "tag"})]:
+        #         tags_text.append(tag)
+        #     if tags_text:
+        #         update.message.reply_text(
+        #             "{} is linked to {}.".format(sciper, ", ".join(tags_text))
+        #         )
+        #         return
+        #
+        # update.message.reply_text("{} is a secretive pervert.".format(sciper))
 
         self.logger.info("{} wants some kinks!".format(update.effective_user.first_name))
 
