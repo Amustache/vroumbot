@@ -29,6 +29,7 @@ class Text(Base):
             CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], self.xd),
             CommandHandler(["pep", "peptalk", "motivation", "motivational"], self.peptalk),
             CommandHandler("panik", self.panik),
+            CommandHandler("cancel", self.cancelpasta),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -255,3 +256,21 @@ class Text(Base):
         )
 
         self.logger.info("{} is pANIK!".format(update.effective_user.first_name))
+
+    def cancelpasta(self, update: Update, context: CallbackContext) -> None:
+        """
+        It's cancel time.
+        """
+        if update.message.reply_to_message:
+            target_user = update.message.reply_to_message.from_user.first_name
+            from_user = update.effective_user.first_name
+            if target_user == from_user:
+                update.message.reply_text("D-don't cancel yourself... smh.")
+                return
+        else:
+            update.message.reply_text("You must reply to a message.")
+            return
+
+        update.message.reply_text(
+            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}.\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially coming from such prominent members of our community.\n\nIt's a shame to see you go, friend.\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
+        )
