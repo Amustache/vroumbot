@@ -23,6 +23,36 @@ def admin_only(func):
     return wrapped
 
 
+def module_enabled(func):
+    @wraps(func)
+    def wrapped(self, update, context, *args, **kwargs):
+        chatmodule = ???.get_or_create(chatid=update.message.chat.id, commandname=func.__name__)
+
+        if not chatmodule.enabled:
+            context.bot.sendMessage(
+                chat_id=update.message.chat.id, text="This command is in a module deactivated in that chat."
+            )
+            return
+        return func(self, update, context, *args, **kwargs)
+
+    return wrapped
+
+
+def command_enabled(func):
+    @wraps(func)
+    def wrapped(self, update, context, *args, **kwargs):
+        chatcommand = .get_or_create(chatid=update.message.chat.id, commandname=func.__name__)
+
+        if not chatcommand.enabled:
+            context.bot.sendMessage(
+                chat_id=update.message.chat.id, text="This command is deactivated in that chat."
+            )
+            return
+        return func(self, update, context, *args, **kwargs)
+
+    return wrapped
+
+
 class Base:
     """
     Base class to add new features in the bot.

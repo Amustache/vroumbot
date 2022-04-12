@@ -7,10 +7,8 @@ Main! yay!
 
 import logging
 
-
 from peewee import BigIntegerField, CharField, IntegerField, Model, SqliteDatabase
 from telegram.ext import Updater
-
 
 from modules.bot import Bot
 from modules.community.karma import Karma
@@ -20,7 +18,6 @@ from modules.spam.privatejokes import PrivateJoke
 from modules.spam.text import Text
 from modules.special import Special
 from secret import TOKEN
-
 
 # Enable logging
 logging.basicConfig(
@@ -37,7 +34,6 @@ class User(Model):
     """
     User model to access the database.
     """
-
     userid = BigIntegerField()
     userfirstname = CharField(null=True)
     chatid = BigIntegerField()
@@ -51,8 +47,26 @@ class User(Model):
         database = main_db
 
 
+class ChatModule(Model):
+    """
+    Chat command model to access the database.
+    """
+    chatid = BigIntegerField()
+    commandname = CharField()
+    enabled = IntegerField(default=1)
+
+
+class ChatCommand(Model):
+    """
+    Chat command model to access the database.
+    """
+    chatid = BigIntegerField()
+    modulename = CharField()
+    enabled = IntegerField(default=1)
+
+
 main_db.connect()
-main_db.create_tables([User])
+main_db.create_tables([User, ChatModule, ChatCommand])
 
 
 def main() -> None:
