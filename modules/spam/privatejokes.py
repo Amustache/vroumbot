@@ -32,6 +32,7 @@ class PrivateJoke(Base):
             CommandHandler(
                 ["stopdoing", "stopdoingstopdoing", "stopdoingstopdoings"], self.stopdoing
             ),
+            CommandHandler(["motiondordre"], self.motiondordre),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -196,3 +197,13 @@ class PrivateJoke(Base):
         self.logger.info(
             "{} want people to stop doing stop doings!".format(update.effective_user.first_name)
         )
+
+    def motiondordre(self, update: Update, context: CallbackContext) -> None:
+        """
+        The rythm is growing...
+        """
+        update.message.reply_sticker(
+            "CAACAgQAAxkBAAEExKVihnArmBc-nZ9cPqHzmSdBSQMNeAACag0AAlAmkFE3l5sWuKJzWSQE"
+        )
+
+        self.logger.info("{} gets a motion d'odre!".format(update.effective_user.first_name))
