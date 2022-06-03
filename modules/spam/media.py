@@ -1,6 +1,9 @@
 """
 Media spam! Yay!
 """
+from urllib.request import urlopen
+import html
+import json
 import os
 import random
 
@@ -8,6 +11,7 @@ import random
 from PIL import Image
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
+import requests
 
 
 from ..base import Base
@@ -28,18 +32,22 @@ class Media(Base):
             CommandHandler("stupid", self.stupid),
             CommandHandler("heretic", self.heretic),
             CommandHandler("bricole", self.bricole),
-            CommandHandler("trolled", self.trolled),
+            CommandHandler(["trolled", "cliquesurmoi", "playsound"], self.trolled),
             CommandHandler(["nft", "scam"], self.nft),
             CommandHandler(["pointeur", "baisepointeur"], self.pointeur),
+            CommandHandler(["dum", "dumb"], self.dumb),
+            CommandHandler(["srydum", "sorrydumb", "sorrydum", "srydumb"], self.sorrydumb),
+            CommandHandler(["dog", "woof", "dogo", "doggo"], self.random_dog),
+            CommandHandler("misty", self.misty),
+            CommandHandler(["xkcd", "insertRelevantXKCDComicHere"], self.xkcd),
+            CommandHandler("funny", self.funny),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
     def random_cat(self, update: Update, context: CallbackContext) -> None:
         """
-        Random cat from a currated list.
+        Random cat from a (currated) list.
         """
-        folder = self._media("cats")
-        filename = os.path.join(folder, random.choice(os.listdir(folder)))
         meow = random.choice(
             [
                 "meo",
@@ -90,8 +98,16 @@ class Media(Base):
                 "مُواء",
             ]
         )
-        with open(filename, "rb") as file:
-            update.message.reply_photo(photo=file, caption=meow)
+        if random.randint(1, 6) > 3:
+            folder = self._media("cats")
+            filename = os.path.join(folder, random.choice(os.listdir(folder)))
+            with open(filename, "rb") as file:
+                update.message.reply_photo(photo=file, caption=meow)
+        else:
+            url = "https://api.thecatapi.com/v1/images/search"
+            response = urlopen(url)
+            data_json = json.loads(response.read())
+            update.message.reply_photo(photo=data_json[0]["url"], caption=meow)
 
         self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
 
@@ -248,3 +264,177 @@ class Media(Base):
             update.message.reply_video(video=file)
 
         self.logger.info("{} baise tous les pointeurs!".format(update.effective_user.first_name))
+
+    def dumb(self, update: Update, context: CallbackContext) -> None:
+        """
+        You are dumb in harmonic.
+        """
+        with open(self._media("dumb.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
+
+        self.logger.info("{} is calling someone dumb!".format(update.effective_user.first_name))
+
+    def sorrydumb(self, update: Update, context: CallbackContext) -> None:
+        """
+        Sorry to calling you dumb in harmonic.
+        """
+        with open(self._media("sorrydumb.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
+
+        self.logger.info(
+            "{} is sorry for calling someone dumb!".format(update.effective_user.first_name)
+        )
+
+    def random_dog(self, update: Update, context: CallbackContext) -> None:
+        """
+        Random dog from API.
+        """
+        woof = random.choice(
+            [
+                "woof woof",
+                "ruff ruff",
+                "arf arf",
+                "bow wow",
+                "yap yap",
+                "yip yip",
+                "wuff wuff",
+                "wau wau",
+                "hev hev",
+                "hav hav",
+                "guau guau",
+                "gua gua",
+                "jau jau",
+                "blaf blaf",
+                "woef woef",
+                "keff keff",
+                "гав гав",
+                "тяв тяв",
+                "멍멍",
+                "ワンワン",
+                "キャンキャン",
+                "gav gav",
+                "tyav  tyav ",
+                "meong meong",
+                "wan wan ",
+                "kyan kyan",
+                "bau bau",
+                "bow bow",
+                "voff voff",
+                "blaf blaf",
+                "kef kef",
+                "waf waf",
+                "woef woef",
+                "vov vov",
+                "vuf vuf",
+                "wang wang",
+                "汪汪",
+                "ham ham",
+                "waouh waouh",
+                "ouah ouah",
+                "ouaf ouaf",
+                "vaf vaf",
+                "wouf wouf",
+                "wouaf wouaf",
+                "jappe jappe",
+            ]
+        )
+        url = "https://api.thedogapi.com/v1/images/search"
+        response = urlopen(url)
+        data_json = json.loads(response.read())
+        update.message.reply_photo(photo=data_json[0]["url"], caption=woof)
+
+        self.logger.info("{} wants a dog pic!".format(update.effective_user.first_name))
+
+    def misty(self, update: Update, context: CallbackContext) -> None:
+        """
+        A very special dog.
+        """
+        folder = self._media("misty")
+        filename = os.path.join(folder, random.choice(os.listdir(folder)))
+        meow = random.choice(["misty", "Misty", "MISTY", "... Misty?", "Misty!", "Mistyyy"])
+        with open(filename, "rb") as file:
+            update.message.reply_photo(photo=file, caption=meow)
+
+        self.logger.info("{} wants a Misty pic!".format(update.effective_user.first_name))
+
+    def xkcd(self, update: Update, context: CallbackContext) -> None:
+        """
+        Random XKCD
+        """
+        try:
+            _, args = update.message.text.split(" ", 1)
+        except ValueError:
+            args = None
+
+        if args:
+            try:
+                num = int(args)
+            except ValueError:
+                num = None
+
+            # If number provided, selected comic
+            if num:
+                try:
+                    url = "https://xkcd.com/{}/info.0.json".format(num)
+                    response = urlopen(url)
+                    data_json = json.loads(response.read())
+                    update.message.reply_photo(
+                        photo=data_json["img"],
+                        caption="XKCD #{}: {}\n\n{}".format(
+                            num, data_json["safe_title"], data_json["alt"]
+                        ),
+                    )
+                except:
+                    update.message.reply_text("This XKCD does not exists :/")
+            # If string provided, search
+            else:
+                args_safe = html.escape(args)
+                try:
+                    url = "https://relevant-xkcd-backend.herokuapp.com/search"
+                    myobj = {"search": args_safe}
+                    response = requests.post(url, data=myobj)
+                    results = json.loads(response.text)["results"]
+                except:
+                    update.message.reply_text("An error has occured :/")
+                    return
+                text = 'Results for "{}" ({} found):\n'.format(args, len(results))
+                for result in results:
+                    text += "- {}: {} ({})\n".format(
+                        result["number"], result["title"], result["url"]
+                    )
+                update.message.reply_text(text, disable_web_page_preview=True)
+        # No args == Random comic
+        else:
+            url_last = "https://xkcd.com/info.0.json"
+            response = urlopen(url_last)
+            data_json = json.loads(response.read())
+            max = data_json["num"]
+            num = random.randint(1, max)
+
+            # We test for existence
+            ok = False
+            while not ok:
+                try:
+                    num = random.randint(1, max)
+                    url = "https://xkcd.com/{}/info.0.json".format(num)
+                    response = urlopen(url)
+                    data_json = json.loads(response.read())
+                    ok = True
+                except:
+                    ok = False
+
+            update.message.reply_photo(
+                photo=data_json["img"],
+                caption="XKCD #{}: {}\n\n{}".format(num, data_json["safe_title"], data_json["alt"]),
+            )
+
+        self.logger.info("{} wants some XKCD!".format(update.effective_user.first_name))
+
+    def funny(self, update: Update, context: CallbackContext) -> None:
+        """
+        That's funny
+        """
+        with open(self._media("funny.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
+
+        self.logger.info("{}'s found something funny!".format(update.effective_user.first_name))

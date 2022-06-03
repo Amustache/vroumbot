@@ -80,6 +80,19 @@ def main() -> None:
     PrivateJoke(logger).add_commands(dispatcher)
     Text(logger).add_commands(dispatcher)
 
+    commands = ""
+    for handler in dispatcher.handlers[0]:
+        try:
+            commands += "{}\n".format(
+                "\n".join(
+                    "{} - {}".format(command, handler.callback.__name__)
+                    for command in handler.command
+                )
+            )
+        except AttributeError:
+            continue
+    print("{}\nList of commands\n{}\n{}".format("*" * 13, commands, "*" * 13))
+
     # Start the Bot
     updater.start_polling()
 

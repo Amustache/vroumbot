@@ -12,7 +12,7 @@ from .helpers import get_user
 angrypos_commands = ["angryplus", "angrypos", "angrybravo", "angry"]
 pos_commands = ["plus", "pos", "bravo"]
 neg_commands = ["moins", "minus", "min", "neg", "non"]
-
+meh_commands = ["meh"]
 
 class Karma(Base):
     """
@@ -22,7 +22,8 @@ class Karma(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(
-                pos_commands + angrypos_commands + neg_commands + ["meh"], self.change_karma
+                pos_commands + angrypos_commands + neg_commands + meh_commands,
+                self.change_karma
             ),
             CommandHandler(["karma", "getkarma"], self.getkarma),
         ]
@@ -48,7 +49,9 @@ class Karma(Base):
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
             command = update.message.text.split(" ", 1)[0][1:]
-
+            if "@" in command:
+                # command may be `somecommand@botname``
+                command = command.split("@")[0]
             # Self
             if user == update.effective_user:
                 if command in pos_commands + angrypos_commands:

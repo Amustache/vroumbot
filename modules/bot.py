@@ -9,7 +9,7 @@ from telegram.ext import CallbackContext, CommandHandler
 from trello import TrelloClient
 
 
-from secret import ADMIN_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST
+from secret import ADMIN_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST, TRELLO_LINK
 
 
 from .base import Base
@@ -121,8 +121,14 @@ class Bot(Base):
         Don't forget to update this manually.
         """
 
-        text = "Available commands: TODO"
-        update.message.reply_text(text)
+        text = "Available commands:\n"
+        with open("./selected_commands", "r") as f:
+            for line in f.readlines():
+                text += "/{}".format(line)
+        text += "\n... And more.\n"
+        text += "All the commands and their descriptions are available here: https://github.com/Amustache/vroumbot/wiki/List-of-commands"
+
+        update.message.reply_text(text, disable_web_page_preview=True)
 
         self.logger.info("{} wants to see all commands!".format(update.effective_user.first_name))
 
@@ -165,6 +171,8 @@ class Bot(Base):
         """
         result = "List of first {} feedbacks:\n".format(self.MAX_FEEDBACKS)
         result += "\n".join(self._get_feedbacks_from_trello())
+        result += "\n"
+        result += TRELLO_LINK
 
         update.message.reply_text(result)
 

@@ -27,6 +27,9 @@ class Text(Base):
             CommandHandler(["keysmash", "bottom", "helo"], self.keysmash),
             CommandHandler(["oh", "ooh", "oooh"], self.oh),
             CommandHandler(["ay", "ayy", "ayyy", "xd", "xdd", "xddd"], self.xd),
+            CommandHandler(["pep", "peptalk", "motivation", "motivational"], self.peptalk),
+            CommandHandler("panik", self.panik),
+            CommandHandler("cancel", self.cancelpasta),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -145,3 +148,129 @@ class Text(Base):
         update.message.reply_text(result)
 
         self.logger.info("{} is in XDing real hard!".format(update.effective_user.first_name))
+
+    def peptalk(self, update: Update, context: CallbackContext) -> None:
+        """
+        When you need a bit of motivation!
+        """
+        first = [
+            "Champ,",
+            "Fact:",
+            "Everybody says",
+            "Dang...",
+            "Check it:",
+            "Just saying...",
+            "Superstar,",
+            "Tiger,",
+            "Self,",
+            "Know this:",
+            "News alert:",
+            "Girl,",
+            "Ace,",
+            "Excuse me but",
+            "Experts agree",
+            "In my opinion,",
+            "Hear ye, hear ye:",
+            "Okay, listen up:",
+        ]
+
+        second = [
+            "the mere idea of you",
+            "your soul",
+            "your hair today",
+            "everything you do",
+            "your personal style",
+            "every thought you have",
+            "that sparkle in your eye",
+            "your presence here",
+            "what you got going on",
+            "the essential you",
+            "your life's journey",
+            "that saucy personlity",
+            "your DNA",
+            "that brain of yours",
+            "your choice of attire",
+            "the way you roll",
+            "whatever your secret is",
+            "all of y'all",
+        ]
+
+        third = [
+            "has serious game,",
+            "rains magic,",
+            "deserves the Nobel Prize,",
+            "raises the roof,",
+            "breeds miracles,",
+            "is paying off big time,",
+            "shows mad skills,",
+            "just shimmers,",
+            "is a national treasure,",
+            "gets the party hopping,",
+            "is the next big thing,",
+            "roars like a lion,",
+            "is a rainbow factory,",
+            "is made of diamonds,",
+            "makes birds sing,",
+            "should be taught in school,",
+            "makes my world go 'round,",
+            "is 100% legit,",
+        ]
+
+        fourth = [
+            "24/7.",
+            "can I get an amen?",
+            "and that's a fact.",
+            "so treat yourself.",
+            "you feel me?",
+            "that's just science.",
+            "would I lie?",
+            "for reals.",
+            "mic drop.",
+            "you hidden gem.",
+            "snuggle bear.",
+            "period.",
+            "now let's dance.",
+            "high five.",
+            "say it again!",
+            "according to CNN.",
+            "so get used to it.",
+        ]
+
+        update.message.reply_text(
+            "{} {} {} {}".format(
+                random.choice(first),
+                random.choice(second),
+                random.choice(third),
+                random.choice(fourth),
+            )
+        )
+
+        self.logger.info("{} gets a little motivation!".format(update.effective_user.first_name))
+
+    def panik(self, update: Update, context: CallbackContext) -> None:
+        """
+        pANIK...
+        """
+        update.message.reply_sticker(
+            "CAACAgEAAxkBAAEEY25iTUGwconn0xCbWvaZh_1ts-QgsQACahEAAiPdEAaR2z2lHaX68iME"
+        )
+
+        self.logger.info("{} is pANIK!".format(update.effective_user.first_name))
+
+    def cancelpasta(self, update: Update, context: CallbackContext) -> None:
+        """
+        It's cancel time.
+        """
+        if update.message.reply_to_message:
+            target_user = update.message.reply_to_message.from_user.first_name
+            from_user = update.effective_user.first_name
+            if target_user == from_user:
+                update.message.reply_text("D-don't cancel yourself... smh.")
+                return
+        else:
+            update.message.reply_text("You must reply to a message.")
+            return
+
+        update.message.reply_text(
+            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}.\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially coming from such prominent members of our community.\n\nIt's a shame to see you go, friend.\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
+        )
