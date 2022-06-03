@@ -199,6 +199,8 @@ class Exp(Base):
                     continue
                 dbuser = get_user(self.table, userid, update.message.chat.id)
                 dbuser.num_messages = num_messages
+                while dbuser.num_messages > needed_exp(dbuser.level, dbuser.karma):
+                    dbuser.level += 1
                 dbuser.save()
         except (ValueError, IndexError) as e:
             print(e)
