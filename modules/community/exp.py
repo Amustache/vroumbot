@@ -4,6 +4,7 @@ import os
 
 from PIL import Image, ImageDraw, ImageFont
 from telegram import ForceReply, Update
+from telegram.error import BadRequest
 from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, Filters, MessageHandler
 
 
@@ -189,7 +190,10 @@ class Exp(Base):
     def reset_from_history(self, update: Update, context: CallbackContext):
         try:
             data = ast.literal_eval(deobfuscate(context.args[0]))
-            update.message.delete()
+            try:
+                update.message.delete()
+            except BadRequest:
+                update.message.reply_text("Bot is not admin, please delete the message manually.")
             for userid, num_messages in data.items():
                 if userid == BOT_ID:
                     continue
