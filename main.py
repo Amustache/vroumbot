@@ -13,6 +13,7 @@ from telegram.ext import Updater
 
 
 from modules.bot import Bot
+from modules.community.exp import Exp
 from modules.community.karma import Karma
 from modules.remindme import RemindMe
 from modules.spam.media import Media
@@ -42,6 +43,8 @@ class User(Model):
     userfirstname = CharField(null=True)
     chatid = BigIntegerField()
     karma = IntegerField(default=0)
+    num_messages = IntegerField(default=0)
+    level = IntegerField(default=0)
 
     class Meta:
         """
@@ -65,14 +68,17 @@ def main() -> None:
 
     # Commands
     Bot(logger).add_commands(dispatcher)
-    Special(logger).add_commands(dispatcher)
-    Karma(logger, table=User).add_commands(dispatcher)
     RemindMe(logger).add_commands(dispatcher)
+    Special(logger).add_commands(dispatcher)
+
+    # Community commands
+    Exp(logger, table=User).add_commands(dispatcher)
+    Karma(logger, table=User).add_commands(dispatcher)
 
     # Spam commands
+    Media(logger).add_commands(dispatcher)
     PrivateJoke(logger).add_commands(dispatcher)
     Text(logger).add_commands(dispatcher)
-    Media(logger).add_commands(dispatcher)
 
     commands = ""
     for handler in dispatcher.handlers[0]:
