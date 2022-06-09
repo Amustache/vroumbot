@@ -11,7 +11,8 @@ import logging
 from telegram.ext import Updater
 
 
-from databases import User
+from databases import ChatCommand, User
+from modules.admin import Admin
 from modules.bot import Bot
 from modules.community.exp import Exp
 from modules.community.karma import Karma
@@ -43,6 +44,7 @@ def main() -> None:
     Bot(logger).add_commands(dispatcher)
     RemindMe(logger).add_commands(dispatcher)
     Special(logger).add_commands(dispatcher)
+    Admin(logger, table=ChatCommand).add_commands(dispatcher)
 
     # Community commands
     Exp(logger, table=User).add_commands(dispatcher)

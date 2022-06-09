@@ -18,7 +18,6 @@ class Special(Base):
             CommandHandler(["userid", "id"], self.userid),
             CommandHandler(["chatid", "here"], self.chatid),
             CommandHandler(["messageid", "this", "that"], self.messageid),
-            CommandHandler("amiadmin", self.amiadmin),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -35,6 +34,7 @@ class Special(Base):
 
         self.logger.info("{} wants their ID! It is {}.".format(user.first_name, user.id))
 
+    @command_enabled
     def chatid(self, update: Update, context: CallbackContext) -> None:
         """
         Get current chatid.
@@ -66,10 +66,3 @@ class Special(Base):
                     update.message.chat.id,
                 )
             )
-
-    @admin_only
-    def amiadmin(self, update: Update, context: CallbackContext) -> None:
-        """
-        Check if one is admin. This is mainly for testing purposes.
-        """
-        update.message.reply_text("Yes you are (:.")
