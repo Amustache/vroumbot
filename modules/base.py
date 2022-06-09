@@ -5,6 +5,9 @@ from functools import wraps
 import os
 
 
+from databases import ChatCommand, ChatModule
+
+
 def admin_only(func):
     @wraps(func)
     def wrapped(self, update, context, *args, **kwargs):
@@ -26,11 +29,14 @@ def admin_only(func):
 def module_enabled(func):
     @wraps(func)
     def wrapped(self, update, context, *args, **kwargs):
-        chatmodule = ???.get_or_create(chatid=update.message.chat.id, commandname=func.__name__)
+        chatmodule = ChatModule.get_or_none(
+            chatid=update.message.chat.id, commandname=func.__name__
+        )
 
-        if not chatmodule.enabled:
+        if chatmodule and not chatmodule.enabled:
             context.bot.sendMessage(
-                chat_id=update.message.chat.id, text="This command is in a module deactivated in that chat."
+                chat_id=update.message.chat.id,
+                text="This command is in a module deactivated in that chat.",
             )
             return
         return func(self, update, context, *args, **kwargs)
@@ -41,9 +47,11 @@ def module_enabled(func):
 def command_enabled(func):
     @wraps(func)
     def wrapped(self, update, context, *args, **kwargs):
-        chatcommand = .get_or_create(chatid=update.message.chat.id, commandname=func.__name__)
+        chatcommand = ChatCommand.get_or_none(
+            chatid=update.message.chat.id, commandname=func.__name__
+        )
 
-        if not chatcommand.enabled:
+        if chatcommand and not chatcommand.enabled:
             context.bot.sendMessage(
                 chat_id=update.message.chat.id, text="This command is deactivated in that chat."
             )

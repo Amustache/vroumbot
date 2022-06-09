@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from .base import admin_only, Base
+from .base import admin_only, Base, command_enabled
 
 
 class Special(Base):
@@ -47,6 +47,7 @@ class Special(Base):
             )
         )
 
+    @command_enabled
     def messageid(self, update: Update, context: CallbackContext) -> None:
         """
         Get replied message's messageid.
