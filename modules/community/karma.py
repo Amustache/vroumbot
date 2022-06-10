@@ -14,6 +14,7 @@ pos_commands = ["plus", "pos", "bravo"]
 neg_commands = ["moins", "minus", "min", "neg", "non"]
 meh_commands = ["meh"]
 
+
 class Karma(Base):
     """
     Karma module is used to handle karma in groupchats.
@@ -22,8 +23,7 @@ class Karma(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(
-                pos_commands + angrypos_commands + neg_commands + meh_commands,
-                self.change_karma
+                pos_commands + angrypos_commands + neg_commands + meh_commands, self.change_karma
             ),
             CommandHandler(["karma", "getkarma"], self.getkarma),
         ]
@@ -41,6 +41,7 @@ class Karma(Base):
 
         return {user.userid: [user.userfirstname, user.karma] for user in users}
 
+    @command_enabled
     def change_karma(self, update: Update, context: CallbackContext) -> None:
         """
         Add karma to user by replying to a message.
@@ -97,6 +98,7 @@ class Karma(Base):
         else:
             update.message.reply_text("You must respond to a message to give karma.")
 
+    @command_enabled
     def getkarma(self, update: Update, context: CallbackContext) -> None:
         """
         Give the karma score for a user by replying, or karma scores from a chat.

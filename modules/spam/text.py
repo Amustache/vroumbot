@@ -9,7 +9,7 @@ from telegram.ext import CallbackContext, CommandHandler
 import requests
 
 
-from ..base import Base
+from ..base import Base, command_enabled
 
 
 class Text(Base):
@@ -33,6 +33,7 @@ class Text(Base):
         ]
         super().__init__(logger, commandhandlers)
 
+    @command_enabled
     def vroum(self, update: Update, context: CallbackContext) -> None:
         """
         Vroum!
@@ -41,6 +42,7 @@ class Text(Base):
 
         self.logger.info("{} gets a Vroum!".format(update.effective_user.first_name))
 
+    @command_enabled
     def vroom(self, update: Update, context: CallbackContext) -> None:
         """
         nO.
@@ -49,6 +51,7 @@ class Text(Base):
 
         self.logger.info("{} gets a 😠!".format(update.effective_user.first_name))
 
+    @command_enabled
     def dad(self, update: Update, context: CallbackContext) -> None:
         """
         Random dad joke
@@ -66,6 +69,7 @@ class Text(Base):
 
         self.logger.info("{} gets a dad joke!".format(update.effective_user.first_name))
 
+    @command_enabled
     def boop(self, update: Update, context: CallbackContext) -> None:
         """
         boop/beep/beep/boop
@@ -81,6 +85,7 @@ class Text(Base):
 
         self.logger.info("{} gets a {}!".format(update.effective_user.first_name, text))
 
+    @command_enabled
     def tut(self, update: Update, context: CallbackContext) -> None:
         """
         tut
@@ -89,6 +94,7 @@ class Text(Base):
 
         self.logger.info("{} gets a tut!".format(update.effective_user.first_name))
 
+    @command_enabled
     def keysmash(self, update: Update, context: CallbackContext) -> None:
         """
         Bottom generator
@@ -113,6 +119,7 @@ class Text(Base):
 
         self.logger.info("{} is keysmashing!".format(update.effective_user.first_name))
 
+    @command_enabled
     def oh(self, update: Update, context: CallbackContext) -> None:
         """
         Oooh
@@ -130,6 +137,7 @@ class Text(Base):
 
         self.logger.info("{} is in awe!".format(update.effective_user.first_name))
 
+    @command_enabled
     def xd(self, update: Update, context: CallbackContext) -> None:
         """
         XDDD
@@ -149,6 +157,7 @@ class Text(Base):
 
         self.logger.info("{} is in XDing real hard!".format(update.effective_user.first_name))
 
+    @command_enabled
     def peptalk(self, update: Update, context: CallbackContext) -> None:
         """
         When you need a bit of motivation!
@@ -247,6 +256,7 @@ class Text(Base):
 
         self.logger.info("{} gets a little motivation!".format(update.effective_user.first_name))
 
+    @command_enabled
     def panik(self, update: Update, context: CallbackContext) -> None:
         """
         pANIK...
@@ -257,6 +267,7 @@ class Text(Base):
 
         self.logger.info("{} is pANIK!".format(update.effective_user.first_name))
 
+    @command_enabled
     def cancelpasta(self, update: Update, context: CallbackContext) -> None:
         """
         It's cancel time.

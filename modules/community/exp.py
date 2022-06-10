@@ -11,7 +11,7 @@ from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, F
 from secret import BOT_ID
 
 
-from ..base import Base
+from ..base import admin_only, Base, command_enabled
 from .helpers import deobfuscate, get_user, obfuscate
 
 
@@ -21,7 +21,7 @@ def needed_exp(level, karma):
     # Dirty hack
     if level == 1:
         return 5
-    return int((level ** 3.14) * (1 - (karma / (level ** 3.14))))
+    return int((level**3.14) * (1 - (karma / (level**3.14))))
 
 
 GENDER, PHOTO, LOCATION, BIO = range(4)
@@ -83,6 +83,7 @@ class Exp(Base):
 
         dbuser.save()
 
+    @command_enabled
     def get_level(self, update: Update, context: CallbackContext):
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
@@ -135,6 +136,7 @@ class Exp(Base):
 
         dbuser.save()
 
+    @command_enabled
     def get_leaderboard(self, update: Update, context: CallbackContext):
         try:
             _, num_people = update.message.text.split(" ", 1)
@@ -187,6 +189,7 @@ class Exp(Base):
         else:
             update.message.reply_text("No one talked yet... ):")
 
+    @admin_only
     def reset_from_history(self, update: Update, context: CallbackContext):
         try:
             data = ast.literal_eval(deobfuscate(context.args[0]))
@@ -210,6 +213,7 @@ class Exp(Base):
                 "https://github.com/Amustache/vroumbot/wiki"
             )
 
+    @admin_only
     def get_obfuscated_history(self, update: Update, context: CallbackContext):
         with open("temp.json", "w+") as f:
             context.bot.get_file(update.message.document).download(out=f)
