@@ -41,6 +41,7 @@ class Media(Base):
             CommandHandler("misty", self.misty),
             CommandHandler(["xkcd", "insertRelevantXKCDComicHere"], self.xkcd),
             CommandHandler("funny", self.funny),
+            CommandHandler(["gm", "goodmorning"], self.gm),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -438,3 +439,12 @@ class Media(Base):
             update.message.reply_video(video=file)
 
         self.logger.info("{}'s found something funny!".format(update.effective_user.first_name))
+
+    def gm(self, update: Update, context: CallbackContext) -> None:
+        """
+        Good morning y'all!
+        """
+        with open(self._media("gm.mp4"), "rb") as file:
+            update.message.reply_text("Good morning y'all!").reply_video(video=file)
+
+        self.logger.info("{}'s says good morning y'all!".format(update.effective_user.first_name))
