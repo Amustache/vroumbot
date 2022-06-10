@@ -42,22 +42,22 @@ class ChatCommand(Model):
         database = main_db
 
 
-class ChatModule(Model):
-    """
-    Chat command model to access the database.
-    """
-
-    chatid = BigIntegerField()
-    modulename = CharField()
-    enabled = IntegerField(default=1)
-
-    class Meta:
-        """
-        Basically which database.
-        """
-
-        database = main_db
+# class ChatModule(Model):
+#     """
+#     Chat command model to access the database.
+#     """
+#
+#     chatid = BigIntegerField()
+#     modulename = CharField()
+#     enabled = IntegerField(default=1)
+#
+#     class Meta:
+#         """
+#         Basically which database.
+#         """
+#
+#         database = main_db
 
 
 main_db.connect()
-main_db.create_tables([User, ChatModule, ChatCommand])
+main_db.create_tables([User, ChatCommand])
