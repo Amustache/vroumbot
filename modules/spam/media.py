@@ -45,7 +45,7 @@ class Media(Base):
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
-    @command_enabled(default=False)
+    @command_enabled(default=True)
     def random_cat(self, update: Update, context: CallbackContext) -> None:
         """
         Random cat from a (currated) list.
@@ -113,7 +113,7 @@ class Media(Base):
 
         self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
 
-    @command_enabled(default=False)
+    @command_enabled(default=True)
     def brrou(self, update: Update, context: CallbackContext) -> None:
         """
         A very special cat.
@@ -373,7 +373,7 @@ class Media(Base):
 
         self.logger.info("{} wants a Misty pic!".format(update.effective_user.first_name))
 
-    @command_enabled(default=False)
+    @command_enabled(default=True)
     def xkcd(self, update: Update, context: CallbackContext) -> None:
         """
         Random XKCD

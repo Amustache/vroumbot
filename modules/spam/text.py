@@ -33,7 +33,7 @@ class Text(Base):
         ]
         super().__init__(logger, commandhandlers)
 
-    @command_enabled(default=False)
+    @command_enabled(default=True)
     def vroum(self, update: Update, context: CallbackContext) -> None:
         """
         Vroum!
@@ -157,7 +157,7 @@ class Text(Base):
 
         self.logger.info("{} is in XDing real hard!".format(update.effective_user.first_name))
 
-    @command_enabled(default=False)
+    @command_enabled(default=True)
     def peptalk(self, update: Update, context: CallbackContext) -> None:
         """
         When you need a bit of motivation!
