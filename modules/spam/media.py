@@ -42,6 +42,7 @@ class Media(Base):
             CommandHandler(["xkcd", "insertRelevantXKCDComicHere"], self.xkcd),
             CommandHandler("funny", self.funny),
             CommandHandler(["gm", "goodmorning"], self.gm),
+            CommandHandler("spam", self.spam),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -466,3 +467,13 @@ class Media(Base):
             update.message.reply_text("Good morning y'all!").reply_video(video=file)
 
         self.logger.info("{}'s says good morning y'all!".format(update.effective_user.first_name))
+
+    @command_enabled(default=True)
+    def spam(self, update: Update, context: CallbackContext) -> None:
+        """
+        Because, y'know. Guns kill people.
+        """
+        with open(self._media("spam.jpg"), "rb") as file:
+            update.message.reply_photo(photo=file)
+
+        self.logger.info("{} calls for spam!".format(update.effective_user.first_name))
