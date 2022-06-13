@@ -22,9 +22,15 @@ def get_command_for_chat(table, commandname, chatid):
 
 
 def get_command_from_alias(alias, dispatcher):
+    if alias[0] == "/":
+        alias = alias[1:]
+
     for handler in dispatcher.handlers[0]:
-        if alias in handler.command:
-            return handler.callback.__name__
+        try:
+            if alias in handler.command:
+                return handler.callback.__name__
+        except AttributeError:
+            continue
     return None
 
 
@@ -36,7 +42,9 @@ class Admin(Base):
     def __init__(self, logger=None, table=None):
         self.dispatcher = None
         commandhandlers = [
-            CommandHandler(["enablecommand", "disablecommand"], self.enablecommand),
+            CommandHandler(
+                ["enablecommand", "disablecommand", "enable", "disable"], self.enablecommand
+            ),
             CommandHandler(["enablemodule", "disablemodule"], self.enablemodule),
             CommandHandler("amiadmin", self.amiadmin),
         ]
