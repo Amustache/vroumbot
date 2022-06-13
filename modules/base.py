@@ -2,6 +2,7 @@
 Base class to add new features in the bot.
 """
 from functools import wraps
+import datetime
 import os
 
 
@@ -56,13 +57,20 @@ def command_enabled(default=True):
 
             if created:
                 chatcommand.enabled = 1 if default else 0
+                chatcommand.lastusage = datetime.datetime.now()
                 chatcommand.save()
                 enabled = default
 
             if chatcommand and not enabled:
-                context.bot.sendMessage(
-                    chat_id=update.message.chat.id, text="This command is deactivated in that chat."
-                )
+                if created or datetime.datetime.now() > chatcommand.lastusage + datetime.timedelta(
+                    hours=6
+                ):
+                    context.bot.sendMessage(
+                        chat_id=update.message.chat.id,
+                        text="This command is deactivated in that chat.",
+                    )
+                    chatcommand.lastusage = datetime.datetime.now()
+                    chatcommand.save()
                 return
             return func(self, update, context, *args, **kwargs)
 

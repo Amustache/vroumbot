@@ -1,4 +1,7 @@
-from peewee import BigIntegerField, CharField, IntegerField, Model, SqliteDatabase
+import datetime
+
+
+from peewee import BigIntegerField, CharField, DateTimeField, IntegerField, Model, SqliteDatabase
 
 
 my_db = SqliteDatabase("./databases/main.db")
@@ -12,6 +15,7 @@ class ChatCommand(Model):
     chatid = BigIntegerField()
     commandname = CharField()
     enabled = IntegerField(default=1)
+    lastusage = DateTimeField(default=datetime.datetime.now())
 
     class Meta:
         """
