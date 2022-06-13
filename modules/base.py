@@ -5,7 +5,7 @@ from functools import wraps
 import os
 
 
-from databases import ChatCommand, ChatModule
+from databases import ChatCommand
 
 
 def admin_only(func):
@@ -44,28 +44,31 @@ def admin_only(func):
 #     return wrapped
 
 
-def command_enabled(func, default=True):
-    @wraps(func)
-    def wrapped(self, update, context, *args, **kwargs):
-        chatcommand, created = ChatCommand.get_or_create(
-            chatid=update.message.chat.id, commandname=func.__name__
-        )
-
-        enabled = chatcommand.enabled
-
-        if created:
-            chatcommand.enabled = 1 if default else 0
-            chatcommand.save()
-            enabled = default
-
-        if chatcommand and not enabled:
-            context.bot.sendMessage(
-                chat_id=update.message.chat.id, text="This command is deactivated in that chat."
+def command_enabled(default=True):
+    def command_enabled_inner(func):
+        @wraps(func)
+        def wrapped(self, update, context, *args, **kwargs):
+            chatcommand, created = ChatCommand.get_or_create(
+                chatid=update.message.chat.id, commandname=func.__name__
             )
-            return
-        return func(self, update, context, *args, **kwargs)
 
-    return wrapped
+            enabled = chatcommand.enabled
+
+            if created:
+                chatcommand.enabled = 1 if default else 0
+                chatcommand.save()
+                enabled = default
+
+            if chatcommand and not enabled:
+                context.bot.sendMessage(
+                    chat_id=update.message.chat.id, text="This command is deactivated in that chat."
+                )
+                return
+            return func(self, update, context, *args, **kwargs)
+
+        return wrapped
+
+    return command_enabled_inner
 
 
 class Base:

@@ -41,7 +41,7 @@ class Karma(Base):
 
         return {user.userid: [user.userfirstname, user.karma] for user in users}
 
-    @command_enabled
+    @command_enabled(default=True)
     def change_karma(self, update: Update, context: CallbackContext) -> None:
         """
         Add karma to user by replying to a message.
@@ -98,7 +98,7 @@ class Karma(Base):
         else:
             update.message.reply_text("You must respond to a message to give karma.")
 
-    @command_enabled
+    @command_enabled(default=True)
     def getkarma(self, update: Update, context: CallbackContext) -> None:
         """
         Give the karma score for a user by replying, or karma scores from a chat.

@@ -34,7 +34,7 @@ class Special(Base):
 
         self.logger.info("{} wants their ID! It is {}.".format(user.first_name, user.id))
 
-    @command_enabled
+    @command_enabled(default=True)
     def chatid(self, update: Update, context: CallbackContext) -> None:
         """
         Get current chatid.
@@ -47,7 +47,7 @@ class Special(Base):
             )
         )
 
-    @command_enabled
+    @command_enabled(default=True)
     def messageid(self, update: Update, context: CallbackContext) -> None:
         """
         Get replied message's messageid.

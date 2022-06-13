@@ -83,7 +83,7 @@ class Exp(Base):
 
         dbuser.save()
 
-    @command_enabled
+    @command_enabled(default=True)
     def get_level(self, update: Update, context: CallbackContext):
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
@@ -136,7 +136,7 @@ class Exp(Base):
 
         dbuser.save()
 
-    @command_enabled
+    @command_enabled(default=True)
     def get_leaderboard(self, update: Update, context: CallbackContext):
         try:
             _, num_people = update.message.text.split(" ", 1)
