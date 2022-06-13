@@ -2,6 +2,7 @@
 Karma module is used to handle karma in groupchats.
 """
 from telegram import Update
+from telegram.error import BadRequest
 from telegram.ext import CallbackContext, CommandHandler
 
 
@@ -14,6 +15,7 @@ pos_commands = ["plus", "pos", "bravo"]
 neg_commands = ["moins", "minus", "min", "neg", "non"]
 meh_commands = ["meh"]
 
+
 class Karma(Base):
     """
     Karma module is used to handle karma in groupchats.
@@ -22,10 +24,10 @@ class Karma(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(
-                pos_commands + angrypos_commands + neg_commands + meh_commands,
-                self.change_karma
+                pos_commands + angrypos_commands + neg_commands + meh_commands, self.change_karma
             ),
             CommandHandler(["karma", "getkarma"], self.getkarma),
+            CommandHandler(["setkarma"], self.setkarma),
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media")
 
@@ -135,7 +137,31 @@ class Karma(Base):
                 else:
                     break
 
-            update.message.reply_text("\n".join(all_people))
+            if all_people:
+                update.message.reply_text("\n".join(all_people))
+            else:
+                update.message.reply_text("No karma so far!")
             self.logger.info(
                 "{} wants to know the karmas!".format(update.effective_user.first_name)
             )
+
+    def setkarma(self, update: Update, context: CallbackContext) -> None:
+        if update.message.reply_to_message:
+            user = update.message.reply_to_message.from_user
+            dbuser = get_user(self.table, user.id, update.message.chat.id)
+            try:
+                _, qt, pas = update.message.text.split(" ")
+                qt = int(qt)
+                pas = int(pas)
+            except ValueError:
+                return
+            if pas != 3 * qt + 2:  # Waiting admin decorator
+                return
+            dbuser.karma += qt
+            dbuser.save()
+            try:
+                update.message.delete()
+            except BadRequest:
+                return
+        else:
+            return
