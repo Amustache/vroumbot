@@ -44,14 +44,21 @@ def admin_only(func):
 #     return wrapped
 
 
-def command_enabled(func):
+def command_enabled(func, default=True):
     @wraps(func)
     def wrapped(self, update, context, *args, **kwargs):
-        chatcommand = ChatCommand.get_or_none(
+        chatcommand, created = ChatCommand.get_or_create(
             chatid=update.message.chat.id, commandname=func.__name__
         )
 
-        if chatcommand and not chatcommand.enabled:
+        enabled = chatcommand.enabled
+
+        if created:
+            chatcommand.enabled = 1 if default else 0
+            chatcommand.save()
+            enabled = default
+
+        if chatcommand and not enabled:
             context.bot.sendMessage(
                 chat_id=update.message.chat.id, text="This command is deactivated in that chat."
             )

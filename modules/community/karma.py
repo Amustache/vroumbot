@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from ..base import Base
+from ..base import Base, command_enabled
 from .helpers import get_user
 
 

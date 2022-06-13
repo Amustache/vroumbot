@@ -45,7 +45,7 @@ class Media(Base):
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
-    @command_enabled
+    @command_enabled(default=False)
     def random_cat(self, update: Update, context: CallbackContext) -> None:
         """
         Random cat from a (currated) list.
@@ -113,7 +113,7 @@ class Media(Base):
 
         self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def brrou(self, update: Update, context: CallbackContext) -> None:
         """
         A very special cat.
@@ -126,7 +126,7 @@ class Media(Base):
 
         self.logger.info("{} wants a Brrou pic!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def froj(self, update: Update, context: CallbackContext) -> None:
         """
         FROJ
@@ -139,7 +139,7 @@ class Media(Base):
 
         self.logger.info("{} wants a froj pic!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def spin(self, update: Update, context: CallbackContext) -> None:
         """
         SPIN
@@ -149,7 +149,7 @@ class Media(Base):
 
         self.logger.info("{} gets a SPEEN!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def bonjour(self, update: Update, context: CallbackContext) -> None:
         """
         BONJOUR A TOUTES ET TOUT
@@ -161,7 +161,7 @@ class Media(Base):
             "{} gets a bonjour à toutes et tous!".format(update.effective_user.first_name)
         )
 
-    @command_enabled
+    @command_enabled(default=False)
     def stupid(self, update: Update, context: CallbackContext) -> None:
         """
         A little song for a little dumb
@@ -173,7 +173,7 @@ class Media(Base):
             "{} is being really stupid right now!".format(update.effective_user.first_name)
         )
 
-    @command_enabled
+    @command_enabled(default=False)
     def heretic(self, update: Update, context: CallbackContext) -> None:
         """
         HERESY TIME
@@ -183,7 +183,7 @@ class Media(Base):
 
         self.logger.info("{} likes being a heretic!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def bricole(self, update: Update, context: CallbackContext) -> None:
         """
         Best song
@@ -193,7 +193,7 @@ class Media(Base):
 
         self.logger.info("{} wants to BRICOLE!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def trolled(self, update: Update, context: CallbackContext) -> None:
         """
         A little song when someone gets trolled
@@ -203,7 +203,7 @@ class Media(Base):
 
         self.logger.info("{}'s just been trolled!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def nft(self, update: Update, context: CallbackContext) -> None:
         """
         Your very own NFT!
@@ -267,7 +267,7 @@ class Media(Base):
 
         self.logger.info("{} now has an NFT!".format(user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def pointeur(self, update: Update, context: CallbackContext) -> None:
         """
         Ici,on baise tous les pointeurs.
@@ -277,7 +277,7 @@ class Media(Base):
 
         self.logger.info("{} baise tous les pointeurs!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def dumb(self, update: Update, context: CallbackContext) -> None:
         """
         You are dumb in harmonic.
@@ -287,7 +287,7 @@ class Media(Base):
 
         self.logger.info("{} is calling someone dumb!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def sorrydumb(self, update: Update, context: CallbackContext) -> None:
         """
         Sorry to calling you dumb in harmonic.
@@ -299,7 +299,7 @@ class Media(Base):
             "{} is sorry for calling someone dumb!".format(update.effective_user.first_name)
         )
 
-    @command_enabled
+    @command_enabled(default=False)
     def random_dog(self, update: Update, context: CallbackContext) -> None:
         """
         Random dog from API.
@@ -360,7 +360,7 @@ class Media(Base):
 
         self.logger.info("{} wants a dog pic!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def misty(self, update: Update, context: CallbackContext) -> None:
         """
         A very special dog.
@@ -373,7 +373,7 @@ class Media(Base):
 
         self.logger.info("{} wants a Misty pic!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def xkcd(self, update: Update, context: CallbackContext) -> None:
         """
         Random XKCD
@@ -447,7 +447,7 @@ class Media(Base):
 
         self.logger.info("{} wants some XKCD!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def funny(self, update: Update, context: CallbackContext) -> None:
         """
         That's funny
@@ -457,7 +457,7 @@ class Media(Base):
 
         self.logger.info("{}'s found something funny!".format(update.effective_user.first_name))
 
-    @command_enabled
+    @command_enabled(default=False)
     def gm(self, update: Update, context: CallbackContext) -> None:
         """
         Good morning y'all!
