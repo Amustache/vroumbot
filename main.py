@@ -16,6 +16,7 @@ from modules.admin import Admin
 from modules.bot import Bot
 from modules.community.exp import Exp
 from modules.community.karma import Karma
+from modules.community.services import Services
 from modules.remindme import RemindMe
 from modules.spam.media import Media
 from modules.spam.privatejokes import PrivateJoke
@@ -49,6 +50,7 @@ def main() -> None:
     # Community commands
     Exp(logger, table=User).add_commands(dispatcher)
     Karma(logger, table=User).add_commands(dispatcher)
+    Services(logger, table=User).add_commands(dispatcher)
 
     # Spam commands
     Media(logger).add_commands(dispatcher)
