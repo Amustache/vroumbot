@@ -1,6 +1,6 @@
 beautifulsoup4==4.10.0
 black==21.6b0
-dateparser==1.0.0
+dateparser==1.1.1
 isort==5.8.0
 peewee==3.14.4
 Pillow==9.0.1

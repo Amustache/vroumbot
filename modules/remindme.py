@@ -110,6 +110,7 @@ class RemindMe(Base):
 
         try:
             _, message = update.message.text.split(" ", 1)
+            print(message)
             interpreted = dateparser.parse(message)
             if not interpreted:
                 update.message.reply_text("I didn't understand, sorry...")
