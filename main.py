@@ -15,8 +15,8 @@ from telegram.ext import Updater
 from modules.bot import Bot
 from modules.community.exp import Exp
 from modules.community.karma import Karma
+from modules.community.remindme import RemindMe
 from modules.community.services import Services
-from modules.remindme import RemindMe
 from modules.spam.media import Media
 from modules.spam.privatejokes import PrivateJoke
 from modules.spam.text import Text

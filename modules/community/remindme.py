@@ -10,7 +10,7 @@ from telegram.ext import CallbackContext, CommandHandler
 import dateparser
 
 
-from .base import Base
+from modules.base import Base
 
 
 def naturaltime(delta):
