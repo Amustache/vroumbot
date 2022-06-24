@@ -128,7 +128,7 @@ class RemindMe(Base):
                 self.alarm,
                 delta.total_seconds(),
                 context={"chat_id": chat_id, "message_id": message_id},
-                name="{}_{}".format(chat_id, message_id),
+                name=f"{chat_id}_{message_id}",
             )
 
             update.message.reply_text(
@@ -137,7 +137,7 @@ class RemindMe(Base):
                 )
             )
 
-            self.logger.info("{} set an alarm!".format(update.effective_user.first_name))
+            self.logger.info(f"{update.effective_user.first_name} set an alarm!")
         except (IndexError, ValueError):
             update.message.reply_text("It seems like you used that command wrong. (:.")
 
@@ -159,7 +159,7 @@ class RemindMe(Base):
             ]
         else:
             liste = [
-                "- #{}: {}.".format(i, str(job.next_t).split(".", maxsplit=1)[0])
+                f"- #{i}: {str(job.next_t).split('.', maxsplit=1)[0]}."
                 for i, job in enumerate(jobs)
                 if job.context["chat_id"] == update.message.chat_id
             ]
@@ -167,4 +167,4 @@ class RemindMe(Base):
             "List of reminders:\n{}".format("\n".join(liste)), parse_mode=PARSEMODE_HTML
         )
 
-        self.logger.info("{} wants all alarm!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants all alarm!")

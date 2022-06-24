@@ -58,13 +58,13 @@ class Karma(Base):
             if user == update.effective_user:
                 if command in pos_commands + angrypos_commands:
                     reply = "Humble bragging, amarite?"
-                    log = "{} wants to pos themselves!".format(user.first_name)
+                    log = f"{user.first_name} wants to pos themselves!"
                 elif command in neg_commands:
                     reply = "Don't be so harsh on yourself."
-                    log = "{} wants to neg themselves!".format(user.first_name)
+                    log = f"{user.first_name} wants to neg themselves!"
                 else:
                     reply = "Sooo... Nothing?"
-                    log = "{} doesn't know what to do with their karma!".format(user.first_name)
+                    log = f"{user.first_name} doesn't know what to do with their karma!"
                 update.message.reply_text(reply)
                 self.logger.info(log)
 
@@ -84,7 +84,7 @@ class Karma(Base):
                     resp = "Meh"
                 dbuser.karma += operator
                 update.message.reply_to_message.reply_text(
-                    "{} for {} ({} points).".format(resp, user.first_name, dbuser.karma)
+                    f"{resp} for {user.first_name} ({dbuser.karma} points)."
                 )
 
                 # Special, if needed
@@ -92,7 +92,7 @@ class Karma(Base):
                     with open(self._media("angrypos.jpg"), "rb") as file:
                         update.message.reply_photo(photo=file, caption="Now get tf outta here.")
 
-                self.logger.info("{} gets a {}!".format(user.first_name, resp))
+                self.logger.info(f"{user.first_name} gets a {resp}!")
 
             dbuser.userfirstname = user.first_name
             dbuser.save()
@@ -109,10 +109,8 @@ class Karma(Base):
             dbuser.userfirstname = user.first_name
             dbuser.save()
 
-            update.message.reply_text(
-                "{} has {} points.".format(dbuser.userfirstname, dbuser.karma)
-            )
-            self.logger.info("{} has {} karma!".format(dbuser.userfirstname, dbuser.karma))
+            update.message.reply_text(f"{dbuser.userfirstname} has {dbuser.karma} points.")
+            self.logger.info(f"{dbuser.userfirstname} has {dbuser.karma} karma!")
 
         else:
             try:
@@ -133,7 +131,7 @@ class Karma(Base):
                     if not username:
                         username = "<please trigger karma action for name>"
                     if karma != 0:
-                        all_people.append("{}. {}: {} points.".format(i + 1, username, karma))
+                        all_people.append(f"{i + 1}. {username}: {karma} points.")
                 else:
                     break
 
@@ -141,9 +139,7 @@ class Karma(Base):
                 update.message.reply_text("\n".join(all_people))
             else:
                 update.message.reply_text("No karma so far!")
-            self.logger.info(
-                "{} wants to know the karmas!".format(update.effective_user.first_name)
-            )
+            self.logger.info(f"{update.effective_user.first_name} wants to know the karmas!")
 
     def setkarma(self, update: Update, context: CallbackContext) -> None:
         if update.message.reply_to_message:

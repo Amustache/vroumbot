@@ -39,7 +39,7 @@ class Text(Base):
         """
         update.message.reply_text("Vroum!")
 
-        self.logger.info("{} gets a Vroum!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a Vroum!")
 
     def vroom(self, update: Update, context: CallbackContext) -> None:
         """
@@ -47,7 +47,7 @@ class Text(Base):
         """
         update.message.reply_text("😠")
 
-        self.logger.info("{} gets a 😠!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a 😠!")
 
     def dad(self, update: Update, context: CallbackContext) -> None:
         """
@@ -64,7 +64,7 @@ class Text(Base):
 
         update.message.reply_text(opener).reply_text(punchline)
 
-        self.logger.info("{} gets a dad joke!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a dad joke!")
 
     def boop(self, update: Update, context: CallbackContext) -> None:
         """
@@ -79,7 +79,7 @@ class Text(Base):
 
         update.message.reply_text(text)
 
-        self.logger.info("{} gets a {}!".format(update.effective_user.first_name, text))
+        self.logger.info(f"{update.effective_user.first_name} gets a {text}!")
 
     def tut(self, update: Update, context: CallbackContext) -> None:
         """
@@ -87,7 +87,7 @@ class Text(Base):
         """
         update.message.reply_text("tut")
 
-        self.logger.info("{} gets a tut!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a tut!")
 
     def keysmash(self, update: Update, context: CallbackContext) -> None:
         """
@@ -111,7 +111,7 @@ class Text(Base):
 
         update.message.reply_text(result)
 
-        self.logger.info("{} is keysmashing!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} is keysmashing!")
 
     def oh(self, update: Update, context: CallbackContext) -> None:
         """
@@ -128,7 +128,7 @@ class Text(Base):
 
         update.message.reply_text(result)
 
-        self.logger.info("{} is in awe!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} is in awe!")
 
     def xd(self, update: Update, context: CallbackContext) -> None:
         """
@@ -147,7 +147,7 @@ class Text(Base):
 
         update.message.reply_text(result)
 
-        self.logger.info("{} is in XDing real hard!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} is in XDing real hard!")
 
     def peptalk(self, update: Update, context: CallbackContext) -> None:
         """
@@ -245,7 +245,7 @@ class Text(Base):
             )
         )
 
-        self.logger.info("{} gets a little motivation!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a little motivation!")
 
     def panik(self, update: Update, context: CallbackContext) -> None:
         """
@@ -255,7 +255,7 @@ class Text(Base):
             "CAACAgEAAxkBAAEEY25iTUGwconn0xCbWvaZh_1ts-QgsQACahEAAiPdEAaR2z2lHaX68iME"
         )
 
-        self.logger.info("{} is pANIK!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} is pANIK!")
 
     def cancelpasta(self, update: Update, context: CallbackContext) -> None:
         """

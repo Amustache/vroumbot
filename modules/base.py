@@ -53,8 +53,7 @@ class Base:
         for handler in self.commandhandlers:
             try:
                 commands += [
-                    "{} - {}\n".format(command, handler.callback.__name__)
-                    for command in handler.command
+                    f"{command} - {handler.callback.__name__}\n" for command in handler.command
                 ]
             except:
                 continue

@@ -21,7 +21,7 @@ def needed_exp(level, karma):
     # Dirty hack
     if level == 1:
         return 5
-    return int((level ** 3.14) * (1 - (karma / (level ** 3.14))))
+    return int((level**3.14) * (1 - (karma / (level**3.14))))
 
 
 GENDER, PHOTO, LOCATION, BIO = range(4)
@@ -49,7 +49,7 @@ class Exp(Base):
             dbuser.level += 1
 
         if change != dbuser.level:
-            filename = os.path.join(self._media("basis"), "({}).png".format(dbuser.level))
+            filename = os.path.join(self._media("basis"), f"({dbuser.level}).png")
             with Image.open(filename).convert("RGBA") as image:
                 font_path = self._media("ReemKufi-Regular.ttf")
                 d1 = ImageDraw.Draw(image)
@@ -63,7 +63,7 @@ class Exp(Base):
                 d1.text((178, 0), "Level Up!", font=font, fill=(0, 0, 0))
 
                 # Info
-                text = "{} is now Level {}".format(dbuser.userfirstname, dbuser.level)
+                text = f"{dbuser.userfirstname} is now Level {dbuser.level}"
                 fontsize = 1
                 font = ImageFont.truetype(font_path, fontsize)
                 while font.getsize(text)[0] < 575:  # hardcoded
@@ -95,7 +95,7 @@ class Exp(Base):
             dbuser = get_user(self.table, user.id, update.message.chat.id)
         dbuser.userfirstname = user.first_name
 
-        filename = os.path.join(self._media("basis"), "({}).png".format(dbuser.level))
+        filename = os.path.join(self._media("basis"), f"({dbuser.level}).png")
         with Image.open(filename).convert("RGBA") as image:
             font_path = self._media("ReemKufi-Regular.ttf")
             d1 = ImageDraw.Draw(image)

@@ -93,7 +93,7 @@ def main() -> None:
             )
         except AttributeError:
             continue
-    print("{}\nList of commands\n{}\n{}".format("*" * 13, commands, "*" * 13))
+    print(f"{'*' * 13}\nList of commands\n{commands}\n{'*' * 13}")
 
     # Start the Bot
     updater.start_polling()

@@ -32,7 +32,7 @@ class Special(Base):
             user = update.effective_user
             update.message.reply_text(user.id)
 
-        self.logger.info("{} wants their ID! It is {}.".format(user.first_name, user.id))
+        self.logger.info(f"{user.first_name} wants their ID! It is {user.id}.")
 
     def chatid(self, update: Update, context: CallbackContext) -> None:
         """

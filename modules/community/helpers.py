@@ -20,8 +20,7 @@ mask = "This is not secure btw, it's just so that it's a tad more complicated fo
 
 def obfuscate(string):
     return "".join(
-        "{:03}".format(ord(a) ^ ord(b))
-        for a, b in zip(string, mask * (1 + len(string) // len(mask)))
+        f"{ord(a) ^ ord(b):03}" for a, b in zip(string, mask * (1 + len(string) // len(mask)))
     )
 
 
