@@ -1,6 +1,8 @@
 """
 Text spam! Yay!
 """
+from time import sleep
+import datetime
 import random
 
 
@@ -30,6 +32,7 @@ class Text(Base):
             CommandHandler(["pep", "peptalk", "motivation", "motivational"], self.peptalk),
             CommandHandler("panik", self.panik),
             CommandHandler("cancel", self.cancelpasta),
+            CommandHandler("brainfuck", self.brainfuck),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -274,3 +277,75 @@ class Text(Base):
         update.message.reply_text(
             f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}.\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially coming from such prominent members of our community.\n\nIt's a shame to see you go, friend.\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
         )
+
+    def brainfuck(self, update: Update, context: CallbackContext) -> None:
+        correct_chars = [">", "<", "+", "-", ".", ",", "[", "]"]
+
+        if not len(context.args):
+            update.message.reply_text("Usage: /brainfuck code")
+            return
+
+        instr = "".join(context.args)
+
+        data, data_ptr, instr_ptr = [0], 0, 0
+        result = ""
+
+        time_start = datetime.datetime.now()
+        while instr_ptr < len(instr):
+            command = instr[instr_ptr]
+            # print(f"{instr_ptr}: {command}; {data_ptr}: {data[data_ptr]}")
+            # sleep(0.1)
+
+            if command == ">":
+                data_ptr += 1
+                if data_ptr == len(data):
+                    data.append(0)
+            elif command == "<":
+                data_ptr -= 1
+                if data_ptr < 0:
+                    data_ptr = 0
+            elif command == "+":
+                data[data_ptr] += 1
+                if data[data_ptr] > 127:
+                    data[data_ptr] = 127
+            elif command == "-":
+                data[data_ptr] -= 1
+                if data[data_ptr] < 0:
+                    data[data_ptr] = 0
+            elif command == ".":
+                if data[data_ptr] < 32 or data[data_ptr] > 126:  # Gross flemme
+                    result += "?"
+                else:
+                    result += chr(data[data_ptr])
+            elif command == ",":
+                # Here, we are cheating:
+                # We consider that the byte immediately next to the ',' instruction will be considered the input to be used.
+                instr_ptr += 1
+                data[data_ptr] = ord(instr[instr_ptr])
+            elif command == "[":
+                if data[data_ptr] == 0:
+                    braces = 1
+                    while braces > 0:
+                        instr_ptr += 1
+                        if instr[instr_ptr] == "[":
+                            braces += 1
+                        elif instr[instr_ptr] == "]":
+                            braces -= 1
+            elif command == "]":
+                braces = 1
+                while braces > 0:
+                    instr_ptr -= 1
+                    if instr[instr_ptr] == "[":
+                        braces -= 1
+                    elif instr[instr_ptr] == "]":
+                        braces += 1
+                instr_ptr -= 1
+            else:
+                update.message.reply_text(f"Error at position {instr_ptr}: unexpected {command}.")
+
+            instr_ptr += 1
+            if datetime.datetime.now() - time_start > datetime.timedelta(seconds=1):
+                update.message.reply_text(f"This is taking too much time :/")
+                return
+
+        update.message.reply_text(f"Interpreted: {result}")
