@@ -281,11 +281,15 @@ class Text(Base):
     def brainfuck(self, update: Update, context: CallbackContext) -> None:
         correct_chars = [">", "<", "+", "-", ".", ",", "[", "]"]
 
-        if not len(context.args):
-            update.message.reply_text("Usage: /brainfuck code")
+        if not len(context.args) or len(context.args) > 2:
+            update.message.reply_text("Usage: /brainfuck code [input]")
             return
-
-        instr = "".join(context.args)
+        elif len(context.args) == 1:
+            instr = context.args[0]
+            inputs = None
+        else:  # == 2
+            instr = context.args[0]
+            inputs = list(context.args[1])
 
         data, data_ptr, instr_ptr = [0], 0, 0
         result = ""
@@ -318,10 +322,13 @@ class Text(Base):
                 else:
                     result += chr(data[data_ptr])
             elif command == ",":
-                # Here, we are cheating:
-                # We consider that the byte immediately next to the ',' instruction will be considered the input to be used.
-                instr_ptr += 1
-                data[data_ptr] = ord(instr[instr_ptr])
+                if inputs:
+                    data[data_ptr] = ord(inputs.pop(0))
+                else:
+                    # Here, we are cheating:
+                    # We consider that the byte immediately next to the ',' instruction will be considered the input to be used.
+                    instr_ptr += 1
+                    data[data_ptr] = ord(instr[instr_ptr])
             elif command == "[":
                 if data[data_ptr] == 0:
                     braces = 1
@@ -341,11 +348,7 @@ class Text(Base):
                         braces += 1
                 instr_ptr -= 1
             else:
-                update.message.reply_text(
-                    f"Error at position {instr_ptr}: unexpected {command}."
-                ).reply_text(
-                    "Please note that if you want to simulate input using `,`, you need to put the byte right after the command, e.g., `,9`"
-                )
+                update.message.reply_text(f"Error at position {instr_ptr}: unexpected {command}.")
                 return
 
             instr_ptr += 1
