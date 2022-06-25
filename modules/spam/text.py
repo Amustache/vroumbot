@@ -332,7 +332,8 @@ class Text(Base):
                     data[data_ptr] = ord(inputs.pop(0))
                 else:
                     # Here, we are cheating:
-                    # We consider that the byte immediately next to the ',' instruction will be considered the input to be used.
+                    # We consider that the byte immediately next to the ',' instruction
+                    # will be considered the input to be used.
                     instr_ptr += 1
                     data[data_ptr] = ord(instr[instr_ptr])
             elif command == "[":
