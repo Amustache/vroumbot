@@ -341,7 +341,12 @@ class Text(Base):
                         braces += 1
                 instr_ptr -= 1
             else:
-                update.message.reply_text(f"Error at position {instr_ptr}: unexpected {command}.")
+                update.message.reply_text(
+                    f"Error at position {instr_ptr}: unexpected {command}."
+                ).reply_text(
+                    "Please note that if you want to simulate input using `,`, you need to put the byte right after the command, e.g., `,9`"
+                )
+                return
 
             instr_ptr += 1
             if datetime.datetime.now() - time_start > datetime.timedelta(seconds=1):
