@@ -281,6 +281,9 @@ class Text(Base):
     def brainfuck(self, update: Update, context: CallbackContext) -> None:
         correct_chars = [">", "<", "+", "-", ".", ",", "[", "]"]
 
+        MAX_CELL_VALUE = 255
+        DO_WRAPPING = True
+
         if not len(context.args) or len(context.args) > 2:
             update.message.reply_text("Usage: /brainfuck code [input]")
             return
@@ -310,12 +313,18 @@ class Text(Base):
                     data_ptr = 0
             elif command == "+":
                 data[data_ptr] += 1
-                if data[data_ptr] > 127:
-                    data[data_ptr] = 127
+                if data[data_ptr] > MAX_CELL_VALUE:
+                    if DO_WRAPPING:
+                        data[data_ptr] = 0
+                    else:
+                        data[data_ptr] = MAX_CELL_VALUE
             elif command == "-":
                 data[data_ptr] -= 1
                 if data[data_ptr] < 0:
-                    data[data_ptr] = 0
+                    if DO_WRAPPING:
+                        data[data_ptr] = MAX_CELL_VALUE
+                    else:
+                        data[data_ptr] = 0
             elif command == ".":
                 if data[data_ptr] < 32 or data[data_ptr] > 126:  # Gross flemme
                     result += " "
