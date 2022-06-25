@@ -4,6 +4,7 @@ Text spam! Yay!
 from time import sleep
 import datetime
 import random
+import string
 
 
 from telegram import Update
@@ -310,14 +311,14 @@ class Text(Base):
                     data_ptr = 0
             elif command == "+":
                 data[data_ptr] += 1
-                if data[data_ptr] > 127:
-                    data[data_ptr] = 127
+                if data[data_ptr] > 255:
+                    data[data_ptr] = 0
             elif command == "-":
                 data[data_ptr] -= 1
                 if data[data_ptr] < 0:
-                    data[data_ptr] = 0
+                    data[data_ptr] = 255
             elif command == ".":
-                if data[data_ptr] < 32 or data[data_ptr] > 126:  # Gross flemme
+                if chr(data[data_ptr]) not in string.printable:  # Gross flemme
                     result += " "
                 else:
                     result += chr(data[data_ptr])
