@@ -326,10 +326,13 @@ class Text(Base):
                     else:
                         data[data_ptr] = 0
             elif command == ".":
-                if data[data_ptr] < 32 or data[data_ptr] > 126:  # Gross flemme
-                    result += " "
+                char = data[data_ptr]
+                if char == 8:  # backspace
+                    result = result[:-1]
+                elif 32 <= char <= 126 or 161 <= char <= 255:
+                    result += chr(char)
                 else:
-                    result += chr(data[data_ptr])
+                    result += "�"
             elif command == ",":
                 if inputs:
                     data[data_ptr] = ord(inputs.pop(0))
