@@ -280,7 +280,8 @@ class Text(Base):
         )
 
     def brainfuck(self, update: Update, context: CallbackContext) -> None:
-        correct_chars = [">", "<", "+", "-", ".", ",", "[", "]"]
+        max_cell_value = 255
+        do_wrapping = True
 
         if not len(context.args) or len(context.args) > 2:
             update.message.reply_text("Usage: /brainfuck code [input]")
@@ -298,8 +299,6 @@ class Text(Base):
         time_start = datetime.datetime.now()
         while instr_ptr < len(instr):
             command = instr[instr_ptr]
-            # print(f"{instr_ptr}: {command}; {data_ptr}: {data[data_ptr]}")
-            # sleep(0.1)
 
             if command == ">":
                 data_ptr += 1
@@ -311,12 +310,18 @@ class Text(Base):
                     data_ptr = 0
             elif command == "+":
                 data[data_ptr] += 1
-                if data[data_ptr] > 255:
-                    data[data_ptr] = 0
+                if data[data_ptr] > max_cell_value:
+                    if do_wrapping:
+                        data[data_ptr] = 0
+                    else:
+                        data[data_ptr] = max_cell_value
             elif command == "-":
                 data[data_ptr] -= 1
                 if data[data_ptr] < 0:
-                    data[data_ptr] = 255
+                    if do_wrapping:
+                        data[data_ptr] = max_cell_value
+                    else:
+                        data[data_ptr] = 0
             elif command == ".":
                 if chr(data[data_ptr]) not in string.printable:  # Gross flemme
                     result += " "
