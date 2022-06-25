@@ -314,7 +314,7 @@ class Text(Base):
                     data[data_ptr] = 0
             elif command == ".":
                 if data[data_ptr] < 32 or data[data_ptr] > 126:  # Gross flemme
-                    result += "?"
+                    result += " "
                 else:
                     result += chr(data[data_ptr])
             elif command == ",":
