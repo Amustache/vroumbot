@@ -321,8 +321,6 @@ class Text(Base):
                     else:
                         data[data_ptr] = 0
             elif command == ".":
-                print(f'printing {data[data_ptr]} ({chr(data[data_ptr])})')
-
                 char_code = data[data_ptr]
                 if char_code == 7:  # bell
                     result += "🔔"
@@ -336,14 +334,7 @@ class Text(Base):
                 if inputs:
                     data[data_ptr] = ord(inputs.pop(0))
                 else:
-                    # a) confusing b) if , is the last character, this is an index out of bounds
-                    # # Here, we are cheating:
-                    # # We consider that the byte immediately next to the ',' instruction
-                    # # will be considered the input to be used.
-                    # instr_ptr += 1
-                    # data[data_ptr] = ord(instr[instr_ptr])
-
-                    update.message.reply_text(f"Error at position {instr_ptr}: , expected input but none was provided.")
+                    update.message.reply_text(f"Error at position {instr_ptr}: `,` expected input but none was provided.")
                     return
             elif command == "[":
                 if data[data_ptr] == 0:
@@ -364,7 +355,7 @@ class Text(Base):
                         braces += 1
                 instr_ptr -= 1
             else:
-                update.message.reply_text(f"Error at position {instr_ptr}: unexpected {command}.")
+                update.message.reply_text(f"Error at position {instr_ptr}: unexpected `{command}`.")
                 return
 
             instr_ptr += 1
