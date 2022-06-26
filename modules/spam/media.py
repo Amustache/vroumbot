@@ -1,6 +1,7 @@
 """
 Media spam! Yay!
 """
+from turtle import up
 from urllib.request import urlopen
 import html
 import json
@@ -42,6 +43,7 @@ class Media(Base):
             CommandHandler(["xkcd", "insertRelevantXKCDComicHere"], self.xkcd),
             CommandHandler("funny", self.funny),
             CommandHandler(["gm", "goodmorning"], self.gm),
+            CommandHandler(["generative"], self.randompic),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -255,6 +257,82 @@ class Media(Base):
                 ),
             )
 
+        self.logger.info("{} now has an NFT!".format(user.first_name))
+
+    def randompic(self, update: Update, context: CallbackContext) -> None:
+        import random
+
+        """
+        Your very own generative art piece!
+        """
+        if update.message.reply_to_message:
+            user = update.message.reply_to_message.from_user
+        else:
+            user = update.effective_user
+
+        userid = user.id
+
+        filename = os.path.join(self._media("nft"), "{}.png".format(userid))
+
+        if not os.path.isfile(filename):
+            random.seed(userid)
+            r_color = lambda: (
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255),
+                int(255),
+            )
+            black = (0, 0, 0, 255)
+
+            colors = [r_color(), r_color(), r_color(), black, black, black]
+
+            binuserid = bin(userid)[2:].zfill(64)
+
+            vroumbot = "vroumbot"
+            binvroumbot = "".join(format(ord(x), "b").zfill(8) for x in vroumbot)
+
+            if len(context.args) >= 1:
+                img_size = context.args[0]
+            else:
+                img_size = 32
+
+            try:
+                img_size = int(img_size)
+                if img_size < 8:
+                    update.message.reply_text(
+                        "Don't toy with the bot! Enter a valid integer between 8 and 512"
+                    )
+                    return
+
+                if img_size > 512:
+                    update.message.reply_text(
+                        "Don't toy with the bot! Enter a valid integer between 8 and 512"
+                    )
+                    return
+
+            except:
+                update.message.reply_text(
+                    "Don't toy with the bot! Enter a valid integer between 8 and 512"
+                )
+                return
+
+            img = Image.new("RGBA", (img_size, img_size), "black")
+
+            pixels = img.load()
+
+            for i in range(2, img.size[0] // 2):
+                for j in range(2, img.size[1] - 2):
+                    c = random.choice(colors)
+                    pixels[i, j] = c
+                    pixels[img.size[0] - i - 1, j] = c
+
+            img.resize((512, 512), Image.NEAREST).save(filename)
+
+        with open(filename, "rb") as file:
+            update.message.reply_photo(
+                photo=file,
+                caption="This is {}'s exclusive generative art piece".format(user.first_name),
+            )
         self.logger.info("{} now has an NFT!".format(user.first_name))
 
     def pointeur(self, update: Update, context: CallbackContext) -> None:
