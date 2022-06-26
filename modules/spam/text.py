@@ -4,8 +4,6 @@ Text spam! Yay!
 from time import sleep
 import datetime
 import random
-import string
-
 
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
@@ -323,19 +321,21 @@ class Text(Base):
                     else:
                         data[data_ptr] = 0
             elif command == ".":
-                if chr(data[data_ptr]) not in string.printable:  # Gross flemme
-                    result += " "
+                char_code = data[data_ptr]
+                if char_code == 7:  # bell
+                    result += "🔔"
+                elif char_code == 8:  # backspace
+                    result = result[:-1]
+                elif chr(char_code).isprintable():
+                    result += chr(char_code)
                 else:
-                    result += chr(data[data_ptr])
+                    result += "�"
             elif command == ",":
                 if inputs:
                     data[data_ptr] = ord(inputs.pop(0))
                 else:
-                    # Here, we are cheating:
-                    # We consider that the byte immediately next to the ',' instruction
-                    # will be considered the input to be used.
-                    instr_ptr += 1
-                    data[data_ptr] = ord(instr[instr_ptr])
+                    update.message.reply_text(f"Error at position {instr_ptr}: `,` expected input but none was provided.")
+                    return
             elif command == "[":
                 if data[data_ptr] == 0:
                     braces = 1
@@ -355,7 +355,7 @@ class Text(Base):
                         braces += 1
                 instr_ptr -= 1
             else:
-                update.message.reply_text(f"Error at position {instr_ptr}: unexpected {command}.")
+                update.message.reply_text(f"Error at position {instr_ptr}: unexpected `{command}`.")
                 return
 
             instr_ptr += 1
