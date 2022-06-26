@@ -5,7 +5,6 @@ from time import sleep
 import datetime
 import random
 
-
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 import requests
@@ -279,7 +278,8 @@ class Text(Base):
         )
 
     def brainfuck(self, update: Update, context: CallbackContext) -> None:
-        correct_chars = [">", "<", "+", "-", ".", ",", "[", "]"]
+        max_cell_value = 255
+        do_wrapping = True
 
         if not len(context.args) or len(context.args) > 2:
             update.message.reply_text("Usage: /brainfuck code [input]")
@@ -297,8 +297,6 @@ class Text(Base):
         time_start = datetime.datetime.now()
         while instr_ptr < len(instr):
             command = instr[instr_ptr]
-            # print(f"{instr_ptr}: {command}; {data_ptr}: {data[data_ptr]}")
-            # sleep(0.1)
 
             if command == ">":
                 data_ptr += 1
@@ -310,25 +308,43 @@ class Text(Base):
                     data_ptr = 0
             elif command == "+":
                 data[data_ptr] += 1
-                if data[data_ptr] > 127:
-                    data[data_ptr] = 127
+                if data[data_ptr] > max_cell_value:
+                    if do_wrapping:
+                        data[data_ptr] = 0
+                    else:
+                        data[data_ptr] = max_cell_value
             elif command == "-":
                 data[data_ptr] -= 1
                 if data[data_ptr] < 0:
-                    data[data_ptr] = 0
+                    if do_wrapping:
+                        data[data_ptr] = max_cell_value
+                    else:
+                        data[data_ptr] = 0
             elif command == ".":
-                if data[data_ptr] < 32 or data[data_ptr] > 126:  # Gross flemme
-                    result += " "
+                print(f'printing {data[data_ptr]} ({chr(data[data_ptr])})')
+
+                char_code = data[data_ptr]
+                if char_code == 7:  # bell
+                    result += "🔔"
+                elif char_code == 8:  # backspace
+                    result = result[:-1]
+                elif chr(char_code).isprintable():
+                    result += chr(char_code)
                 else:
-                    result += chr(data[data_ptr])
+                    result += "�"
             elif command == ",":
                 if inputs:
                     data[data_ptr] = ord(inputs.pop(0))
                 else:
-                    # Here, we are cheating:
-                    # We consider that the byte immediately next to the ',' instruction will be considered the input to be used.
-                    instr_ptr += 1
-                    data[data_ptr] = ord(instr[instr_ptr])
+                    # a) confusing b) if , is the last character, this is an index out of bounds
+                    # # Here, we are cheating:
+                    # # We consider that the byte immediately next to the ',' instruction
+                    # # will be considered the input to be used.
+                    # instr_ptr += 1
+                    # data[data_ptr] = ord(instr[instr_ptr])
+
+                    update.message.reply_text(f"Error at position {instr_ptr}: , expected input but none was provided.")
+                    return
             elif command == "[":
                 if data[data_ptr] == 0:
                     braces = 1
