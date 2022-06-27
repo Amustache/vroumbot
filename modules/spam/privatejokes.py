@@ -102,12 +102,12 @@ class PrivateJoke(Base):
         #     update.message.reply_text("Not a valid SCIPER b-baka.")
         #     return
         #
-        # URL = "https://nhentai.to/g/{}".format(sciper)
+        # URL = f"https://nhentai.to/g/{sciper}"
         # page = requests.get(URL)
         # soup = BeautifulSoup(page.content, "html.parser")
         #
         # if soup.title.text == "Not Found":
-        #     update.message.reply_text("{} seems to be pure and innocent...".format(sciper))
+        #     update.message.reply_text(f"{sciper} seems to be pure and innocent...")
         #     return
         #
         # tags = [
@@ -121,11 +121,11 @@ class PrivateJoke(Base):
         #         tags_text.append(tag)
         #     if tags_text:
         #         update.message.reply_text(
-        #             "{} is linked to {}.".format(sciper, ", ".join(tags_text))
+        #             "{sciper} is linked to {', '.join(tags_text)}
         #         )
         #         return
         #
-        # update.message.reply_text("{} is a secretive pervert.".format(sciper))
+        # update.message.reply_text("{sciper} is a secretive pervert.")
 
         self.logger.info(f"{update.effective_user.first_name} wants some kinks!")
 

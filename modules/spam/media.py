@@ -246,9 +246,7 @@ class Media(Base):
         with open(filename, "rb") as file:
             update.message.reply_photo(
                 photo=file,
-                caption="This is {}'s exclusive NFT, do not use without permission!".format(
-                    user.first_name
-                ),
+                caption=f"This is {user.first_name}'s exclusive NFT, do not use without permission!",
             )
 
         self.logger.info(f"{user.first_name} now has an NFT!")
@@ -375,9 +373,7 @@ class Media(Base):
                     data_json = json.loads(response.read())
                     update.message.reply_photo(
                         photo=data_json["img"],
-                        caption="XKCD #{}: {}\n\n{}".format(
-                            num, data_json["safe_title"], data_json["alt"]
-                        ),
+                        caption=f"XKCD #{num}: {data_json['safe_title']}\n\n{data_json['alt']}",
                     )
                 except:
                     update.message.reply_text("This XKCD does not exists :/")
@@ -394,9 +390,7 @@ class Media(Base):
                     return
                 text = f'Results for "{args}" ({len(results)} found):\n'
                 for result in results:
-                    text += "- {}: {} ({})\n".format(
-                        result["number"], result["title"], result["url"]
-                    )
+                    text += "- {result['number']}: {result['title']} ({result['url']})\n"
                 update.message.reply_text(text, disable_web_page_preview=True)
         # No args == Random comic
         else:

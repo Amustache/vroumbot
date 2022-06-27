@@ -237,12 +237,7 @@ class Text(Base):
         ]
 
         update.message.reply_text(
-            "{} {} {} {}".format(
-                random.choice(first),
-                random.choice(second),
-                random.choice(third),
-                random.choice(fourth),
-            )
+            f"{random.choice(first)} {random.choice(second)} {random.choice(third)} {random.choice(fourth)}"
         )
 
         self.logger.info(f"{update.effective_user.first_name} gets a little motivation!")
