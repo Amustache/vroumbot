@@ -38,7 +38,6 @@ Notes:
 
 - You can run pre-commit independently using `pre-commit run --all-files`
 - If, for some reason, you need to commit without a check, use `git commit --no-verify [...]`
-- You can check you code using `python3 -m pylint *.py`
 
 ### Pull requests
 
@@ -46,7 +45,7 @@ We follow the [GitHub Flow](https://docs.github.com/en/get-started/quickstart/gi
 
 1. Fork the project or open a new branch.
 3. Complete your modifications.
-4. Merge the master branch.
+4. Merge the main branch.
 5. Open a PR.
 
 Moreover:
