@@ -86,14 +86,11 @@ def main() -> None:
     for handler in dispatcher.handlers[0]:
         try:
             commands += "{}\n".format(
-                "\n".join(
-                    "{} - {}".format(command, handler.callback.__name__)
-                    for command in handler.command
-                )
+                "\n".join(f"{command} - {handler.callback.__name__}" for command in handler.command)
             )
         except AttributeError:
             continue
-    print("{}\nList of commands\n{}\n{}".format("*" * 13, commands, "*" * 13))
+    print(f"{'*' * 13}\nList of commands\n{commands}\n{'*' * 13}")
 
     # Start the Bot
     updater.start_polling()

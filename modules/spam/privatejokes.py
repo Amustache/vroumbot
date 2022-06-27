@@ -44,7 +44,7 @@ class PrivateJoke(Base):
             "CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE"
         )
 
-        self.logger.info("{} gets a toutoutoutou!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a toutoutoutou!")
 
     def toutoutoutoum4a(self, update: Update, context: CallbackContext) -> None:
         """
@@ -55,7 +55,7 @@ class PrivateJoke(Base):
                 "CAACAgIAAxkBAAECenJg1f163I_8Uzc9UjymlOLV9yyxWAACywADwPsIAAEtUj0YdWOU7iAE"
             )
 
-        self.logger.info("{} gets a toutoutoutou!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a toutoutoutou!")
 
     def whoissciper(self, update: Update, context: CallbackContext) -> None:
         """
@@ -73,7 +73,7 @@ class PrivateJoke(Base):
             update.message.reply_text("Not a valid SCIPER.")
             return
 
-        URL = "https://people.epfl.ch/{}".format(sciper)
+        URL = f"https://people.epfl.ch/{sciper}"
         page = requests.get(URL)
         soup = BeautifulSoup(page.content, "html.parser")
 
@@ -83,11 +83,9 @@ class PrivateJoke(Base):
             update.message.reply_text("SCIPER not found or not public.")
             return
 
-        update.message.reply_text("{} is {}.".format(sciper, name))
+        update.message.reply_text(f"{sciper} is {name}.")
 
-        self.logger.info(
-            "{} wants informations about a SCIPER!".format(update.effective_user.first_name)
-        )
+        self.logger.info(f"{update.effective_user.first_name} wants informations about a SCIPER!")
 
     def whoisscipernsfw(self, update: Update, context: CallbackContext) -> None:
         """
@@ -104,12 +102,12 @@ class PrivateJoke(Base):
         #     update.message.reply_text("Not a valid SCIPER b-baka.")
         #     return
         #
-        # URL = "https://nhentai.to/g/{}".format(sciper)
+        # URL = f"https://nhentai.to/g/{sciper}"
         # page = requests.get(URL)
         # soup = BeautifulSoup(page.content, "html.parser")
         #
         # if soup.title.text == "Not Found":
-        #     update.message.reply_text("{} seems to be pure and innocent...".format(sciper))
+        #     update.message.reply_text(f"{sciper} seems to be pure and innocent...")
         #     return
         #
         # tags = [
@@ -123,13 +121,13 @@ class PrivateJoke(Base):
         #         tags_text.append(tag)
         #     if tags_text:
         #         update.message.reply_text(
-        #             "{} is linked to {}.".format(sciper, ", ".join(tags_text))
+        #             "{sciper} is linked to {', '.join(tags_text)}
         #         )
         #         return
         #
-        # update.message.reply_text("{} is a secretive pervert.".format(sciper))
+        # update.message.reply_text("{sciper} is a secretive pervert.")
 
-        self.logger.info("{} wants some kinks!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants some kinks!")
 
     def gender(self, update: Update, context: CallbackContext) -> None:
         """
@@ -138,7 +136,7 @@ class PrivateJoke(Base):
         context.bot.forward_message(update.message.chat.id, "59804991", "2626")
         context.bot.forward_message(update.message.chat.id, "59804991", "2627")
 
-        self.logger.info("{} got gendered!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} got gendered!")
 
     def carpe(self, update: Update, context: CallbackContext) -> None:
         """
@@ -148,7 +146,7 @@ class PrivateJoke(Base):
             with open(self._media("opinion.jpg"), "rb") as file:
                 update.message.reply_photo(photo=file)
 
-            self.logger.info("{} said ew!".format(update.effective_user.first_name))
+            self.logger.info(f"{update.effective_user.first_name} said ew!")
 
     def saisine(self, update: Update, context: CallbackContext) -> None:
         """
@@ -157,7 +155,7 @@ class PrivateJoke(Base):
         with open(self._media("saisine.mp3"), "rb") as file:
             update.message.reply_audio(audio=file)
 
-        self.logger.info("{} gets a SAISINE!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a SAISINE!")
 
     def horny(self, update: Update, context: CallbackContext) -> None:
         """
@@ -165,7 +163,7 @@ class PrivateJoke(Base):
         """
         context.bot.forward_message(update.message.chat.id, "59804991", "4168")
 
-        self.logger.info("{} found horny!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} found horny!")
 
     def crypto(self, update: Update, context: CallbackContext) -> None:
         """
@@ -175,7 +173,7 @@ class PrivateJoke(Base):
             "(But please don't actually bully people.)"
         )
 
-        self.logger.info("{} wants to bully!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants to bully!")
 
     def tiktok(self, update: Update, context: CallbackContext) -> None:
         """
@@ -184,9 +182,7 @@ class PrivateJoke(Base):
         with open(self._media("tiktok.jpg"), "rb") as file:
             update.message.reply_photo(photo=file, caption="choquer decu")
 
-        self.logger.info(
-            "{} is asking for cammonte's TikTok!".format(update.effective_user.first_name)
-        )
+        self.logger.info(f"{update.effective_user.first_name} is asking for cammonte's TikTok!")
 
     def stopdoing(self, update: Update, context: CallbackContext) -> None:
         """
@@ -195,7 +191,7 @@ class PrivateJoke(Base):
         context.bot.forward_message(update.message.chat.id, "59804991", "8467")
 
         self.logger.info(
-            "{} want people to stop doing stop doings!".format(update.effective_user.first_name)
+            f"{update.effective_user.first_name} want people to stop doing stop doings!"
         )
 
     def motiondordre(self, update: Update, context: CallbackContext) -> None:
@@ -206,4 +202,4 @@ class PrivateJoke(Base):
             "CAACAgQAAxkBAAEExKVihnArmBc-nZ9cPqHzmSdBSQMNeAACag0AAlAmkFE3l5sWuKJzWSQE"
         )
 
-        self.logger.info("{} gets a motion d'odre!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a motion d'odre!")
