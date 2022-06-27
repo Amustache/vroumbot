@@ -264,7 +264,7 @@ class Media(Base):
 
         userid = user.id
 
-        filename = os.path.join(self._media("randompic"), "{}.png".format(userid))
+        filename = os.path.join(self._media("randompic"), f"{userid}.png")
 
         if not os.path.isfile(filename):
             random.seed(userid)
@@ -318,9 +318,9 @@ class Media(Base):
         with open(filename, "rb") as file:
             update.message.reply_photo(
                 photo=file,
-                caption="This is {}'s exclusive generative art piece".format(user.first_name),
+                caption=f"This is {user.first_name}'s exclusive generative art piece",
             )
-        self.logger.info("{} wants a random pic!".format(user.first_name))
+        self.logger.info(f"{user.first_name} wants a random pic!")
 
     def pointeur(self, update: Update, context: CallbackContext) -> None:
         """
