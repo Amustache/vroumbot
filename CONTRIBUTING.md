@@ -1,17 +1,9 @@
 # Contributing
 
 - [Documentation](#documentation)
-  * [Available resources](#available-resources)
 - [Development](#development)
   * [Commits](#commits)
   * [Pull requests](#pull-requests)
-  * [Tests](#tests)
-  * [Documentation](#documentation-1)
-  * [Examples](#examples)
-- [Data](#data)
-  * [Data sources](#data-sources)
-  * [Semantics](#semantics)
-
 
 First of all, thank you for taking the time to help this project, it means a lot.
 
