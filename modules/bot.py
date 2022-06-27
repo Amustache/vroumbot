@@ -156,7 +156,7 @@ class Bot(Base):
         feedback = message, f"Date: {date}\nChat: {chat_id}\nMessage: {message_id}\nUser: {user}"
 
         try:
-            context.bot.sendMessage(chat_id=ADMIN_ID, text=f'{user} says "{message}"')
+            context.bot.sendMessage(chat_id=ADMIN_ID, text=f"{user} says '{message}'")
         except:
             pass
 
