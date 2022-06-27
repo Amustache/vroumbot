@@ -4,6 +4,7 @@
 - [Development](#development)
   * [Commits](#commits)
   * [Pull requests](#pull-requests)
+  * [Testing](#testing)
 
 First of all, thank you for taking the time to help this project, it means a lot.
 
@@ -55,3 +56,9 @@ Moreover:
 - The description may contain any additional information (the more the merrier!), but do not forget to mirror it in the documentation when needed.
 - Please take into account that your PR will result in one commit; you may want to squash/rebase yourself beforehand.
 - Please link the issues and the PR when needed.
+
+### Testing
+
+Please, test your bot before opening a PR. For that, you can very easily create a bot with BotFather, and use the commands in it. Just use its token in `secret.py`, and go wild.
+
+## Thank you in advance!
