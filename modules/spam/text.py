@@ -1,8 +1,9 @@
 """
 Text spam! Yay!
 """
+from time import sleep
+import datetime
 import random
-
 
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
@@ -30,6 +31,7 @@ class Text(Base):
             CommandHandler(["pep", "peptalk", "motivation", "motivational"], self.peptalk),
             CommandHandler("panik", self.panik),
             CommandHandler("cancel", self.cancelpasta),
+            CommandHandler("brainfuck", self.brainfuck),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -269,3 +271,91 @@ class Text(Base):
         update.message.reply_text(
             f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}.\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially coming from such prominent members of our community.\n\nIt's a shame to see you go, friend.\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
         )
+
+    def brainfuck(self, update: Update, context: CallbackContext) -> None:
+        max_cell_value = 255
+        do_wrapping = True
+
+        if not len(context.args) or len(context.args) > 2:
+            update.message.reply_text("Usage: /brainfuck code [input]")
+            return
+        elif len(context.args) == 1:
+            instr = context.args[0]
+            inputs = None
+        else:  # == 2
+            instr = context.args[0]
+            inputs = list(context.args[1])
+
+        data, data_ptr, instr_ptr = [0], 0, 0
+        result = ""
+
+        time_start = datetime.datetime.now()
+        while instr_ptr < len(instr):
+            command = instr[instr_ptr]
+
+            if command == ">":
+                data_ptr += 1
+                if data_ptr == len(data):
+                    data.append(0)
+            elif command == "<":
+                data_ptr -= 1
+                if data_ptr < 0:
+                    data_ptr = 0
+            elif command == "+":
+                data[data_ptr] += 1
+                if data[data_ptr] > max_cell_value:
+                    if do_wrapping:
+                        data[data_ptr] = 0
+                    else:
+                        data[data_ptr] = max_cell_value
+            elif command == "-":
+                data[data_ptr] -= 1
+                if data[data_ptr] < 0:
+                    if do_wrapping:
+                        data[data_ptr] = max_cell_value
+                    else:
+                        data[data_ptr] = 0
+            elif command == ".":
+                char_code = data[data_ptr]
+                if char_code == 7:  # bell
+                    result += "🔔"
+                elif char_code == 8:  # backspace
+                    result = result[:-1]
+                elif chr(char_code).isprintable():
+                    result += chr(char_code)
+                else:
+                    result += "�"
+            elif command == ",":
+                if inputs:
+                    data[data_ptr] = ord(inputs.pop(0))
+                else:
+                    update.message.reply_text(f"Error at position {instr_ptr}: `,` expected input but none was provided.")
+                    return
+            elif command == "[":
+                if data[data_ptr] == 0:
+                    braces = 1
+                    while braces > 0:
+                        instr_ptr += 1
+                        if instr[instr_ptr] == "[":
+                            braces += 1
+                        elif instr[instr_ptr] == "]":
+                            braces -= 1
+            elif command == "]":
+                braces = 1
+                while braces > 0:
+                    instr_ptr -= 1
+                    if instr[instr_ptr] == "[":
+                        braces -= 1
+                    elif instr[instr_ptr] == "]":
+                        braces += 1
+                instr_ptr -= 1
+            else:
+                update.message.reply_text(f"Error at position {instr_ptr}: unexpected `{command}`.")
+                return
+
+            instr_ptr += 1
+            if datetime.datetime.now() - time_start > datetime.timedelta(seconds=1):
+                update.message.reply_text(f"This is taking too much time :/")
+                return
+
+        update.message.reply_text(f"Interpreted: {result}")
