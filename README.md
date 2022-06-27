@@ -30,15 +30,18 @@ All the commands should be listed in [List of commands](https://github.com/Amust
 2. Clone the repo, `cd` into it.
 3. `python -m venv ./env; source ./env/bin/activate`
 4. `pip install -Ur requirements.txt`
-5. `cp secret.dist.py secret.py` and
+5. `pre-commit install`
+6. `cp secret.dist.py secret.py` and
    - `TOKEN`: [Your @BotFather token](https://core.telegram.org/bots).
    - `ADMIN_ID`: Your admin user ID. Can be the group ID.
    - `TRELLO_API_KEY`, `TRELLO_API_SECRET`, `TRELLO_FEEDBACK_BOARD`, `TRELLO_FEEDBACK_LIST`: If you want to use Trello.
    - `TRELLO_LINK`: link to the Trello.
-6. `./main.py` or `python ./main.py`
+7. `./main.py` or `python ./main.py`
 
 ## 🚗 Contribute 🚗
 ### 👉 You know how to code
+Please refer to our [CONTRIBUTING](./CONTRIBUTING.md) file!
+
 - To add a new functionality, please use the corresponding `module` (e.g., `modules.spam.text` for silly jokes).
 - To add a new module, please use the `base.py` file (i.e., add a new `<file>.py` in the `modules` folder, and create a class which inherits from `Base`).
 - Either case, don't forget to register your commands in `commandhandlers`!
@@ -50,12 +53,6 @@ All the commands should be listed in [List of commands](https://github.com/Amust
 - Add a corresponding `self.logger.info`.
 - Test it locally.
 - Add a description of it in the [wiki entry](https://github.com/Amustache/vroumbot/wiki/List-of-commands).
-
-**Instructions for adding things**:
-1. Fork this repo.
-2. Do your things.
-3. Stash into one commit, title containing any combination of vroum, message stating what you did.
-4. Open a PR.
 
 ### 👉 You don't know how to code
 You can either:
