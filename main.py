@@ -86,10 +86,7 @@ def main() -> None:
     for handler in dispatcher.handlers[0]:
         try:
             commands += "{}\n".format(
-                "\n".join(
-                    "{} - {}".format(command, handler.callback.__name__)
-                    for command in handler.command
-                )
+                "\n".join(f"{command} - {handler.callback.__name__}" for command in handler.command)
             )
         except AttributeError:
             continue

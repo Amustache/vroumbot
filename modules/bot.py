@@ -153,9 +153,7 @@ class Bot(Base):
         date = str(datetime.datetime.today())
         _, message = update.message.text.split(" ", 1)
 
-        feedback = message, "Date: {}\nChat: {}\nMessage: {}\nUser: {}".format(
-            date, chat_id, message_id, user
-        )
+        feedback = message, f"Date: {date}\nChat: {chat_id}\nMessage: {message_id}\nUser: {user}"
 
         try:
             context.bot.sendMessage(chat_id=ADMIN_ID, text=f'{user} says "{message}"')

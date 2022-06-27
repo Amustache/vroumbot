@@ -113,9 +113,7 @@ class Exp(Base):
             d1.text((178, 0), dbuser.userfirstname, font=font, fill=(0, 0, 0))
 
             # Info
-            text = "Level {} ({} msg, {} krm)".format(
-                dbuser.level, dbuser.num_messages, dbuser.karma
-            )
+            text = f"Level {dbuser.level} ({dbuser.num_messages} msg, {dbuser.karma} krm)"
             fontsize = 1
             font = ImageFont.truetype(font_path, fontsize)
             while font.getsize(text)[0] < 575:  # hardcoded
@@ -175,9 +173,7 @@ class Exp(Base):
                         level = dbuser.level
                         dbuser.save()
                     all_people.append(
-                        "{}. {}: Level {} ({} msg, {} krm).".format(
-                            i + 1, username, level, num_messages, karma
-                        )
+                        f"{i + 1}. {username}: Level {level} ({num_messages} msg, {karma} krm)."
                     )
             else:
                 break

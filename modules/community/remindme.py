@@ -132,9 +132,7 @@ class RemindMe(Base):
             )
 
             update.message.reply_text(
-                "I will remind you this {} ({})!".format(
-                    naturaltime(delta), str(delta).split(".", maxsplit=1)[0]
-                )
+                f"I will remind you this {naturaltime(delta)} ({str(delta).split('.', maxsplit=1)[0]})!"
             )
 
             self.logger.info(f"{update.effective_user.first_name} set an alarm!")
@@ -148,12 +146,7 @@ class RemindMe(Base):
         jobs = context.job_queue.jobs()
         if update.message.chat.type == CHAT_SUPERGROUP:
             liste = [
-                "- #<a href='https://t.me/c/{}/{}'>{}</a>: {}.".format(
-                    str(job.context["chat_id"])[4:],
-                    job.context["message_id"],
-                    job.context["message_id"],
-                    str(job.next_t).split(".", maxsplit=1)[0],
-                )
+                f"- #<a href='https://t.me/c/{str(job.context['chat_id'])[4:]}/{job.context['message_id']}'>{job.context['message_id']}</a>: {str(job.next_t).split('.', maxsplit=1)[0]}."
                 for job in jobs
                 if job.context["chat_id"] == update.message.chat_id
             ]
