@@ -260,8 +260,6 @@ class Media(Base):
         self.logger.info("{} now has an NFT!".format(user.first_name))
 
     def randompic(self, update: Update, context: CallbackContext) -> None:
-        import random
-
         """
         Your very own generative art piece!
         """
@@ -272,7 +270,7 @@ class Media(Base):
 
         userid = user.id
 
-        filename = os.path.join(self._media("nft"), "{}.png".format(userid))
+        filename = os.path.join(self._media("randompic"), "{}.png".format(userid))
 
         if not os.path.isfile(filename):
             random.seed(userid)
@@ -286,11 +284,6 @@ class Media(Base):
 
             colors = [r_color(), r_color(), r_color(), black, black, black]
 
-            binuserid = bin(userid)[2:].zfill(64)
-
-            vroumbot = "vroumbot"
-            binvroumbot = "".join(format(ord(x), "b").zfill(8) for x in vroumbot)
-
             if len(context.args) >= 1:
                 img_size = context.args[0]
             else:
@@ -300,19 +293,19 @@ class Media(Base):
                 img_size = int(img_size)
                 if img_size < 8:
                     update.message.reply_text(
-                        "Don't toy with the bot! Enter a valid integer between 8 and 512"
+                        "Don't toy with the bot! Enter a valid integer between 8 and 512."
                     )
                     return
 
                 if img_size > 512:
                     update.message.reply_text(
-                        "Don't toy with the bot! Enter a valid integer between 8 and 512"
+                        "Don't toy with the bot! Enter a valid integer between 8 and 512."
                     )
                     return
 
             except:
                 update.message.reply_text(
-                    "Don't toy with the bot! Enter a valid integer between 8 and 512"
+                    "Don't toy with the bot! Enter a valid integer between 8 and 512."
                 )
                 return
 
@@ -333,7 +326,7 @@ class Media(Base):
                 photo=file,
                 caption="This is {}'s exclusive generative art piece".format(user.first_name),
             )
-        self.logger.info("{} now has an NFT!".format(user.first_name))
+        self.logger.info("{} wants a random pic!".format(user.first_name))
 
     def pointeur(self, update: Update, context: CallbackContext) -> None:
         """
