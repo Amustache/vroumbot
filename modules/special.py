@@ -21,6 +21,7 @@ class Special(Base):
         ]
         super().__init__(logger, commandhandlers)
 
+    @command_enabled(default=True)
     def userid(self, update: Update, context: CallbackContext) -> None:
         """
         Get current userid or replied message's userid.

@@ -6,7 +6,7 @@ from telegram.error import BadRequest
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from ..base import Base, command_enabled
+from ..base import admin_only, Base, command_enabled
 from .helpers import get_user
 
 
@@ -143,17 +143,15 @@ class Karma(Base):
                 update.message.reply_text("No karma so far!")
             self.logger.info(f"{update.effective_user.first_name} wants to know the karmas!")
 
+    @admin_only
     def setkarma(self, update: Update, context: CallbackContext) -> None:
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
             try:
-                _, qt, pas = update.message.text.split(" ")
+                _, qt = update.message.text.split(" ")
                 qt = int(qt)
-                pas = int(pas)
             except ValueError:
-                return
-            if pas != 3 * qt + 2:  # Waiting admin decorator
                 return
             dbuser.karma += qt
             dbuser.save()
