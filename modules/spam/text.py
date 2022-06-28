@@ -286,6 +286,9 @@ class Text(Base):
 
     @command_enabled(default=False)
     def brainfuck(self, update: Update, context: CallbackContext) -> None:
+        """
+        Basically a brainfuck interpreter.
+        """
         max_cell_value = 255
         do_wrapping = True
 

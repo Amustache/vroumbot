@@ -18,6 +18,9 @@ class Services(Base):
 
     @command_enabled(default=True)
     def w2m(self, update: Update, context: CallbackContext) -> None:
+        """
+        For important meetings.
+        """
         try:
             _, start, end = update.message.text.split()
             start = int(start)

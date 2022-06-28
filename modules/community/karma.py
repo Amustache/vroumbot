@@ -145,6 +145,9 @@ class Karma(Base):
 
     @admin_only
     def setkarma(self, update: Update, context: CallbackContext) -> None:
+        """
+        Set karma of someone.
+        """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
@@ -153,7 +156,7 @@ class Karma(Base):
                 qt = int(qt)
             except ValueError:
                 return
-            dbuser.karma += qt
+            dbuser.karma = qt
             dbuser.save()
             self.logger.info(
                 f"{update.effective_user.first_name} changed karma of {user.first_name}!"
