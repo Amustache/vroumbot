@@ -24,9 +24,6 @@ def needed_exp(level, karma):
     return int((level ** 3.14) * (1 - (karma / (level ** 3.14))))
 
 
-GENDER, PHOTO, LOCATION, BIO = range(4)
-
-
 class Exp(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
