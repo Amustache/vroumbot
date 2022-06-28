@@ -155,6 +155,9 @@ class Karma(Base):
                 return
             dbuser.karma += qt
             dbuser.save()
+            self.logger.info(
+                f"{update.effective_user.first_name} changed karma of {user.first_name}!"
+            )
             try:
                 update.message.delete()
             except BadRequest:
