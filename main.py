@@ -8,10 +8,11 @@ Main! yay!
 import logging
 
 
-from peewee import BigIntegerField, CharField, IntegerField, Model, SqliteDatabase
 from telegram.ext import Updater
 
 
+from databases import ChatCommand, User
+from modules.admin import Admin
 from modules.bot import Bot
 from modules.community.exp import Exp
 from modules.community.karma import Karma
@@ -31,33 +32,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Database
-main_db = SqliteDatabase("./databases/main.db")
-
-
-class User(Model):
-    """
-    User model to access the database.
-    """
-
-    userid = BigIntegerField()
-    userfirstname = CharField(null=True)
-    chatid = BigIntegerField()
-    karma = IntegerField(default=0)
-    num_messages = IntegerField(default=0)
-    level = IntegerField(default=0)
-
-    class Meta:
-        """
-        Basically which database.
-        """
-
-        database = main_db
-
-
-main_db.connect()
-main_db.create_tables([User])
-
 
 def main() -> None:
     """Start the bot."""
@@ -71,6 +45,7 @@ def main() -> None:
     Bot(logger).add_commands(dispatcher)
     RemindMe(logger).add_commands(dispatcher)
     Special(logger).add_commands(dispatcher)
+    Admin(logger, table=ChatCommand).add_dispatcher(dispatcher).add_commands(dispatcher)
 
     # Community commands
     Exp(logger, table=User).add_commands(dispatcher)

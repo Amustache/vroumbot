@@ -10,7 +10,7 @@ from telegram.ext import CallbackContext, CommandHandler
 import dateparser
 
 
-from modules.base import Base
+from ..base import Base, command_enabled
 
 
 def naturaltime(delta):
@@ -101,6 +101,7 @@ class RemindMe(Base):
             job.context["chat_id"], text="Reminder!", reply_to_message_id=job.context["message_id"]
         )
 
+    @command_enabled(default=True)
     def remindme(self, update: Update, context: CallbackContext) -> None:
         """
         Create a remindme with a deadline in argument, in reply to a message.
@@ -139,6 +140,7 @@ class RemindMe(Base):
         except (IndexError, ValueError):
             update.message.reply_text("It seems like you used that command wrong. (:.")
 
+    @command_enabled(default=True)
     def allremindme(self, update: Update, context: CallbackContext) -> None:
         """
         Lists all remindme from a specific chat.

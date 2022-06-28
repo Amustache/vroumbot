@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from .base import Base
+from .base import admin_only, Base, command_enabled
 
 
 class Special(Base):
@@ -21,6 +21,7 @@ class Special(Base):
         ]
         super().__init__(logger, commandhandlers)
 
+    @command_enabled(default=True)
     def userid(self, update: Update, context: CallbackContext) -> None:
         """
         Get current userid or replied message's userid.
@@ -34,6 +35,7 @@ class Special(Base):
 
         self.logger.info(f"{user.first_name} wants their ID! It is {user.id}.")
 
+    @command_enabled(default=True)
     def chatid(self, update: Update, context: CallbackContext) -> None:
         """
         Get current chatid.
@@ -44,6 +46,7 @@ class Special(Base):
             f"{update.effective_user.first_name} wants the chat ID! It is {update.message.chat.id}."
         )
 
+    @command_enabled(default=True)
     def messageid(self, update: Update, context: CallbackContext) -> None:
         """
         Get replied message's messageid.

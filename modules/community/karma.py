@@ -6,7 +6,7 @@ from telegram.error import BadRequest
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from ..base import Base
+from ..base import admin_only, Base, command_enabled
 from .helpers import get_user
 
 
@@ -43,6 +43,7 @@ class Karma(Base):
 
         return {user.userid: [user.userfirstname, user.karma] for user in users}
 
+    @command_enabled(default=True)
     def change_karma(self, update: Update, context: CallbackContext) -> None:
         """
         Add karma to user by replying to a message.
@@ -99,6 +100,7 @@ class Karma(Base):
         else:
             update.message.reply_text("You must respond to a message to give karma.")
 
+    @command_enabled(default=True)
     def getkarma(self, update: Update, context: CallbackContext) -> None:
         """
         Give the karma score for a user by replying, or karma scores from a chat.
@@ -141,20 +143,24 @@ class Karma(Base):
                 update.message.reply_text("No karma so far!")
             self.logger.info(f"{update.effective_user.first_name} wants to know the karmas!")
 
+    @admin_only
     def setkarma(self, update: Update, context: CallbackContext) -> None:
+        """
+        Set karma of someone.
+        """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
             try:
-                _, qt, pas = update.message.text.split(" ")
+                _, qt = update.message.text.split(" ")
                 qt = int(qt)
-                pas = int(pas)
             except ValueError:
                 return
-            if pas != 3 * qt + 2:  # Waiting admin decorator
-                return
-            dbuser.karma += qt
+            dbuser.karma = qt
             dbuser.save()
+            self.logger.info(
+                f"{update.effective_user.first_name} changed karma of {user.first_name}!"
+            )
             try:
                 update.message.delete()
             except BadRequest:

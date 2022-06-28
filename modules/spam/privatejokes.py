@@ -10,7 +10,7 @@ from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandle
 import requests
 
 
-from ..base import Base
+from ..base import Base, command_enabled
 
 
 class PrivateJoke(Base):
@@ -36,6 +36,7 @@ class PrivateJoke(Base):
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
+    @command_enabled(default=False)
     def toutoutoutou(self, update: Update, context: CallbackContext) -> None:
         """
         The rythm is growing...
@@ -46,6 +47,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a toutoutoutou!")
 
+    @command_enabled(default=False)
     def toutoutoutoum4a(self, update: Update, context: CallbackContext) -> None:
         """
         Actual rythm growing.
@@ -57,6 +59,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a toutoutoutou!")
 
+    @command_enabled(default=False)
     def whoissciper(self, update: Update, context: CallbackContext) -> None:
         """
         SCIPER to name.
@@ -87,6 +90,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants informations about a SCIPER!")
 
+    @command_enabled(default=False)
     def whoisscipernsfw(self, update: Update, context: CallbackContext) -> None:
         """
         SCIPER to kinks.
@@ -129,6 +133,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants some kinks!")
 
+    @command_enabled(default=False)
     def gender(self, update: Update, context: CallbackContext) -> None:
         """
         PANIK.
@@ -138,6 +143,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} got gendered!")
 
+    @command_enabled(default=False)
     def carpe(self, update: Update, context: CallbackContext) -> None:
         """
         Because no one likes him.
@@ -148,6 +154,7 @@ class PrivateJoke(Base):
 
             self.logger.info(f"{update.effective_user.first_name} said ew!")
 
+    @command_enabled(default=False)
     def saisine(self, update: Update, context: CallbackContext) -> None:
         """
         The storm is approaching...
@@ -157,6 +164,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a SAISINE!")
 
+    @command_enabled(default=False)
     def horny(self, update: Update, context: CallbackContext) -> None:
         """
         Vos moeurs toussa.
@@ -165,6 +173,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} found horny!")
 
+    @command_enabled(default=False)
     def crypto(self, update: Update, context: CallbackContext) -> None:
         """
         bullying cryptobros is never unethical.
@@ -175,6 +184,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants to bully!")
 
+    @command_enabled(default=False)
     def tiktok(self, update: Update, context: CallbackContext) -> None:
         """
         It is a statement.
@@ -184,6 +194,7 @@ class PrivateJoke(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is asking for cammonte's TikTok!")
 
+    @command_enabled(default=False)
     def stopdoing(self, update: Update, context: CallbackContext) -> None:
         """
         This meme template was supposed to be satire.
@@ -194,6 +205,7 @@ class PrivateJoke(Base):
             f"{update.effective_user.first_name} want people to stop doing stop doings!"
         )
 
+    @command_enabled(default=False)
     def motiondordre(self, update: Update, context: CallbackContext) -> None:
         """
         The rythm is growing...

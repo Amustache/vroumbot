@@ -15,7 +15,7 @@ from telegram.ext import CallbackContext, CommandHandler
 import requests
 
 
-from ..base import Base
+from ..base import Base, command_enabled
 
 
 class Media(Base):
@@ -43,10 +43,12 @@ class Media(Base):
             CommandHandler(["xkcd", "insertRelevantXKCDComicHere"], self.xkcd),
             CommandHandler("funny", self.funny),
             CommandHandler(["gm", "goodmorning"], self.gm),
+            CommandHandler("spam", self.spam),
             CommandHandler(["generative"], self.randompic),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
+    @command_enabled(default=True)
     def random_cat(self, update: Update, context: CallbackContext) -> None:
         """
         Random cat from a (currated) list.
@@ -114,6 +116,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants a cat pic!")
 
+    @command_enabled(default=True)
     def brrou(self, update: Update, context: CallbackContext) -> None:
         """
         A very special cat.
@@ -126,6 +129,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants a Brrou pic!")
 
+    @command_enabled(default=False)
     def froj(self, update: Update, context: CallbackContext) -> None:
         """
         FROJ
@@ -138,6 +142,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants a froj pic!")
 
+    @command_enabled(default=False)
     def spin(self, update: Update, context: CallbackContext) -> None:
         """
         SPIN
@@ -147,6 +152,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a SPEEN!")
 
+    @command_enabled(default=False)
     def bonjour(self, update: Update, context: CallbackContext) -> None:
         """
         BONJOUR A TOUTES ET TOUT
@@ -156,6 +162,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a bonjour à toutes et tous!")
 
+    @command_enabled(default=False)
     def stupid(self, update: Update, context: CallbackContext) -> None:
         """
         A little song for a little dumb
@@ -165,6 +172,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is being really stupid right now!")
 
+    @command_enabled(default=False)
     def heretic(self, update: Update, context: CallbackContext) -> None:
         """
         HERESY TIME
@@ -174,6 +182,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} likes being a heretic!")
 
+    @command_enabled(default=False)
     def bricole(self, update: Update, context: CallbackContext) -> None:
         """
         Best song
@@ -183,6 +192,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants to BRICOLE!")
 
+    @command_enabled(default=False)
     def trolled(self, update: Update, context: CallbackContext) -> None:
         """
         A little song when someone gets trolled
@@ -192,6 +202,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name}'s just been trolled!")
 
+    @command_enabled(default=False)
     def nft(self, update: Update, context: CallbackContext) -> None:
         """
         Your very own NFT!
@@ -322,6 +333,7 @@ class Media(Base):
             )
         self.logger.info(f"{user.first_name} wants a random pic!")
 
+    @command_enabled(default=False)
     def pointeur(self, update: Update, context: CallbackContext) -> None:
         """
         Ici,on baise tous les pointeurs.
@@ -331,6 +343,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} baise tous les pointeurs!")
 
+    @command_enabled(default=False)
     def dumb(self, update: Update, context: CallbackContext) -> None:
         """
         You are dumb in harmonic.
@@ -340,6 +353,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is calling someone dumb!")
 
+    @command_enabled(default=False)
     def sorrydumb(self, update: Update, context: CallbackContext) -> None:
         """
         Sorry to calling you dumb in harmonic.
@@ -349,6 +363,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is sorry for calling someone dumb!")
 
+    @command_enabled(default=False)
     def random_dog(self, update: Update, context: CallbackContext) -> None:
         """
         Random dog from API.
@@ -409,6 +424,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants a dog pic!")
 
+    @command_enabled(default=False)
     def misty(self, update: Update, context: CallbackContext) -> None:
         """
         A very special dog.
@@ -421,6 +437,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants a Misty pic!")
 
+    @command_enabled(default=True)
     def xkcd(self, update: Update, context: CallbackContext) -> None:
         """
         Random XKCD
@@ -490,6 +507,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name} wants some XKCD!")
 
+    @command_enabled(default=False)
     def funny(self, update: Update, context: CallbackContext) -> None:
         """
         That's funny
@@ -499,6 +517,7 @@ class Media(Base):
 
         self.logger.info(f"{update.effective_user.first_name}'s found something funny!")
 
+    @command_enabled(default=False)
     def gm(self, update: Update, context: CallbackContext) -> None:
         """
         Good morning y'all!
@@ -507,3 +526,13 @@ class Media(Base):
             update.message.reply_text("Good morning y'all!").reply_video(video=file)
 
         self.logger.info(f"{update.effective_user.first_name}'s says good morning y'all!")
+
+    @command_enabled(default=True)
+    def spam(self, update: Update, context: CallbackContext) -> None:
+        """
+        Because, y'know. Guns kill people.
+        """
+        with open(self._media("spam.jpg"), "rb") as file:
+            update.message.reply_photo(photo=file)
+
+        self.logger.info(f"{update.effective_user.first_name} calls for spam!")

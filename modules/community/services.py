@@ -6,7 +6,7 @@ from telegram.ext import CallbackContext, CommandHandler
 import requests
 
 
-from ..base import Base
+from ..base import Base, command_enabled
 
 
 class Services(Base):
@@ -16,7 +16,11 @@ class Services(Base):
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media")
 
+    @command_enabled(default=True)
     def w2m(self, update: Update, context: CallbackContext) -> None:
+        """
+        For important meetings.
+        """
         try:
             _, start, end = update.message.text.split()
             start = int(start)

@@ -5,12 +5,13 @@ from time import sleep
 import datetime
 import random
 
+
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 import requests
 
 
-from ..base import Base
+from ..base import Base, command_enabled
 
 
 class Text(Base):
@@ -35,6 +36,7 @@ class Text(Base):
         ]
         super().__init__(logger, commandhandlers)
 
+    @command_enabled(default=True)
     def vroum(self, update: Update, context: CallbackContext) -> None:
         """
         Vroum!
@@ -43,6 +45,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a Vroum!")
 
+    @command_enabled(default=False)
     def vroom(self, update: Update, context: CallbackContext) -> None:
         """
         nO.
@@ -51,6 +54,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a 😠!")
 
+    @command_enabled(default=False)
     def dad(self, update: Update, context: CallbackContext) -> None:
         """
         Random dad joke
@@ -68,6 +72,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a dad joke!")
 
+    @command_enabled(default=False)
     def boop(self, update: Update, context: CallbackContext) -> None:
         """
         boop/beep/beep/boop
@@ -83,6 +88,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a {text}!")
 
+    @command_enabled(default=False)
     def tut(self, update: Update, context: CallbackContext) -> None:
         """
         tut
@@ -91,6 +97,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a tut!")
 
+    @command_enabled(default=False)
     def keysmash(self, update: Update, context: CallbackContext) -> None:
         """
         Bottom generator
@@ -115,6 +122,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is keysmashing!")
 
+    @command_enabled(default=False)
     def oh(self, update: Update, context: CallbackContext) -> None:
         """
         Oooh
@@ -132,6 +140,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is in awe!")
 
+    @command_enabled(default=False)
     def xd(self, update: Update, context: CallbackContext) -> None:
         """
         XDDD
@@ -151,6 +160,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is in XDing real hard!")
 
+    @command_enabled(default=True)
     def peptalk(self, update: Update, context: CallbackContext) -> None:
         """
         When you need a bit of motivation!
@@ -244,6 +254,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} gets a little motivation!")
 
+    @command_enabled(default=False)
     def panik(self, update: Update, context: CallbackContext) -> None:
         """
         pANIK...
@@ -254,6 +265,7 @@ class Text(Base):
 
         self.logger.info(f"{update.effective_user.first_name} is pANIK!")
 
+    @command_enabled(default=False)
     def cancelpasta(self, update: Update, context: CallbackContext) -> None:
         """
         It's cancel time.
@@ -272,7 +284,11 @@ class Text(Base):
             f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}.\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially coming from such prominent members of our community.\n\nIt's a shame to see you go, friend.\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
         )
 
+    @command_enabled(default=False)
     def brainfuck(self, update: Update, context: CallbackContext) -> None:
+        """
+        Basically a brainfuck interpreter.
+        """
         max_cell_value = 255
         do_wrapping = True
 
@@ -329,7 +345,9 @@ class Text(Base):
                 if inputs:
                     data[data_ptr] = ord(inputs.pop(0))
                 else:
-                    update.message.reply_text(f"Error at position {instr_ptr}: `,` expected input but none was provided.")
+                    update.message.reply_text(
+                        f"Error at position {instr_ptr}: `,` expected input but none was provided."
+                    )
                     return
             elif command == "[":
                 if data[data_ptr] == 0:
