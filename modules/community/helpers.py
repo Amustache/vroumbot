@@ -2,6 +2,9 @@ from collections import Counter
 import json
 
 
+from telegram.ext import CallbackContext
+
+
 def get_user(table, userid, chatid):
     """
     Return the user from the database.
@@ -47,3 +50,71 @@ def get_num_messages(filepath):
 
 def get_obfuscated_num_messages(filepath):
     return obfuscate(get_num_messages(filepath))
+
+
+def naturaltime(delta):
+    """
+    Return a nice phrasing for the remaining time.
+    :param delta: datetime.timedelta
+    :return: Phrasing: String.
+    """
+    time_strings = {
+        "now": "now",
+        "second": ("in a second", "in {} seconds"),
+        "minute": ("in a minute", "in {} minutes"),
+        "hour": ("in an hour", "in {} hours"),
+        "day": ("in a day", "in {} days"),
+        "week": ("in a week", "in {} weeks"),
+        "month": ("in a month", "in {} months"),
+        "year": ("in a year", "in {} years"),
+    }
+
+    if delta.days != 0:
+        if delta.days < 7:
+            if delta.days == 1:
+                return time_strings["day"][0]
+            else:
+                return time_strings["day"][1].format(delta.days)
+        elif delta.days // 7 < 4:
+            if delta.days // 7 == 1:
+                return time_strings["week"][0]
+            else:
+                return time_strings["week"][1].format(delta.days // 7)
+        elif delta.days // 7 // 4 < 12:
+            if delta.days // 7 // 4 == 1:
+                return time_strings["month"][0]
+            else:
+                return time_strings["month"][1].format(delta.days // 7 // 4)
+        else:
+            if delta.days // 7 // 4 // 12 == 1:
+                return time_strings["year"][0]
+            else:
+                return time_strings["year"][1].format(delta.days // 7 // 4 // 12)
+    else:
+        if delta.seconds == 0:
+            return time_strings["now"]
+        elif delta.seconds < 60:
+            if delta.seconds == 1:
+                return time_strings["second"][0]
+            else:
+                return time_strings["second"][1].format(delta.seconds)
+        elif delta.seconds // 60 < 60:
+            if delta.seconds // 60 == 1:
+                return time_strings["minute"][0]
+            else:
+                return time_strings["minute"][1].format(delta.seconds // 60)
+        else:
+            if delta.seconds // 60 // 60 == 1:
+                return time_strings["hour"][0]
+            else:
+                return time_strings["hour"][1].format(delta.seconds // 60 // 60)
+
+
+def alarm(context: CallbackContext) -> None:
+    """
+    Helper function to send the actual alarm message.
+    """
+    job = context.job
+    context.bot.send_message(
+        job.context["chat_id"], text="Reminder!", reply_to_message_id=job.context["message_id"]
+    )

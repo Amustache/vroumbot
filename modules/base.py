@@ -84,7 +84,9 @@ class Base:
     Base class to add new features in the bot.
     """
 
-    def __init__(self, logger=None, commandhandlers=None, table=None, mediafolder=None):
+    def __init__(
+        self, logger=None, commandhandlers=None, table=None, mediafolder=None, dispatcher=None
+    ):
         """
         :param logger: logging.getLogger, when using a logger.
         :param commandhandlers: [telegram.ext.CommandHandler], for command handling.
@@ -94,6 +96,7 @@ class Base:
         self.commandhandlers = commandhandlers
         self.table = table
         self.mediafolder = mediafolder
+        self.dispatcher = dispatcher
 
     def _media(self, filename=""):
         if self.mediafolder:

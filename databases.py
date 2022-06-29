@@ -5,6 +5,9 @@ from peewee import BigIntegerField, CharField, DateTimeField, IntegerField, Mode
 
 
 # Database
+from modules.community.helpers import alarm
+
+
 main_db = SqliteDatabase("./databases/main.db")
 
 
@@ -46,6 +49,38 @@ class ChatCommand(Model):
         database = main_db
 
 
+class ChatJob(Model):
+    """
+    Chat command model to access the database.
+    """
+
+    chatid = BigIntegerField()
+    messageid = BigIntegerField()
+    fun = CharField()
+    deadline = DateTimeField()
+
+    class Meta:
+        """
+        Basically which database.
+        """
+
+        database = main_db
+
+
+def start_jobs_in_database(dispatcher, fun):
+    for job in ChatJob.select().where(ChatJob.fun == fun.__name__):
+        delta = (job.deadline - datetime.datetime.now()) + datetime.timedelta(seconds=1)
+        if delta.total_seconds() < 1:
+            job.delete_instance()
+        else:
+            dispatcher.job_queue.run_once(
+                fun,
+                delta.total_seconds(),
+                context={"chat_id": job.chatid, "message_id": job.messageid},
+                name="{}_{}".format(job.chatid, job.messageid),
+            )
+
+
 # class ChatModule(Model):
 #     """
 #     Chat command model to access the database.
@@ -64,4 +99,4 @@ class ChatCommand(Model):
 
 
 main_db.connect()
-main_db.create_tables([User, ChatCommand])
+main_db.create_tables([User, ChatCommand, ChatJob])

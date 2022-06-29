@@ -24,7 +24,7 @@ def needed_exp(level, karma):
     # Dirty hack
     if level == 1:
         return 5
-    return int((level ** 3.14) * (1 - (karma / (level ** 3.14))))
+    return int((level**3.14) * (1 - (karma / (level**3.14))))
 
 
 class Exp(Base):
