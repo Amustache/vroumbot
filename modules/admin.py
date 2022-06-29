@@ -1,5 +1,5 @@
 """
-Admin commands.
+Module that contains admin commands.
 """
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler

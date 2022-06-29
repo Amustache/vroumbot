@@ -208,7 +208,7 @@ class PrivateJoke(Base):
     @command_enabled(default=False)
     def motiondordre(self, update: Update, context: CallbackContext) -> None:
         """
-        The rythm is growing...
+        Motion d'ordre!
         """
         update.message.reply_sticker(
             "CAACAgQAAxkBAAEExKVihnArmBc-nZ9cPqHzmSdBSQMNeAACag0AAlAmkFE3l5sWuKJzWSQE"

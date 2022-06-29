@@ -118,7 +118,7 @@ class Bot(Base):
 
     def help_command(self, update: Update, context: CallbackContext) -> None:
         """
-        Don't forget to update this manually.
+        List a subset of selected commands.
         """
 
         text = "Available commands:\n"
@@ -127,7 +127,7 @@ class Bot(Base):
                 text += f"/{line}"
         text += "\n... And more.\n"
         text += "All the commands and their descriptions are available here: "
-        text += "https://github.com/Amustache/vroumbot/wiki/List-of-commands"
+        text += "https://github.com/Amustache/vroumbot/wiki/Commands"
 
         update.message.reply_text(text, disable_web_page_preview=True)
 
@@ -135,7 +135,7 @@ class Bot(Base):
 
     def contribute(self, update: Update, context: CallbackContext) -> None:
         """
-        To get the Git, basically.
+        How to contribute. To get the Git repo, basically.
         """
         update.message.reply_text(
             "Want to contribute? Use `/feedback <your proposition>` or go to https://github.com/Amustache/vroumbot!"

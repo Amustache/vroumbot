@@ -144,6 +144,7 @@ class Karma(Base):
             self.logger.info(f"{update.effective_user.first_name} wants to know the karmas!")
 
     @admin_only
+    @command_enabled(default=True)
     def setkarma(self, update: Update, context: CallbackContext) -> None:
         """
         Set karma of someone.

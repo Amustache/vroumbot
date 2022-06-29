@@ -1,3 +1,6 @@
+"""
+Level up, baby!
+"""
 import ast
 import os
 
@@ -25,6 +28,10 @@ def needed_exp(level, karma):
 
 
 class Exp(Base):
+    """
+    Level up, baby!
+    """
+
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             MessageHandler(~Filters.command, self.add_message),

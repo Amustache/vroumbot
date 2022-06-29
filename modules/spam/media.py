@@ -35,6 +35,7 @@ class Media(Base):
             CommandHandler("bricole", self.bricole),
             CommandHandler(["trolled", "cliquesurmoi", "playsound"], self.trolled),
             CommandHandler(["nft", "scam"], self.nft),
+            CommandHandler(["generative"], self.randompic),
             CommandHandler(["pointeur", "baisepointeur"], self.pointeur),
             CommandHandler(["dum", "dumb"], self.dumb),
             CommandHandler(["srydum", "sorrydumb", "sorrydum", "srydumb"], self.sorrydumb),
@@ -44,7 +45,6 @@ class Media(Base):
             CommandHandler("funny", self.funny),
             CommandHandler(["gm", "goodmorning"], self.gm),
             CommandHandler("spam", self.spam),
-            CommandHandler(["generative"], self.randompic),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -264,6 +264,7 @@ class Media(Base):
 
         self.logger.info(f"{user.first_name} now has an NFT!")
 
+    @command_enabled(default=False)
     def randompic(self, update: Update, context: CallbackContext) -> None:
         """
         Your very own generative art piece!
