@@ -79,7 +79,7 @@ class Exp(Base):
     @command_enabled(default=True)
     def levelup_update(self, update: Update, context: CallbackContext):
         """
-        Placeholder function to send a level update.
+        Placeholder function to send a level update (basically used to disable firing the levelup pic).
         """
         user = update.effective_user
         dbuser = get_user(self.table, user.id, update.message.chat.id)
