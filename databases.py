@@ -5,6 +5,9 @@ from peewee import BigIntegerField, CharField, DateTimeField, IntegerField, Mode
 
 
 # Database
+from modules.community.helpers import alarm
+
+
 main_db = SqliteDatabase("./databases/main.db")
 
 
@@ -63,17 +66,19 @@ class ChatJob(Model):
         database = main_db
 
 
-for job in ChatJob.select():
-    delta = (job.deadline - datetime.datetime.now()) + datetime.timedelta(seconds=1)
-    if delta.total_seconds() < 1:
-        job.delete_instance()
-    else:
-        dispatcher.job_queue.run_once(
-            None,
-            delta.total_seconds(),
-            context={"chat_id": job.chatid, "message_id": job.messageid},
-            name="{}_{}".format(job.chatid, job.messageid),
-        )
+def start_jobs_in_database(dispatcher):
+    for job in ChatJob.select():
+        delta = (job.deadline - datetime.datetime.now()) + datetime.timedelta(seconds=1)
+        if delta.total_seconds() < 1:
+            job.delete_instance()
+        else:
+            dispatcher.job_queue.run_once(
+                alarm,
+                delta.total_seconds(),
+                context={"chat_id": job.chatid, "message_id": job.messageid},
+                name="{}_{}".format(job.chatid, job.messageid),
+            )
+
 
 # class ChatModule(Model):
 #     """
@@ -93,4 +98,4 @@ for job in ChatJob.select():
 
 
 main_db.connect()
-main_db.create_tables([User, ChatCommand])
+main_db.create_tables([User, ChatCommand, ChatJob])

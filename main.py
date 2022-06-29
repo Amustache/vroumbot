@@ -11,7 +11,7 @@ import logging
 from telegram.ext import Updater
 
 
-from databases import ChatCommand, User
+from databases import ChatCommand, ChatJob, start_jobs_in_database, User
 from modules.admin import Admin
 from modules.bot import Bot
 from modules.community.exp import Exp
@@ -43,7 +43,7 @@ def main() -> None:
 
     # Commands
     Bot(logger).add_commands(dispatcher)
-    RemindMe(logger).add_commands(dispatcher)
+    RemindMe(logger, table=ChatJob).add_commands(dispatcher)
     Special(logger).add_commands(dispatcher)
     Admin(logger, table=ChatCommand).add_dispatcher(dispatcher).add_commands(dispatcher)
 
@@ -66,6 +66,9 @@ def main() -> None:
         except AttributeError:
             continue
     print(f"{'*' * 13}\nList of commands\n{commands}\n{'*' * 13}")
+
+    # Jobs
+    start_jobs_in_database(dispatcher)
 
     # Start the Bot
     updater.start_polling()
