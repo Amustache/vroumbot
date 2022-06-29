@@ -10,6 +10,9 @@ from telegram.ext import CallbackContext, CommandHandler
 import dateparser
 
 
+from databases import start_jobs_in_database
+
+
 from ..base import Base, command_enabled
 from .helpers import alarm, naturaltime
 
@@ -19,7 +22,7 @@ class RemindMe(Base):
     Reminders and alarms within a groupchat.
     """
 
-    def __init__(self, logger=None, table=None):
+    def __init__(self, logger=None, table=None, dispatcher=None):
         commandhandlers = [
             CommandHandler(["remindme", "remind_me", "set", "alarm"], self.remindme),
             CommandHandler(
@@ -31,7 +34,11 @@ class RemindMe(Base):
                 self.allremindme,
             ),
         ]
-        super().__init__(logger, commandhandlers, table)
+        super().__init__(
+            logger=logger, commandhandlers=commandhandlers, table=table, dispatcher=dispatcher
+        )
+
+        start_jobs_in_database(self.dispatcher, alarm)
 
     # Borrowed from https://github.com/django/django/blob/main/django/contrib/humanize/templatetags/humanize.py#L169, but worse
 
@@ -45,7 +52,6 @@ class RemindMe(Base):
 
         try:
             _, message = update.message.text.split(" ", 1)
-            print(message)
             interpreted = dateparser.parse(message)
             if not interpreted:
                 update.message.reply_text("I didn't understand, sorry...")
@@ -67,7 +73,9 @@ class RemindMe(Base):
             )
 
             # Add job to database in case of crash
-            self.table.create(chatid=chat_id, messageid=message_id, deadline=interpreted)
+            self.table.create(
+                chatid=chat_id, messageid=message_id, deadline=interpreted, fun=alarm.__name__
+            )
 
             update.message.reply_text(
                 f"I will remind you this {naturaltime(delta)} ({str(delta).split('.', maxsplit=1)[0]})!"

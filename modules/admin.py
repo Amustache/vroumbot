@@ -39,7 +39,7 @@ class Admin(Base):
     Admin commands.
     """
 
-    def __init__(self, logger=None, table=None):
+    def __init__(self, logger=None, table=None, dispatcher=None):
         self.dispatcher = None
         commandhandlers = [
             CommandHandler(
@@ -48,11 +48,9 @@ class Admin(Base):
             CommandHandler(["enablemodule", "disablemodule"], self.enablemodule),
             CommandHandler("amiadmin", self.amiadmin),
         ]
-        super().__init__(logger, commandhandlers, table)
-
-    def add_dispatcher(self, dispatcher):
-        self.dispatcher = dispatcher
-        return self
+        super().__init__(
+            logger=logger, commandhandlers=commandhandlers, table=table, dispatcher=dispatcher
+        )
 
     @admin_only
     def amiadmin(self, update: Update, context: CallbackContext) -> None:

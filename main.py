@@ -43,9 +43,9 @@ def main() -> None:
 
     # Commands
     Bot(logger).add_commands(dispatcher)
-    RemindMe(logger, table=ChatJob).add_commands(dispatcher)
+    RemindMe(logger, table=ChatJob, dispatcher=dispatcher).add_commands(dispatcher)
     Special(logger).add_commands(dispatcher)
-    Admin(logger, table=ChatCommand).add_dispatcher(dispatcher).add_commands(dispatcher)
+    Admin(logger, table=ChatCommand, dispatcher=dispatcher).add_commands(dispatcher)
 
     # Community commands
     Exp(logger, table=User).add_commands(dispatcher)
@@ -66,9 +66,6 @@ def main() -> None:
         except AttributeError:
             continue
     print(f"{'*' * 13}\nList of commands\n{commands}\n{'*' * 13}")
-
-    # Jobs
-    start_jobs_in_database(dispatcher)
 
     # Start the Bot
     updater.start_polling()

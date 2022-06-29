@@ -56,6 +56,7 @@ class ChatJob(Model):
 
     chatid = BigIntegerField()
     messageid = BigIntegerField()
+    fun = CharField()
     deadline = DateTimeField()
 
     class Meta:
@@ -66,14 +67,14 @@ class ChatJob(Model):
         database = main_db
 
 
-def start_jobs_in_database(dispatcher):
-    for job in ChatJob.select():
+def start_jobs_in_database(dispatcher, fun):
+    for job in ChatJob.select().where(ChatJob.fun == fun.__name__):
         delta = (job.deadline - datetime.datetime.now()) + datetime.timedelta(seconds=1)
         if delta.total_seconds() < 1:
             job.delete_instance()
         else:
             dispatcher.job_queue.run_once(
-                alarm,
+                fun,
                 delta.total_seconds(),
                 context={"chat_id": job.chatid, "message_id": job.messageid},
                 name="{}_{}".format(job.chatid, job.messageid),
