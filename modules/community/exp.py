@@ -35,12 +35,65 @@ class Exp(Base):
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             MessageHandler(~Filters.command, self.add_message),
+            CommandHandler(["levelup", "levelupdate"], self.levelup_update),
             CommandHandler(["level", "mylevel"], self.get_level),
             CommandHandler(["levels", "leaderboard"], self.get_leaderboard),
             CommandHandler(["reset_levels"], self.reset_from_history),
             MessageHandler(Filters.document, self.get_obfuscated_history),
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media/exp")
+
+    def _generate_pic(self, username, level, text, pic):
+        filename = os.path.join(self._media("basis"), f"({level}).png")
+
+        with Image.open(filename).convert("RGBA") as image:
+            picname = self._media("temp.webp")
+
+            font_path = self._media("ReemKufi-Regular.ttf")
+            d1 = ImageDraw.Draw(image)
+
+            # Icon
+            icon = Image.open(self._media(f"icons/{pic}.png")).convert("RGBA")
+            image.paste(icon, box=(45, 46), mask=icon)  # hardcoded
+
+            # Title
+            fontsize = 70  # hardcoded
+            font = ImageFont.truetype(font_path, fontsize)
+            while font.getsize(username)[0] > 575:  # hardcoded
+                fontsize -= 1
+                font = ImageFont.truetype(font_path, fontsize)
+            d1.text((178, 0), username, font=font, fill=(0, 0, 0))
+
+            # Info
+            fontsize = 1
+            font = ImageFont.truetype(font_path, fontsize)
+            while font.getsize(text)[0] < 575:  # hardcoded
+                fontsize += 1
+                font = ImageFont.truetype(font_path, fontsize)
+            d1.text((178, 90), text, font=font, fill=(0, 0, 0))  # hardcoded
+
+            image.save(picname, "WEBP")
+
+            return picname
+
+    @command_enabled(default=True)
+    def levelup_update(self, update: Update, context: CallbackContext):
+        """
+        Placeholder function to send a level update.
+        """
+        user = update.effective_user
+        dbuser = get_user(self.table, user.id, update.message.chat.id)
+
+        text = f"{dbuser.userfirstname} is now Level {dbuser.level}"
+        picname = self._generate_pic(dbuser.userfirstname, dbuser.level, text, "stonks")
+
+        with open(picname, "rb") as file:
+            update.message.reply_document(
+                document=file,
+                caption=text,
+            )
+
+        os.remove(picname)
 
     def add_message(self, update: Update, context: CallbackContext):
         """
@@ -55,40 +108,10 @@ class Exp(Base):
         while dbuser.num_messages > needed_exp(dbuser.level, dbuser.karma):
             dbuser.level += 1
 
-        if change != dbuser.level:
-            filename = os.path.join(self._media("basis"), f"({dbuser.level}).png")
-            with Image.open(filename).convert("RGBA") as image:
-                font_path = self._media("ReemKufi-Regular.ttf")
-                d1 = ImageDraw.Draw(image)
-
-                # Icon
-                icon = Image.open(self._media("icons/stonks.png")).convert("RGBA")
-                image.paste(icon, box=(45, 46), mask=icon)  # hardcoded
-
-                # Title
-                font = ImageFont.truetype(font_path, 70)  # hardcoded
-                d1.text((178, 0), "Level Up!", font=font, fill=(0, 0, 0))
-
-                # Info
-                text = f"{dbuser.userfirstname} is now Level {dbuser.level}"
-                fontsize = 1
-                font = ImageFont.truetype(font_path, fontsize)
-                while font.getsize(text)[0] < 575:  # hardcoded
-                    fontsize += 1
-                    font = ImageFont.truetype(font_path, fontsize)
-                d1.text((178, 90), text, font=font, fill=(0, 0, 0))  # hardcoded
-
-                image.save("temp.webp", "WEBP")
-
-            with open("temp.webp", "rb") as file:
-                update.message.reply_document(
-                    document=file,
-                    caption=text,
-                )
-
-            os.remove("temp.webp")
-
         dbuser.save()
+
+        if change != dbuser.level:
+            self.levelup_update(update, context)
 
     @command_enabled(default=True)
     def get_level(self, update: Update, context: CallbackContext):
@@ -106,41 +129,16 @@ class Exp(Base):
             dbuser = get_user(self.table, user.id, update.message.chat.id)
         dbuser.userfirstname = user.first_name
 
-        filename = os.path.join(self._media("basis"), f"({dbuser.level}).png")
-        with Image.open(filename).convert("RGBA") as image:
-            font_path = self._media("ReemKufi-Regular.ttf")
-            d1 = ImageDraw.Draw(image)
+        text = f"Level {dbuser.level} ({dbuser.num_messages} msg, {dbuser.karma} krm)"
+        picname = self._generate_pic(dbuser.userfirstname, dbuser.level, text, "info")
 
-            # Icon
-            icon = Image.open(self._media("icons/info.png")).convert("RGBA")
-            image.paste(icon, box=(45, 46), mask=icon)  # hardcoded
-
-            # Title
-            fontsize = 70  # hardcoded
-            font = ImageFont.truetype(font_path, fontsize)
-            while font.getsize(dbuser.userfirstname)[0] > 575:  # hardcoded
-                fontsize -= 1
-                font = ImageFont.truetype(font_path, fontsize)
-            d1.text((178, 0), dbuser.userfirstname, font=font, fill=(0, 0, 0))
-
-            # Info
-            text = f"Level {dbuser.level} ({dbuser.num_messages} msg, {dbuser.karma} krm)"
-            fontsize = 1
-            font = ImageFont.truetype(font_path, fontsize)
-            while font.getsize(text)[0] < 575:  # hardcoded
-                fontsize += 1
-                font = ImageFont.truetype(font_path, fontsize)
-            d1.text((178, 90), text, font=font, fill=(0, 0, 0))  # hardcoded
-
-            image.save("temp.webp", "WEBP")
-
-        with open("temp.webp", "rb") as file:
+        with open(picname, "rb") as file:
             update.message.reply_document(
                 document=file,
                 caption=text,
             )
 
-        os.remove("temp.webp")
+        os.remove(picname)
 
         dbuser.save()
 

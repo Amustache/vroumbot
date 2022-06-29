@@ -311,5 +311,3 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,pycharm+all,python
-
-temp.webp
