@@ -21,6 +21,7 @@ class Special(Base):
         ]
         super().__init__(logger, commandhandlers)
 
+    @command_enabled(default=True)
     def userid(self, update: Update, context: CallbackContext) -> None:
         """
         Get current userid or replied message's userid.
@@ -32,7 +33,7 @@ class Special(Base):
             user = update.effective_user
             update.message.reply_text(user.id)
 
-        self.logger.info("{} wants their ID! It is {}.".format(user.first_name, user.id))
+        self.logger.info(f"{user.first_name} wants their ID! It is {user.id}.")
 
     @command_enabled(default=True)
     def chatid(self, update: Update, context: CallbackContext) -> None:
@@ -42,9 +43,7 @@ class Special(Base):
         update.message.reply_text(update.message.chat.id)
 
         self.logger.info(
-            "{} wants the chat ID! It is {}.".format(
-                update.effective_user.first_name, update.message.chat.id
-            )
+            f"{update.effective_user.first_name} wants the chat ID! It is {update.message.chat.id}."
         )
 
     @command_enabled(default=True)
@@ -54,15 +53,9 @@ class Special(Base):
         """
         if update.message.reply_to_message:
             update.message.reply_text(
-                "{} in {}".format(
-                    update.message.reply_to_message.message_id, update.message.chat.id
-                )
+                f"{update.message.reply_to_message.message_id} in {update.message.chat.id}"
             )
 
             self.logger.info(
-                "{} wants the message ID! It is {} in {}.".format(
-                    update.effective_user.first_name,
-                    update.message.message_id,
-                    update.message.chat.id,
-                )
+                f"{update.effective_user.first_name} wants the message ID! It is {update.message.message_id} in {update.message.chat.id}."
             )

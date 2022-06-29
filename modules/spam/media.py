@@ -1,6 +1,7 @@
 """
 Media spam! Yay!
 """
+from turtle import up
 from urllib.request import urlopen
 import html
 import json
@@ -34,6 +35,7 @@ class Media(Base):
             CommandHandler("bricole", self.bricole),
             CommandHandler(["trolled", "cliquesurmoi", "playsound"], self.trolled),
             CommandHandler(["nft", "scam"], self.nft),
+            CommandHandler(["generative"], self.randompic),
             CommandHandler(["pointeur", "baisepointeur"], self.pointeur),
             CommandHandler(["dum", "dumb"], self.dumb),
             CommandHandler(["srydum", "sorrydumb", "sorrydum", "srydumb"], self.sorrydumb),
@@ -112,7 +114,7 @@ class Media(Base):
             data_json = json.loads(response.read())
             update.message.reply_photo(photo=data_json[0]["url"], caption=meow)
 
-        self.logger.info("{} wants a cat pic!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants a cat pic!")
 
     @command_enabled(default=True)
     def brrou(self, update: Update, context: CallbackContext) -> None:
@@ -125,7 +127,7 @@ class Media(Base):
         with open(filename, "rb") as file:
             update.message.reply_photo(photo=file, caption=meow)
 
-        self.logger.info("{} wants a Brrou pic!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants a Brrou pic!")
 
     @command_enabled(default=False)
     def froj(self, update: Update, context: CallbackContext) -> None:
@@ -138,7 +140,7 @@ class Media(Base):
         with open(filename, "rb") as file:
             update.message.reply_photo(photo=file, caption=meow)
 
-        self.logger.info("{} wants a froj pic!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants a froj pic!")
 
     @command_enabled(default=False)
     def spin(self, update: Update, context: CallbackContext) -> None:
@@ -148,7 +150,7 @@ class Media(Base):
         with open(self._media("spin.mp3"), "rb") as file:
             update.message.reply_audio(audio=file)
 
-        self.logger.info("{} gets a SPEEN!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} gets a SPEEN!")
 
     @command_enabled(default=False)
     def bonjour(self, update: Update, context: CallbackContext) -> None:
@@ -158,9 +160,7 @@ class Media(Base):
         with open(self._media("setup.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info(
-            "{} gets a bonjour à toutes et tous!".format(update.effective_user.first_name)
-        )
+        self.logger.info(f"{update.effective_user.first_name} gets a bonjour à toutes et tous!")
 
     @command_enabled(default=False)
     def stupid(self, update: Update, context: CallbackContext) -> None:
@@ -170,9 +170,7 @@ class Media(Base):
         with open(self._media("stupid.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info(
-            "{} is being really stupid right now!".format(update.effective_user.first_name)
-        )
+        self.logger.info(f"{update.effective_user.first_name} is being really stupid right now!")
 
     @command_enabled(default=False)
     def heretic(self, update: Update, context: CallbackContext) -> None:
@@ -182,7 +180,7 @@ class Media(Base):
         with open(self._media("heretic.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info("{} likes being a heretic!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} likes being a heretic!")
 
     @command_enabled(default=False)
     def bricole(self, update: Update, context: CallbackContext) -> None:
@@ -192,7 +190,7 @@ class Media(Base):
         with open(self._media("bricole.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info("{} wants to BRICOLE!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants to BRICOLE!")
 
     @command_enabled(default=False)
     def trolled(self, update: Update, context: CallbackContext) -> None:
@@ -202,7 +200,7 @@ class Media(Base):
         with open(self._media("troll.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info("{}'s just been trolled!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name}'s just been trolled!")
 
     @command_enabled(default=False)
     def nft(self, update: Update, context: CallbackContext) -> None:
@@ -216,7 +214,7 @@ class Media(Base):
 
         userid = user.id
 
-        filename = os.path.join(self._media("nft"), "{}.png".format(userid))
+        filename = os.path.join(self._media("nft"), f"{userid}.png")
 
         if not os.path.isfile(filename):
             binuserid = bin(userid)[2:].zfill(64)
@@ -261,12 +259,80 @@ class Media(Base):
         with open(filename, "rb") as file:
             update.message.reply_photo(
                 photo=file,
-                caption="This is {}'s exclusive NFT, do not use without permission!".format(
-                    user.first_name
-                ),
+                caption=f"This is {user.first_name}'s exclusive NFT, do not use without permission!",
             )
 
-        self.logger.info("{} now has an NFT!".format(user.first_name))
+        self.logger.info(f"{user.first_name} now has an NFT!")
+
+    @command_enabled(default=False)
+    def randompic(self, update: Update, context: CallbackContext) -> None:
+        """
+        Your very own generative art piece!
+        """
+        if update.message.reply_to_message:
+            user = update.message.reply_to_message.from_user
+        else:
+            user = update.effective_user
+
+        userid = user.id
+
+        filename = os.path.join(self._media("randompic"), f"{userid}.png")
+
+        if not os.path.isfile(filename):
+            random.seed(userid)
+            r_color = lambda: (
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255),
+                int(255),
+            )
+            black = (0, 0, 0, 255)
+
+            colors = [r_color(), r_color(), r_color(), black, black, black]
+
+            if len(context.args) >= 1:
+                img_size = context.args[0]
+            else:
+                img_size = 32
+
+            try:
+                img_size = int(img_size)
+                if img_size < 8:
+                    update.message.reply_text(
+                        "Don't toy with the bot! Enter a valid integer between 8 and 512."
+                    )
+                    return
+
+                if img_size > 512:
+                    update.message.reply_text(
+                        "Don't toy with the bot! Enter a valid integer between 8 and 512."
+                    )
+                    return
+
+            except:
+                update.message.reply_text(
+                    "Don't toy with the bot! Enter a valid integer between 8 and 512."
+                )
+                return
+
+            img = Image.new("RGBA", (img_size, img_size), "black")
+
+            pixels = img.load()
+
+            for i in range(2, img.size[0] // 2):
+                for j in range(2, img.size[1] - 2):
+                    c = random.choice(colors)
+                    pixels[i, j] = c
+                    pixels[img.size[0] - i - 1, j] = c
+
+            img.resize((512, 512), Image.NEAREST).save(filename)
+
+        with open(filename, "rb") as file:
+            update.message.reply_photo(
+                photo=file,
+                caption=f"This is {user.first_name}'s exclusive generative art piece",
+            )
+        self.logger.info(f"{user.first_name} wants a random pic!")
 
     @command_enabled(default=False)
     def pointeur(self, update: Update, context: CallbackContext) -> None:
@@ -276,7 +342,7 @@ class Media(Base):
         with open(self._media("pointeur.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info("{} baise tous les pointeurs!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} baise tous les pointeurs!")
 
     @command_enabled(default=False)
     def dumb(self, update: Update, context: CallbackContext) -> None:
@@ -286,7 +352,7 @@ class Media(Base):
         with open(self._media("dumb.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info("{} is calling someone dumb!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} is calling someone dumb!")
 
     @command_enabled(default=False)
     def sorrydumb(self, update: Update, context: CallbackContext) -> None:
@@ -296,9 +362,7 @@ class Media(Base):
         with open(self._media("sorrydumb.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info(
-            "{} is sorry for calling someone dumb!".format(update.effective_user.first_name)
-        )
+        self.logger.info(f"{update.effective_user.first_name} is sorry for calling someone dumb!")
 
     @command_enabled(default=False)
     def random_dog(self, update: Update, context: CallbackContext) -> None:
@@ -359,7 +423,7 @@ class Media(Base):
         data_json = json.loads(response.read())
         update.message.reply_photo(photo=data_json[0]["url"], caption=woof)
 
-        self.logger.info("{} wants a dog pic!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants a dog pic!")
 
     @command_enabled(default=False)
     def misty(self, update: Update, context: CallbackContext) -> None:
@@ -372,7 +436,7 @@ class Media(Base):
         with open(filename, "rb") as file:
             update.message.reply_photo(photo=file, caption=meow)
 
-        self.logger.info("{} wants a Misty pic!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants a Misty pic!")
 
     @command_enabled(default=True)
     def xkcd(self, update: Update, context: CallbackContext) -> None:
@@ -393,14 +457,12 @@ class Media(Base):
             # If number provided, selected comic
             if num:
                 try:
-                    url = "https://xkcd.com/{}/info.0.json".format(num)
+                    url = f"https://xkcd.com/{num}/info.0.json"
                     response = urlopen(url)
                     data_json = json.loads(response.read())
                     update.message.reply_photo(
                         photo=data_json["img"],
-                        caption="XKCD #{}: {}\n\n{}".format(
-                            num, data_json["safe_title"], data_json["alt"]
-                        ),
+                        caption=f"XKCD #{num}: {data_json['safe_title']}\n\n{data_json['alt']}",
                     )
                 except:
                     update.message.reply_text("This XKCD does not exists :/")
@@ -415,11 +477,9 @@ class Media(Base):
                 except:
                     update.message.reply_text("An error has occured :/")
                     return
-                text = 'Results for "{}" ({} found):\n'.format(args, len(results))
+                text = f'Results for "{args}" ({len(results)} found):\n'
                 for result in results:
-                    text += "- {}: {} ({})\n".format(
-                        result["number"], result["title"], result["url"]
-                    )
+                    text += "- {result['number']}: {result['title']} ({result['url']})\n"
                 update.message.reply_text(text, disable_web_page_preview=True)
         # No args == Random comic
         else:
@@ -434,7 +494,7 @@ class Media(Base):
             while not ok:
                 try:
                     num = random.randint(1, max)
-                    url = "https://xkcd.com/{}/info.0.json".format(num)
+                    url = f"https://xkcd.com/{num}/info.0.json"
                     response = urlopen(url)
                     data_json = json.loads(response.read())
                     ok = True
@@ -443,10 +503,10 @@ class Media(Base):
 
             update.message.reply_photo(
                 photo=data_json["img"],
-                caption="XKCD #{}: {}\n\n{}".format(num, data_json["safe_title"], data_json["alt"]),
+                caption=f"XKCD #{num}: {data_json['safe_title']}\n\n{data_json['alt']}",
             )
 
-        self.logger.info("{} wants some XKCD!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants some XKCD!")
 
     @command_enabled(default=False)
     def funny(self, update: Update, context: CallbackContext) -> None:
@@ -456,7 +516,7 @@ class Media(Base):
         with open(self._media("funny.mp4"), "rb") as file:
             update.message.reply_video(video=file)
 
-        self.logger.info("{}'s found something funny!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name}'s found something funny!")
 
     @command_enabled(default=False)
     def gm(self, update: Update, context: CallbackContext) -> None:
@@ -466,7 +526,7 @@ class Media(Base):
         with open(self._media("gm.mp4"), "rb") as file:
             update.message.reply_text("Good morning y'all!").reply_video(video=file)
 
-        self.logger.info("{}'s says good morning y'all!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name}'s says good morning y'all!")
 
     @command_enabled(default=True)
     def spam(self, update: Update, context: CallbackContext) -> None:
@@ -476,4 +536,4 @@ class Media(Base):
         with open(self._media("spam.jpg"), "rb") as file:
             update.message.reply_photo(photo=file)
 
-        self.logger.info("{} calls for spam!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} calls for spam!")

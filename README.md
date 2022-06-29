@@ -21,6 +21,8 @@ Vroumbot is a bot for managing groupchats on Telegram. Basically a famous shitpo
 ### 👉 Available directly
 You can use [@Vroumbot](https://t.me/vroumbot) to test the bot and use it directly.
 
+> Note: You can test the bot directly, with direct messages! No need to spam a group (:.
+
 All the commands should be listed in [List of commands](https://github.com/Amustache/vroumbot/wiki/List-of-commands).
 
 ### 👉 Self hosting

@@ -10,7 +10,7 @@ from telegram.ext import CallbackContext, CommandHandler
 import dateparser
 
 
-from .base import Base, command_enabled
+from ..base import Base, command_enabled
 
 
 def naturaltime(delta):
@@ -111,6 +111,7 @@ class RemindMe(Base):
 
         try:
             _, message = update.message.text.split(" ", 1)
+            print(message)
             interpreted = dateparser.parse(message)
             if not interpreted:
                 update.message.reply_text("I didn't understand, sorry...")
@@ -128,16 +129,14 @@ class RemindMe(Base):
                 self.alarm,
                 delta.total_seconds(),
                 context={"chat_id": chat_id, "message_id": message_id},
-                name="{}_{}".format(chat_id, message_id),
+                name=f"{chat_id}_{message_id}",
             )
 
             update.message.reply_text(
-                "I will remind you this {} ({})!".format(
-                    naturaltime(delta), str(delta).split(".", maxsplit=1)[0]
-                )
+                f"I will remind you this {naturaltime(delta)} ({str(delta).split('.', maxsplit=1)[0]})!"
             )
 
-            self.logger.info("{} set an alarm!".format(update.effective_user.first_name))
+            self.logger.info(f"{update.effective_user.first_name} set an alarm!")
         except (IndexError, ValueError):
             update.message.reply_text("It seems like you used that command wrong. (:.")
 
@@ -149,18 +148,13 @@ class RemindMe(Base):
         jobs = context.job_queue.jobs()
         if update.message.chat.type == CHAT_SUPERGROUP:
             liste = [
-                "- #<a href='https://t.me/c/{}/{}'>{}</a>: {}.".format(
-                    str(job.context["chat_id"])[4:],
-                    job.context["message_id"],
-                    job.context["message_id"],
-                    str(job.next_t).split(".", maxsplit=1)[0],
-                )
+                f"- #<a href='https://t.me/c/{str(job.context['chat_id'])[4:]}/{job.context['message_id']}'>{job.context['message_id']}</a>: {str(job.next_t).split('.', maxsplit=1)[0]}."
                 for job in jobs
                 if job.context["chat_id"] == update.message.chat_id
             ]
         else:
             liste = [
-                "- #{}: {}.".format(i, str(job.next_t).split(".", maxsplit=1)[0])
+                f"- #{i}: {str(job.next_t).split('.', maxsplit=1)[0]}."
                 for i, job in enumerate(jobs)
                 if job.context["chat_id"] == update.message.chat_id
             ]
@@ -168,4 +162,4 @@ class RemindMe(Base):
             "List of reminders:\n{}".format("\n".join(liste)), parse_mode=PARSEMODE_HTML
         )
 
-        self.logger.info("{} wants all alarm!".format(update.effective_user.first_name))
+        self.logger.info(f"{update.effective_user.first_name} wants all alarm!")

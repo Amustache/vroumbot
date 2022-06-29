@@ -1,3 +1,6 @@
+"""
+Services are external things that can help to organize, for instance.
+"""
 from datetime import datetime, timedelta
 
 
@@ -10,6 +13,10 @@ from ..base import Base, command_enabled
 
 
 class Services(Base):
+    """
+    Services are external things that can help to organize, for instance.
+    """
+
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(["w2m", "when2meet"], self.w2m),
@@ -18,6 +25,9 @@ class Services(Base):
 
     @command_enabled(default=True)
     def w2m(self, update: Update, context: CallbackContext) -> None:
+        """
+        For important meetings.
+        """
         try:
             _, start, end = update.message.text.split()
             start = int(start)

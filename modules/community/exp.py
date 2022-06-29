@@ -1,3 +1,6 @@
+"""
+Level up, baby!
+"""
 import ast
 import os
 
@@ -24,10 +27,11 @@ def needed_exp(level, karma):
     return int((level**3.14) * (1 - (karma / (level**3.14))))
 
 
-GENDER, PHOTO, LOCATION, BIO = range(4)
-
-
 class Exp(Base):
+    """
+    Level up, baby!
+    """
+
     def __init__(self, logger=None, table=None):
         commandhandlers = [
             MessageHandler(~Filters.command, self.add_message),
@@ -39,6 +43,9 @@ class Exp(Base):
         super().__init__(logger, commandhandlers, table, mediafolder="./media/exp")
 
     def add_message(self, update: Update, context: CallbackContext):
+        """
+        Basically count the messages and send update.
+        """
         user = update.effective_user
         dbuser = get_user(self.table, user.id, update.message.chat.id)
         dbuser.num_messages += 1
@@ -49,7 +56,7 @@ class Exp(Base):
             dbuser.level += 1
 
         if change != dbuser.level:
-            filename = os.path.join(self._media("basis"), "({}).png".format(dbuser.level))
+            filename = os.path.join(self._media("basis"), f"({dbuser.level}).png")
             with Image.open(filename).convert("RGBA") as image:
                 font_path = self._media("ReemKufi-Regular.ttf")
                 d1 = ImageDraw.Draw(image)
@@ -63,7 +70,7 @@ class Exp(Base):
                 d1.text((178, 0), "Level Up!", font=font, fill=(0, 0, 0))
 
                 # Info
-                text = "{} is now Level {}".format(dbuser.userfirstname, dbuser.level)
+                text = f"{dbuser.userfirstname} is now Level {dbuser.level}"
                 fontsize = 1
                 font = ImageFont.truetype(font_path, fontsize)
                 while font.getsize(text)[0] < 575:  # hardcoded
@@ -85,6 +92,9 @@ class Exp(Base):
 
     @command_enabled(default=True)
     def get_level(self, update: Update, context: CallbackContext):
+        """
+        Get users levels.
+        """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
             if user.id == BOT_ID:
@@ -96,7 +106,7 @@ class Exp(Base):
             dbuser = get_user(self.table, user.id, update.message.chat.id)
         dbuser.userfirstname = user.first_name
 
-        filename = os.path.join(self._media("basis"), "({}).png".format(dbuser.level))
+        filename = os.path.join(self._media("basis"), f"({dbuser.level}).png")
         with Image.open(filename).convert("RGBA") as image:
             font_path = self._media("ReemKufi-Regular.ttf")
             d1 = ImageDraw.Draw(image)
@@ -114,9 +124,7 @@ class Exp(Base):
             d1.text((178, 0), dbuser.userfirstname, font=font, fill=(0, 0, 0))
 
             # Info
-            text = "Level {} ({} msg, {} krm)".format(
-                dbuser.level, dbuser.num_messages, dbuser.karma
-            )
+            text = f"Level {dbuser.level} ({dbuser.num_messages} msg, {dbuser.karma} krm)"
             fontsize = 1
             font = ImageFont.truetype(font_path, fontsize)
             while font.getsize(text)[0] < 575:  # hardcoded
@@ -138,6 +146,9 @@ class Exp(Base):
 
     @command_enabled(default=True)
     def get_leaderboard(self, update: Update, context: CallbackContext):
+        """
+        Get users leaderboard.
+        """
         try:
             _, num_people = update.message.text.split(" ", 1)
             num_people = int(num_people)
@@ -177,9 +188,7 @@ class Exp(Base):
                         level = dbuser.level
                         dbuser.save()
                     all_people.append(
-                        "{}. {}: Level {} ({} msg, {} krm).".format(
-                            i + 1, username, level, num_messages, karma
-                        )
+                        f"{i + 1}. {username}: Level {level} ({num_messages} msg, {karma} krm)."
                     )
             else:
                 break
@@ -191,6 +200,9 @@ class Exp(Base):
 
     @admin_only
     def reset_from_history(self, update: Update, context: CallbackContext):
+        """
+        Reset based on a groupchat export.
+        """
         try:
             data = ast.literal_eval(deobfuscate(context.args[0]))
             try:
@@ -215,6 +227,9 @@ class Exp(Base):
 
     @admin_only
     def get_obfuscated_history(self, update: Update, context: CallbackContext):
+        """
+        Get obfuscated history based on a file.
+        """
         with open("temp.json", "w+") as f:
             context.bot.get_file(update.message.document).download(out=f)
             text = obfuscate("".join(f.read().split()))

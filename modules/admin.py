@@ -1,5 +1,5 @@
 """
-Admin commands.
+Module that contains admin commands.
 """
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
@@ -63,6 +63,9 @@ class Admin(Base):
 
     @admin_only
     def enablecommand(self, update: Update, context: CallbackContext) -> None:
+        """
+        Enable or disable a command.
+        """
         try:
             _, commandname = update.message.text.split(" ", 1)
         except ValueError:
