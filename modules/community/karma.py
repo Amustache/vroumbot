@@ -50,55 +50,56 @@ class Karma(Base):
         """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
-            dbuser = get_user(self.table, user.id, update.message.chat.id)
-            command = update.message.text.split(" ", 1)[0][1:]
-            if "@" in command:
-                # command may be `somecommand@botname``
-                command = command.split("@")[0]
-            # Self
-            if user == update.effective_user:
-                if command in pos_commands + angrypos_commands:
-                    reply = "Humble bragging, amarite?"
-                    log = f"{user.first_name} wants to pos themselves!"
-                elif command in neg_commands:
-                    reply = "Don't be so harsh on yourself."
-                    log = f"{user.first_name} wants to neg themselves!"
-                else:
-                    reply = "Sooo... Nothing?"
-                    log = f"{user.first_name} doesn't know what to do with their karma!"
-                update.message.reply_text(reply)
-                self.logger.info(log)
-
-            # To a reply
-            else:
-                if command in pos_commands:
-                    operator = +1
-                    resp = "+1"
-                elif command in angrypos_commands:
-                    operator = +1
-                    resp = "Angry +1"
-                elif command in neg_commands:
-                    operator = -1
-                    resp = "-1"
-                else:
-                    operator = 0
-                    resp = "Meh"
-                dbuser.karma += operator
-                update.message.reply_to_message.reply_text(
-                    f"{resp} for {user.first_name} ({dbuser.karma} points)."
-                )
-
-                # Special, if needed
-                if command in angrypos_commands:
-                    with open(self._media("angrypos.jpg"), "rb") as file:
-                        update.message.reply_photo(photo=file, caption="Now get tf outta here.")
-
-                self.logger.info(f"{user.first_name} gets a {resp}!")
-
-            dbuser.userfirstname = user.first_name
-            dbuser.save()
         else:
-            update.message.reply_text("You must respond to a message to give karma.")
+            pass
+
+        dbuser = get_user(self.table, user.id, update.message.chat.id)
+        command = update.message.text.split(" ", 1)[0][1:]
+        if "@" in command:
+            # command may be `somecommand@botname``
+            command = command.split("@")[0]
+        # Self
+        if user == update.effective_user:
+            if command in pos_commands + angrypos_commands:
+                reply = "Humble bragging, amarite?"
+                log = f"{user.first_name} wants to pos themselves!"
+            elif command in neg_commands:
+                reply = "Don't be so harsh on yourself."
+                log = f"{user.first_name} wants to neg themselves!"
+            else:
+                reply = "Sooo... Nothing?"
+                log = f"{user.first_name} doesn't know what to do with their karma!"
+            update.message.reply_text(reply)
+            self.logger.info(log)
+
+        # To a reply
+        else:
+            if command in pos_commands:
+                operator = +1
+                resp = "+1"
+            elif command in angrypos_commands:
+                operator = +1
+                resp = "Angry +1"
+            elif command in neg_commands:
+                operator = -1
+                resp = "-1"
+            else:
+                operator = 0
+                resp = "Meh"
+            dbuser.karma += operator
+            update.message.reply_to_message.reply_text(
+                f"{resp} for {user.first_name} ({dbuser.karma} points)."
+            )
+
+            # Special, if needed
+            if command in angrypos_commands:
+                with open(self._media("angrypos.jpg"), "rb") as file:
+                    update.message.reply_photo(photo=file, caption="Now get tf outta here.")
+
+            self.logger.info(f"{user.first_name} gets a {resp}!")
+
+        dbuser.userfirstname = user.first_name
+        dbuser.save()
 
     @command_enabled(default=True)
     def getkarma(self, update: Update, context: CallbackContext) -> None:
