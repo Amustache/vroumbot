@@ -26,7 +26,7 @@ You can use [@Vroumbot](https://t.me/vroumbot) to test the bot and use it direct
 All the commands should be listed in [List of commands](https://github.com/Amustache/vroumbot/wiki/List-of-commands).
 
 ### 👉 Self hosting
-1. Need Python 3.7+, python3-venv and Pip 21+.
+1. Need Python 3.7+, python3-venv, python3-tk, and Pip 21+.
 2. Clone the repo, `cd` into it.
 3. `python -m venv ./env; source ./env/bin/activate`
 4. `pip install -Ur requirements.txt`
