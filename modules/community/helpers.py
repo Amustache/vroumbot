@@ -22,6 +22,9 @@ def get_user(table, userid, chatid):
 
     user, _ = table.get_or_create(userid=userid, chatid=chatid)
 
+    if user.optout:
+        return None
+
     return user
 
 

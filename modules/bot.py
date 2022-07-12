@@ -23,7 +23,7 @@ class Bot(Base):
 
     MAX_FEEDBACKS = 10
 
-    def __init__(self, logger=None, table=None):
+    def __init__(self, logger=None):
         commandhandlers = [
             CommandHandler(["start", "hello", "hi"], self.start),
             CommandHandler(["help", "commands", "all_commands"], self.help_command),
