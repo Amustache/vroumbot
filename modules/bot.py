@@ -9,7 +9,8 @@ from telegram.ext import CallbackContext, CommandHandler
 from trello import TrelloClient
 
 
-from secret import ADMIN_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST, TRELLO_LINK
+from databases import GDPR, User
+from secret import ADMIN_ID, BOT_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST, TRELLO_LINK
 
 
 from .base import Base
@@ -22,13 +23,15 @@ class Bot(Base):
 
     MAX_FEEDBACKS = 10
 
-    def __init__(self, logger=None):
+    def __init__(self, logger=None, table=None):
         commandhandlers = [
             CommandHandler(["start", "hello", "hi"], self.start),
             CommandHandler(["help", "commands", "all_commands"], self.help_command),
             CommandHandler(["contribute", "github", "source", "git", "contrib"], self.contribute),
             CommandHandler(["feedback", "suggestion", "suggest"], self.feedback),
             CommandHandler(["feedbacks", "listfeedbacks"], self.feedbacks),
+            CommandHandler(["optout"], self.optout),
+            CommandHandler(["gdpr"], self.gdpr),
         ]
         super().__init__(logger, commandhandlers)
 
@@ -36,6 +39,9 @@ class Bot(Base):
             api_key=TRELLO_API_KEY,
             api_secret=TRELLO_API_SECRET,
         )
+
+        self.user_table = User
+        self.gdpr_table = GDPR
 
     def _access_feedback_list(self):
         """
@@ -176,3 +182,37 @@ class Bot(Base):
         update.message.reply_text(result)
 
         self.logger.info(f"{update.effective_user.first_name} wants to know the feedbacks!")
+
+    # GDPR
+    def optout(self, update: Update, context: CallbackContext) -> None:
+        user_id = update.effective_user.id
+        chat_id = update.message.chat.id
+
+        if chat_id == user_id:
+            # Delete all
+            q = self.user_table.delete().where(self.user_table.userid == user_id)
+            q.execute()
+
+            self.gdpr_table.get_or_create(userid=user_id)
+            update.message.reply_text(
+                "Your information will now longer be stored or used by Vroumbot at all, beside your userid in order to keep people from adding you back in our database.\nOnly your userid will be stored, and nothing more.\nAll other information have been deleted from our database, and no more information will be collected from now on.\nHave a wonderful day!"
+            )
+        else:
+            # Delete in chat
+            q = self.user_table.delete().where(
+                self.user_table.userid == user_id and self.user_table.chatid == chat_id
+            )
+            q.execute()
+
+            self.user_table.get_or_create(userid=user_id, optout=1)
+            update.message.reply_text(
+                "You will no longer be considered for community modules and commands in that chat.\nAll your previous information have been deleted from our database, and no more information will be collected from now on.\nHave a wonderful day!"
+            )
+
+    def gdpr(self, update: Update, context: CallbackContext) -> None:
+        text = "GDPR: "
+        text += "hhttps://github.com/Amustache/vroumbot/wiki/Privacy-Policy"
+
+        update.message.reply_text(text)
+
+        self.logger.info(f"{update.effective_user.first_name} wants to see the GDPR!")

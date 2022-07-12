@@ -5,6 +5,9 @@ import json
 from telegram.ext import CallbackContext
 
 
+from databases import GDPR
+
+
 def get_user(table, userid, chatid):
     """
     Return the user from the database.
@@ -13,6 +16,10 @@ def get_user(table, userid, chatid):
     :param chatid: Telegram chatid.
     :return: Model: User
     """
+    # GDPR
+    if userid in [gdpr.userid for gdpr in GDPR.select()]:
+        return None
+
     user, _ = table.get_or_create(userid=userid, chatid=chatid)
 
     return user
