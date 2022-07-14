@@ -10,7 +10,7 @@ from trello import TrelloClient
 
 
 from databases import GDPR, User
-from secret import ADMIN_ID, BOT_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST, TRELLO_LINK
+from secret import ADMIN_ID, TRELLO_API_KEY, TRELLO_API_SECRET, TRELLO_FEEDBACK_BOARD, TRELLO_FEEDBACK_LIST, TRELLO_LINK
 
 
 from .base import Base
@@ -116,8 +116,7 @@ class Bot(Base):
         """
         user = update.effective_user
         update.message.reply_markdown_v2(
-            rf"Bonjour {user.mention_markdown_v2()} \!",
-            # reply_markup=ForceReply(selective=True),
+            rf"Bonjour {user.mention_markdown_v2()} \!"
         )
 
         self.logger.info(f"{user.first_name} says hi!")

@@ -1,7 +1,6 @@
 """
 Text spam! Yay!
 """
-from time import sleep
 import datetime
 import random
 
