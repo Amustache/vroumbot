@@ -65,7 +65,7 @@ class Admin(Base):
         Enable or disable a command.
         """
         try:
-            _, commandname = update.message.text.split(" ", 1)
+            choice, commandname = update.message.text.split(" ", 1)
         except ValueError:
             return
 
@@ -78,7 +78,13 @@ class Admin(Base):
             self.table, commandname=commandname, chatid=update.message.chat.id
         )
 
-        chatcommand.enabled = not chatcommand.enabled
+        if "en" in choice:
+            chatcommand.enabled = 1
+        elif "dis" in choice:
+            chatcommand.enabled = 0
+        else:
+            return
+
         chatcommand.save()
 
         update.message.reply_text(
