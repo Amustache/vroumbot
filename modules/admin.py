@@ -2,6 +2,7 @@
 Module that contains admin commands.
 """
 import datetime
+import random
 
 
 from telegram import Update
@@ -10,6 +11,20 @@ from telegram.ext import CallbackContext, CommandHandler
 
 from .base import admin_only, Base
 from .community.helpers import naturaltime
+
+
+CANNOT_DISABLE = [
+    "enablecommand",
+    "enablemodule",
+    "amiadmin",
+    "start",
+    "help_command",
+    "contribute",
+    "feedback",
+    "feedbacks",
+    "reset_from_history",
+    "",
+]
 
 
 def get_command_for_chat(table, commandname, chatid):
@@ -69,6 +84,10 @@ class Admin(Base):
         """
         Enable or disable a command.
         """
+        if update.message.chat.type == "private":
+            update.message.reply_text("You're in private, silly~")
+            return
+
         try:
             choice, commandname = update.message.text.split(" ", 1)
         except ValueError:
@@ -77,6 +96,15 @@ class Admin(Base):
         commandname = get_command_from_alias(commandname, self.dispatcher)
         if not commandname:
             update.message.reply_text("This command does not exist.")
+            return
+
+        if commandname in CANNOT_DISABLE:
+            if commandname == "enablecommand" and random.randint(1, 6) == 6:
+                update.message.reply_text(
+                    "Oh no! You found a loophole and broke the bot!\n...\nNah just kidding."
+                )
+
+            update.message.reply_text("This command cannot be disabled.")
             return
 
         chatcommand = get_command_for_chat(
