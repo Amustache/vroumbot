@@ -6,12 +6,18 @@ import datetime
 import os
 
 
+from telegram.constants.ChatType import PRIVATE
+
+
 from databases import ChatCommand
 
 
 def admin_only(func):
     @wraps(func)
     def wrapped(self, update, context, *args, **kwargs):
+        if update.message.chat.type == PRIVATE:
+            return func(self, update, context, *args, **kwargs)
+
         is_admin = update.effective_user in [
             chatmember.user
             for chatmember in context.bot.get_chat_administrators(update.message.chat.id)
@@ -49,6 +55,9 @@ def command_enabled(default=True):
     def command_enabled_inner(func):
         @wraps(func)
         def wrapped(self, update, context, *args, **kwargs):
+            if update.message.chat.type == PRIVATE:
+                return func(self, update, context, *args, **kwargs)
+
             chatcommand, created = ChatCommand.get_or_create(
                 chatid=update.message.chat.id, commandname=func.__name__
             )
