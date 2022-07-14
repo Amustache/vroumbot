@@ -1,11 +1,15 @@
 """
 Module that contains admin commands.
 """
+import datetime
+
+
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
 from .base import admin_only, Base
+from .community.helpers import naturaltime
 
 
 def get_command_for_chat(table, commandname, chatid):
@@ -99,15 +103,19 @@ class Admin(Base):
     def listenabled(self, update: Update, context: CallbackContext) -> None:
         chat_id = update.message.chat.id
         dbcommands = (
-            self.table.select().where(self.table.chatid == chat_id).order_by(self.table.fun.desc())
+            self.table.select()
+            .where(self.table.chatid == chat_id)
+            .order_by(self.table.commandname.desc())
         )
         commands = [
-            f"– {command.enabled} {command.commandname} (Last usage: {command.lastusage})"
+            f"– {'✅️' if command.enabled else '❌'} {command.commandname}{f' (Last disabled tentative: {naturaltime(datetime.datetime.now() - command.lastusage, past=True)})' if not command.enabled else ''}"
             for command in dbcommands
         ]
 
-        print(commands)
+        text = "List of commands explicitly enabled/disabled by admin:\n"
+        text += "\n".join(commands)
+        text += "\n"
+        text += "For a list of by default enabled/disabled commands, please refer to: "
+        text += "https://github.com/Amustache/vroumbot/wiki/Commands"
 
-        # if "en" in update.message.text:
-        # elif "dis" in update.message.text:
-        # else:
+        update.message.reply_text(text, disable_web_page_preview=True)
