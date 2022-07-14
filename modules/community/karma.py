@@ -51,6 +51,11 @@ class Karma(Base):
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
+
+            # GDPR
+            if not dbuser:
+                return
+
             command = update.message.text.split(" ", 1)[0][1:]
             if "@" in command:
                 # command may be `somecommand@botname``
@@ -108,6 +113,11 @@ class Karma(Base):
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
+
+            # GDPR
+            if not dbuser:
+                return
+
             dbuser.userfirstname = user.first_name
             dbuser.save()
 
@@ -152,6 +162,11 @@ class Karma(Base):
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
+
+            # GDPR
+            if not dbuser:
+                return
+
             try:
                 _, qt = update.message.text.split(" ")
                 qt = int(qt)

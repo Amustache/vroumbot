@@ -4,10 +4,6 @@ import datetime
 from peewee import BigIntegerField, CharField, DateTimeField, IntegerField, Model, SqliteDatabase
 
 
-# Database
-from modules.community.helpers import alarm
-
-
 main_db = SqliteDatabase("./databases/main.db")
 
 
@@ -17,11 +13,27 @@ class User(Model):
     """
 
     userid = BigIntegerField()
-    userfirstname = CharField(null=True)
     chatid = BigIntegerField()
+    optout = IntegerField(default=0)
+    userfirstname = CharField(null=True)
     karma = IntegerField(default=0)
     num_messages = IntegerField(default=0)
     level = IntegerField(default=0)
+
+    class Meta:
+        """
+        Basically which database.
+        """
+
+        database = main_db
+
+
+class GDPR(Model):
+    """
+    Opt-out.
+    """
+
+    userid = BigIntegerField()
 
     class Meta:
         """
@@ -99,4 +111,4 @@ def start_jobs_in_database(dispatcher, fun):
 
 
 main_db.connect()
-main_db.create_tables([User, ChatCommand, ChatJob])
+main_db.create_tables([User, GDPR, ChatCommand, ChatJob])
