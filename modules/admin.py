@@ -47,6 +47,7 @@ class Admin(Base):
             ),
             CommandHandler(["enablemodule", "disablemodule"], self.enablemodule),
             CommandHandler("amiadmin", self.amiadmin),
+            CommandHandler(["listcommands", "listenabled", "listdisabled"], self.listenabled),
         ]
         super().__init__(
             logger=logger, commandhandlers=commandhandlers, table=table, dispatcher=dispatcher
@@ -94,3 +95,19 @@ class Admin(Base):
     @admin_only
     def enablemodule(self, update: Update, context: CallbackContext) -> None:
         pass
+
+    def listenabled(self, update: Update, context: CallbackContext) -> None:
+        chat_id = update.message.chat.id
+        dbcommands = (
+            self.table.select().where(self.table.chatid == chat_id).order_by(self.table.fun.desc())
+        )
+        commands = [
+            f"– {command.enabled} {command.commandname} (Last usage: {command.lastusage})"
+            for command in dbcommands
+        ]
+
+        print(commands)
+
+        # if "en" in update.message.text:
+        # elif "dis" in update.message.text:
+        # else:
