@@ -53,13 +53,15 @@ def command_enabled(default=True):
                 enabled = default
 
             if chatcommand and not enabled:
+
                 if created or datetime.datetime.now() > chatcommand.lastusage + datetime.timedelta(
                     hours=6
                 ):
-                    context.bot.sendMessage(
-                        chat_id=update.message.chat.id,
-                        text="This command is deactivated in that chat.",
-                    )
+                    if chatcommand != "levelup_update":  # Hardcoded special case 🤷‍♀️
+                        context.bot.sendMessage(
+                            chat_id=update.message.chat.id,
+                            text="This command is deactivated in that chat.",
+                        )
                 chatcommand.lastusage = datetime.datetime.now()
                 chatcommand.save()
                 return
