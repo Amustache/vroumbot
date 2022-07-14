@@ -291,15 +291,13 @@ class Text(Base):
         max_cell_value = 255
         do_wrapping = True
 
-        if not len(context.args) or len(context.args) > 2:
+        if not len(context.args):
             update.message.reply_text("Usage: /brainfuck code [input]")
             return
-        elif len(context.args) == 1:
+        else:
             instr = context.args[0]
-            inputs = None
-        else:  # == 2
-            instr = context.args[0]
-            inputs = list(context.args[1])
+            # assumes that all words of input were separated by exactly one space
+            inputs = list(' '.join(context.args[1:]))
 
         data, data_ptr, instr_ptr = [0], 0, 0
         result = ""
@@ -344,10 +342,8 @@ class Text(Base):
                 if inputs:
                     data[data_ptr] = ord(inputs.pop(0))
                 else:
-                    update.message.reply_text(
-                        f"Error at position {instr_ptr}: `,` expected input but none was provided."
-                    )
-                    return
+                    # if no input is given, a 0 byte is read
+                    data[data_ptr] = 0
             elif command == "[":
                 if data[data_ptr] == 0:
                     braces = 1
