@@ -33,24 +33,6 @@ def admin_only(func):
     return wrapped
 
 
-# def module_enabled(func):
-#     @wraps(func)
-#     def wrapped(self, update, context, *args, **kwargs):
-#         chatmodule = ChatModule.get_or_none(
-#             chatid=update.message.chat.id, commandname=func.__name__
-#         )
-#
-#         if chatmodule and not chatmodule.enabled:
-#             context.bot.sendMessage(
-#                 chat_id=update.message.chat.id,
-#                 text="This command is in a module deactivated in that chat.",
-#             )
-#             return
-#         return func(self, update, context, *args, **kwargs)
-#
-#     return wrapped
-
-
 def command_enabled(default=True):
     def command_enabled_inner(func):
         @wraps(func)
