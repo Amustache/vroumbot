@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from .base import admin_only, Base, command_enabled
+from .base import Base, command_enabled
 
 
 class Special(Base):
