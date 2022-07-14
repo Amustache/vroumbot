@@ -23,7 +23,8 @@ CANNOT_DISABLE = [
     "feedback",
     "feedbacks",
     "reset_from_history",
-    "",
+    "optout",
+    "gdpr",
 ]
 
 
