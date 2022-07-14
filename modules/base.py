@@ -69,8 +69,8 @@ def command_enabled(default=True):
                         chat_id=update.message.chat.id,
                         text="This command is deactivated in that chat.",
                     )
-                    chatcommand.lastusage = datetime.datetime.now()
-                    chatcommand.save()
+                chatcommand.lastusage = datetime.datetime.now()
+                chatcommand.save()
                 return
             return func(self, update, context, *args, **kwargs)
 
