@@ -84,6 +84,10 @@ class Exp(Base):
         user = update.effective_user
         dbuser = get_user(self.table, user.id, update.message.chat.id)
 
+        # GDPR
+        if not dbuser:
+            return
+
         text = f"{dbuser.userfirstname} is now Level {dbuser.level}"
         picname = self._generate_pic(dbuser.userfirstname, dbuser.level, text, "stonks")
 
@@ -101,6 +105,11 @@ class Exp(Base):
         """
         user = update.effective_user
         dbuser = get_user(self.table, user.id, update.message.chat.id)
+
+        # GDPR
+        if not dbuser:
+            return
+
         dbuser.num_messages += 1
         dbuser.userfirstname = user.first_name
 
@@ -127,6 +136,11 @@ class Exp(Base):
         else:
             user = update.effective_user
             dbuser = get_user(self.table, user.id, update.message.chat.id)
+
+        # GDPR
+        if not dbuser:
+            return
+
         dbuser.userfirstname = user.first_name
 
         text = f"Level {dbuser.level} ({dbuser.num_messages} msg, {dbuser.karma} krm)"
