@@ -103,18 +103,25 @@ class Admin(Base):
     def listenabled(self, update: Update, context: CallbackContext) -> None:
         chat_id = update.message.chat.id
         dbcommands = (
-            self.table.select()
-            .where(self.table.chatid == chat_id)
-            .order_by(self.table.commandname.desc())
+            self.table.select().where(self.table.chatid == chat_id).order_by(self.table.commandname)
         )
-        commands = [
-            f"– {'✅️' if command.enabled else '❌'} {command.commandname}{f' (Last disabled tentative: {naturaltime(datetime.datetime.now() - command.lastusage, past=True)})' if not command.enabled else ''}"
-            for command in dbcommands
-        ]
 
-        text = "List of commands explicitly enabled/disabled by admin:\n"
-        text += "\n".join(commands)
-        text += "\n"
+        text = "List of commands explicitly enabled by admin:\n"
+        text += "\n".join(
+            [f"– ✅ {command.commandname}" for command in dbcommands if command.enabled]
+        )
+        text += "\n\n"
+
+        text += "List of commands explicitly disabled by admin:\n"
+        text += "\n".join(
+            [
+                f"– ❌ {command.commandname} (Last attempt: {naturaltime(datetime.datetime.now() - command.lastusage, past=True)})"
+                for command in dbcommands
+                if not command.enabled
+            ]
+        )
+        text += "\n\n"
+
         text += "For a list of by default enabled/disabled commands, please refer to: "
         text += "https://github.com/Amustache/vroumbot/wiki/Commands"
 
