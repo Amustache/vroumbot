@@ -1,7 +1,6 @@
 """
 Media spam! Yay!
 """
-from turtle import up
 from urllib.request import urlopen
 import html
 import json
