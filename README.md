@@ -38,6 +38,8 @@ All the commands should be listed in [List of commands](https://github.com/Amust
    - `TRELLO_LINK`: link to the Trello.
 7. `./main.py` or `python ./main.py`
 
+> Note: If you already have a database, and get a `peewee.OperationalError: no such column`, that means your database tables are not up-to-date. You may want to run one or multiple [`migration`](./migrations/), depending on when you last updated.
+
 ## 🚗 Contribute 🚗
 ### 👉 You know how to code
 Please refer to our [CONTRIBUTING](./CONTRIBUTING.md) file!

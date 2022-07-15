@@ -373,4 +373,5 @@ class Text(Base):
 
         update.message.reply_text("Interpreted:")
         message = context.dispatcher.bot.send_message(update.message.chat_id, result)
+        message.from_user = update.message.from_user
         context.update_queue.put(Update(0, message))
