@@ -296,7 +296,14 @@ class Text(Base):
             return
         else:
             _, instr, *inputs = update.message.text.split(" ", 2)
-            inputs = list(inputs[0])
+            if not inputs:
+                replied_to = update.message.reply_to_message
+                if replied_to:
+                    text = replied_to.text or replied_to.caption
+                    if text:
+                        inputs = list(text)
+            else:
+                inputs = list(inputs[0])
 
         data, data_ptr, instr_ptr = [0], 0, 0
         result = ""
