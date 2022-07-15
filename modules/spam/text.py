@@ -298,6 +298,7 @@ class Text(Base):
             instr = context.args[0]
             # assumes that all words of input were separated by exactly one space
             inputs = list(' '.join(context.args[1:]))
+            # _, instr, inputs = update.message.text.split(" ", 2)
 
         data, data_ptr, instr_ptr = [0], 0, 0
         result = ""
