@@ -207,7 +207,7 @@ class Bot(Base):
 
     def gdpr(self, update: Update, context: CallbackContext) -> None:
         text = "GDPR: "
-        text += "hhttps://github.com/Amustache/vroumbot/wiki/Privacy-Policy"
+        text += "https://github.com/Amustache/vroumbot/wiki/Privacy-Policy"
 
         update.message.reply_text(text)
 
