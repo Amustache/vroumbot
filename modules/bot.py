@@ -160,12 +160,8 @@ class Bot(Base):
 
         feedback = message, f"Date: {date}\nChat: {chat_id}\nMessage: {message_id}\nUser: {user}"
 
-        try:
-            context.bot.sendMessage(chat_id=ADMIN_ID, text=f"{user} says '{message}'")
-        except:
-            pass
-
         self._add_feedback_to_trello(feedback)
+        context.bot.sendMessage(chat_id=ADMIN_ID, text=f"{user} says '{message}'")
 
         self.logger.info(f"New feedback! {message}")
 
@@ -210,7 +206,7 @@ class Bot(Base):
 
     def gdpr(self, update: Update, context: CallbackContext) -> None:
         text = "GDPR: "
-        text += "hhttps://github.com/Amustache/vroumbot/wiki/Privacy-Policy"
+        text += "https://github.com/Amustache/vroumbot/wiki/Privacy-Policy"
 
         update.message.reply_text(text)
 
