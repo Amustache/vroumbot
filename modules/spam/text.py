@@ -295,10 +295,8 @@ class Text(Base):
             update.message.reply_text("Usage: /brainfuck code [input]")
             return
         else:
-            instr = context.args[0]
-            # assumes that all words of input were separated by exactly one space
-            inputs = list(' '.join(context.args[1:]))
-            # _, instr, inputs = update.message.text.split(" ", 2)
+            _, instr, *inputs = update.message.text.split(" ", 2)
+            inputs = list(inputs[0])
 
         data, data_ptr, instr_ptr = [0], 0, 0
         result = ""
@@ -372,7 +370,10 @@ class Text(Base):
                 update.message.reply_text(f"This is taking too much time :/")
                 return
 
-        update.message.reply_text("Interpreted:")
-        message = context.dispatcher.bot.send_message(update.message.chat_id, result)
-        message.from_user = update.message.from_user
-        context.update_queue.put(Update(0, message))
+        if not result:
+            update.message.reply_text("No output generated.\nCongratulations, you warmed up the planet for nothing.")
+        else:
+            update.message.reply_text("Output:")
+            message = context.dispatcher.bot.send_message(update.message.chat_id, result)
+            message.from_user = update.message.from_user
+            context.update_queue.put(Update(0, message))
