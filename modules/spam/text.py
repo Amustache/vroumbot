@@ -5,7 +5,7 @@ import datetime
 import random
 
 
-from telegram import Update
+from telegram import Update, Message
 from telegram.ext import CallbackContext, CommandHandler
 import requests
 
@@ -375,4 +375,7 @@ class Text(Base):
                 update.message.reply_text(f"This is taking too much time :/")
                 return
 
-        update.message.reply_text(f"Interpreted: {result}")
+        update.message.reply_text("Interpreted:")
+        message = context.dispatcher.bot.send_message(update.message.chat_id, result)
+        message.from_user = update.message.from_user
+        context.update_queue.put(Update(0, message))

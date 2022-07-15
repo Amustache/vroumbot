@@ -116,8 +116,7 @@ class Bot(Base):
         """
         user = update.effective_user
         update.message.reply_markdown_v2(
-            rf"Bonjour {user.mention_markdown_v2()} \!",
-            reply_markup=ForceReply(selective=True),
+            rf"Bonjour {user.mention_markdown_v2()} \!"
         )
 
         self.logger.info(f"{user.first_name} says hi!")
