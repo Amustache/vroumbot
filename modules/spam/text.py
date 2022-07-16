@@ -387,7 +387,6 @@ class Text(Base):
                 no_output_message += "\nCongratulations, you warmed up the planet for nothing."    
             update.message.reply_text(no_output_message)
         else:
-            # update.message.reply_text("Output:")
             message = context.dispatcher.bot.send_message(
                 update.message.chat_id, result,
                 reply_to_message_id=update.message.message_id)
