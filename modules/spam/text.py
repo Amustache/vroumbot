@@ -280,7 +280,11 @@ class Text(Base):
             return
 
         update.message.reply_text(
-            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}.\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially coming from such prominent members of our community.\n\nIt's a shame to see you go, friend.\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
+            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences "\
+            f"that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}."\
+            f"\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially "\
+            f"coming from such prominent members of our community.\n\nIt's a shame to see you go, friend."\
+            f"\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
         )
 
     @command_enabled(default=False)
