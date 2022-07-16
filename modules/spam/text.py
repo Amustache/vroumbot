@@ -5,7 +5,7 @@ import datetime
 import random
 
 
-from telegram import Update, Message
+from telegram import Message, Update
 from telegram.ext import CallbackContext, CommandHandler
 import requests
 
@@ -280,10 +280,10 @@ class Text(Base):
             return
 
         update.message.reply_text(
-            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences "\
-            f"that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}."\
-            f"\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially "\
-            f"coming from such prominent members of our community.\n\nIt's a shame to see you go, friend."\
+            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences "
+            f"that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}."
+            f"\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially "
+            f"coming from such prominent members of our community.\n\nIt's a shame to see you go, friend."
             f"\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
         )
 
@@ -384,12 +384,12 @@ class Text(Base):
         if not result:
             no_output_message = "No output generated."
             if random.randint(1, 6) == 1:
-                no_output_message += "\nCongratulations, you warmed up the planet for nothing."    
+                no_output_message += "\nCongratulations, you warmed up the planet for nothing."
             update.message.reply_text(no_output_message)
         else:
             # update.message.reply_text("Output:")
             message = context.dispatcher.bot.send_message(
-                update.message.chat_id, result,
-                reply_to_message_id=update.message.message_id)
+                update.message.chat_id, result, reply_to_message_id=update.message.message_id
+            )
             message.from_user = update.message.from_user
             context.update_queue.put(Update(0, message))
