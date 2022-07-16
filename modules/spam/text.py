@@ -296,7 +296,14 @@ class Text(Base):
             return
         else:
             _, instr, *inputs = update.message.text.split(" ", 2)
-            inputs = list(inputs[0])
+            if not inputs:
+                replied_to = update.message.reply_to_message
+                if replied_to:
+                    text = replied_to.text or replied_to.caption
+                    if text:
+                        inputs = list(text)
+            else:
+                inputs = list(inputs[0])
 
         data, data_ptr, instr_ptr = [0], 0, 0
         result = ""
@@ -371,9 +378,14 @@ class Text(Base):
                 return
 
         if not result:
-            update.message.reply_text("No output generated.\nCongratulations, you warmed up the planet for nothing.")
+            no_output_message = "No output generated."
+            if random.randint(1, 6) == 1:
+                no_output_message += "\nCongratulations, you warmed up the planet for nothing."    
+            update.message.reply_text(no_output_message)
         else:
-            update.message.reply_text("Output:")
-            message = context.dispatcher.bot.send_message(update.message.chat_id, result)
+            # update.message.reply_text("Output:")
+            message = context.dispatcher.bot.send_message(
+                update.message.chat_id, result,
+                reply_to_message_id=update.message.message_id)
             message.from_user = update.message.from_user
             context.update_queue.put(Update(0, message))
