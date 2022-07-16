@@ -388,7 +388,9 @@ class Text(Base):
             update.message.reply_text(no_output_message)
         else:
             message = context.dispatcher.bot.send_message(
-                update.message.chat_id, result,
-                reply_to_message_id=update.message.message_id)
+                update.message.chat_id,
+                result,
+                reply_to_message_id=update.message.message_id
+            )
             message.from_user = update.message.from_user
             context.update_queue.put(Update(0, message))
