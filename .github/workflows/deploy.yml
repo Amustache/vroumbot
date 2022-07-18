@@ -22,6 +22,19 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+
+      - name: Merge main in prod
+        run: |
+          git fetch --unshallow
+          git checkout prod
+          git pull
+          git merge --no-ff main -m "Auto-merge main to prod"
+          git push
       
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
