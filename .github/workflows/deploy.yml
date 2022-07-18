@@ -35,7 +35,7 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.HOST_IP }} >> ~/.ssh/known_hosts
         
       - name: Deploy with rsync
-        run: rsync -avz ./dist/ ${{ secrets.HOST_USERNAME }}@${{ secrets.HOST_IP }}:/home/${{ secrets.HOST_USERNAME }}/bots/vroumbot_prod
+        run: rsync -avz ./ ${{ secrets.HOST_USERNAME }}@${{ secrets.HOST_IP }}:/home/${{ secrets.HOST_USERNAME }}/bots/vroumbot_prod
 
       # - name: Restart Bot
       #  run: ???
