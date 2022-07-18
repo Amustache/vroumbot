@@ -60,7 +60,7 @@ def command_enabled(default=True):
                     if chatcommand != "levelup_update":  # Hardcoded special case 🤷‍♀️
                         context.bot.sendMessage(
                             chat_id=update.message.chat.id,
-                            text="This command is deactivated in that chat.",
+                            text="This command is disabled in that chat.",
                         )
                 chatcommand.lastusage = datetime.datetime.now()
                 chatcommand.save()
