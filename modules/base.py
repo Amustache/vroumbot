@@ -9,9 +9,15 @@ import os
 from databases import ChatCommand
 
 
+# from telegram.constants import ChatType  # 20.20 feature
+
+
 def admin_only(func):
     @wraps(func)
     def wrapped(self, update, context, *args, **kwargs):
+        if update.message.chat.type == "private":
+            return func(self, update, context, *args, **kwargs)
+
         is_admin = update.effective_user in [
             chatmember.user
             for chatmember in context.bot.get_chat_administrators(update.message.chat.id)
@@ -27,28 +33,13 @@ def admin_only(func):
     return wrapped
 
 
-# def module_enabled(func):
-#     @wraps(func)
-#     def wrapped(self, update, context, *args, **kwargs):
-#         chatmodule = ChatModule.get_or_none(
-#             chatid=update.message.chat.id, commandname=func.__name__
-#         )
-#
-#         if chatmodule and not chatmodule.enabled:
-#             context.bot.sendMessage(
-#                 chat_id=update.message.chat.id,
-#                 text="This command is in a module deactivated in that chat.",
-#             )
-#             return
-#         return func(self, update, context, *args, **kwargs)
-#
-#     return wrapped
-
-
 def command_enabled(default=True):
     def command_enabled_inner(func):
         @wraps(func)
         def wrapped(self, update, context, *args, **kwargs):
+            if update.message.chat.type == "private":
+                return func(self, update, context, *args, **kwargs)
+
             chatcommand, created = ChatCommand.get_or_create(
                 chatid=update.message.chat.id, commandname=func.__name__
             )
@@ -62,15 +53,17 @@ def command_enabled(default=True):
                 enabled = default
 
             if chatcommand and not enabled:
+
                 if created or datetime.datetime.now() > chatcommand.lastusage + datetime.timedelta(
                     hours=6
                 ):
-                    context.bot.sendMessage(
-                        chat_id=update.message.chat.id,
-                        text="This command is deactivated in that chat.",
-                    )
-                    chatcommand.lastusage = datetime.datetime.now()
-                    chatcommand.save()
+                    if chatcommand != "levelup_update":  # Hardcoded special case 🤷‍♀️
+                        context.bot.sendMessage(
+                            chat_id=update.message.chat.id,
+                            text="This command is deactivated in that chat.",
+                        )
+                chatcommand.lastusage = datetime.datetime.now()
+                chatcommand.save()
                 return
             return func(self, update, context, *args, **kwargs)
 

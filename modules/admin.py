@@ -1,11 +1,31 @@
 """
 Module that contains admin commands.
 """
+import datetime
+import random
+
+
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
 from .base import admin_only, Base
+from .community.helpers import naturaltime
+
+
+CANNOT_DISABLE = [
+    "enablecommand",
+    "enablemodule",
+    "amiadmin",
+    "start",
+    "help_command",
+    "contribute",
+    "feedback",
+    "feedbacks",
+    "reset_from_history",
+    "optout",
+    "gdpr",
+]
 
 
 def get_command_for_chat(table, commandname, chatid):
@@ -47,6 +67,7 @@ class Admin(Base):
             ),
             CommandHandler(["enablemodule", "disablemodule"], self.enablemodule),
             CommandHandler("amiadmin", self.amiadmin),
+            CommandHandler(["listcommands", "listenabled", "listdisabled"], self.listenabled),
         ]
         super().__init__(
             logger=logger, commandhandlers=commandhandlers, table=table, dispatcher=dispatcher
@@ -57,6 +78,10 @@ class Admin(Base):
         """
         Check if one is admin. This is mainly for testing purposes.
         """
+        if update.message.chat.type == "private":
+            update.message.reply_text("You're in private, silly~")
+            return
+
         update.message.reply_text("Yes you are (:.")
 
     @admin_only
@@ -64,8 +89,12 @@ class Admin(Base):
         """
         Enable or disable a command.
         """
+        if update.message.chat.type == "private":
+            update.message.reply_text("You're in private, silly~")
+            return
+
         try:
-            _, commandname = update.message.text.split(" ", 1)
+            choice, commandname = update.message.text.split(" ", 1)
         except ValueError:
             return
 
@@ -74,11 +103,26 @@ class Admin(Base):
             update.message.reply_text("This command does not exist.")
             return
 
+        if commandname in CANNOT_DISABLE:
+            if commandname == "enablecommand" and random.randint(1, 6) == 6:
+                update.message.reply_text(
+                    "Oh no! You found a loophole and broke the bot!\n...\nNah just kidding."
+                )
+
+            update.message.reply_text("This command cannot be disabled.")
+            return
+
         chatcommand = get_command_for_chat(
             self.table, commandname=commandname, chatid=update.message.chat.id
         )
 
-        chatcommand.enabled = not chatcommand.enabled
+        if "en" in choice:
+            chatcommand.enabled = 1
+        elif "dis" in choice:
+            chatcommand.enabled = 0
+        else:
+            return
+
         chatcommand.save()
 
         update.message.reply_text(
@@ -88,3 +132,34 @@ class Admin(Base):
     @admin_only
     def enablemodule(self, update: Update, context: CallbackContext) -> None:
         pass
+
+    def listenabled(self, update: Update, context: CallbackContext) -> None:
+        if update.message.chat.type == "private":
+            update.message.reply_text("You're in private, silly~")
+            return
+
+        chat_id = update.message.chat.id
+        dbcommands = (
+            self.table.select().where(self.table.chatid == chat_id).order_by(self.table.commandname)
+        )
+
+        text = "List of commands explicitly enabled by admin:\n"
+        text += "\n".join(
+            [f"– ✅ {command.commandname}" for command in dbcommands if command.enabled]
+        )
+        text += "\n\n"
+
+        text += "List of commands explicitly disabled by admin:\n"
+        text += "\n".join(
+            [
+                f"– ❌ {command.commandname} (Last attempt: {naturaltime(datetime.datetime.now() - command.lastusage, past=True)})"
+                for command in dbcommands
+                if not command.enabled
+            ]
+        )
+        text += "\n\n"
+
+        text += "For a list of by default enabled/disabled commands, please refer to: "
+        text += "https://github.com/Amustache/vroumbot/wiki/Commands"
+
+        update.message.reply_text(text, disable_web_page_preview=True)
