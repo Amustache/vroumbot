@@ -78,6 +78,10 @@ class Admin(Base):
         """
         Check if one is admin. This is mainly for testing purposes.
         """
+        if update.message.chat.type == "private":
+            update.message.reply_text("You're in private, silly~")
+            return
+
         update.message.reply_text("Yes you are (:.")
 
     @admin_only
@@ -130,6 +134,10 @@ class Admin(Base):
         pass
 
     def listenabled(self, update: Update, context: CallbackContext) -> None:
+        if update.message.chat.type == "private":
+            update.message.reply_text("You're in private, silly~")
+            return
+
         chat_id = update.message.chat.id
         dbcommands = (
             self.table.select().where(self.table.chatid == chat_id).order_by(self.table.commandname)
