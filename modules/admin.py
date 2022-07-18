@@ -9,7 +9,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 
-from .base import admin_only, Base
+from .base import admin_only, Base, command_enabled
 from .community.helpers import naturaltime
 
 
@@ -63,7 +63,8 @@ class Admin(Base):
         self.dispatcher = None
         commandhandlers = [
             CommandHandler(
-                ["enablecommand", "disablecommand", "enable", "disable"], self.enablecommand
+                ["enablecommand", "disablecommand", "enable", "disable", "activate", "deactivate"],
+                self.enablecommand,
             ),
             CommandHandler(["enablemodule", "disablemodule"], self.enablemodule),
             CommandHandler("amiadmin", self.amiadmin),
@@ -133,6 +134,7 @@ class Admin(Base):
     def enablemodule(self, update: Update, context: CallbackContext) -> None:
         pass
 
+    @command_enabled(default=True)
     def listenabled(self, update: Update, context: CallbackContext) -> None:
         if update.message.chat.type == "private":
             update.message.reply_text("You're in private, silly~")
