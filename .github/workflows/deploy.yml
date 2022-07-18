@@ -48,6 +48,7 @@ jobs:
       - name: Deploy with rsync
         run: rsync -avz ./ ${{ secrets.HOST_USERNAME }}@${{ secrets.HOST_IP }}:/home/${{ secrets.HOST_USERNAME }}/bots/vroumbot_prod
 
+      # Does not work if an admin is already on screen
       - name: Restart Bot
         run: |
           ssh ${{ secrets.HOST_USERNAME }}@${{ secrets.HOST_IP }} 'screen -r "vroum" -X stuff "^C"'
