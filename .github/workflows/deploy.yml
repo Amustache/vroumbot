@@ -4,10 +4,8 @@ name: Auto deploy prod
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push events but only for the "prod" branch
   push:
-    branches: [ "prod" ]
-  pull_request:
     branches: [ "prod" ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -24,6 +22,19 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+
+      - name: Merge main in prod
+        run: |
+          git fetch --unshallow
+          git checkout prod
+          git pull
+          git merge --no-ff main -m "Auto-merge main to prod"
+          git push
       
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
@@ -37,5 +48,8 @@ jobs:
       - name: Deploy with rsync
         run: rsync -avz ./ ${{ secrets.HOST_USERNAME }}@${{ secrets.HOST_IP }}:/home/${{ secrets.HOST_USERNAME }}/bots/vroumbot_prod
 
-      # - name: Restart Bot
-      #  run: ???
+      - name: Restart Bot
+        run: |
+          ssh ${{ secrets.HOST_USERNAME }}@${{ secrets.HOST_IP }} 'screen -r "vroum" -X stuff "^C"'
+          sleep 10s
+          ssh ${{ secrets.HOST_USERNAME }}@${{ secrets.HOST_IP }} 'screen -r "vroum" -X stuff "python main.py^M"'
