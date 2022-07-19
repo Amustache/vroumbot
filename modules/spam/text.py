@@ -297,7 +297,7 @@ class Text(Base):
 
         if not len(context.args):
             update.message.reply_text(
-                "Usage: `/brainfuck code [input]` or `/brainfuck code` in reply to a message."
+                "Usage: `/brainfuck code [input]`, or `/brainfuck code` in reply to a message."
             )
             return
         else:
