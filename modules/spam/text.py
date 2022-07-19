@@ -296,10 +296,28 @@ class Text(Base):
         do_wrapping = True
 
         if not len(context.args):
-            update.message.reply_text("Usage: `/brainfuck code [input]` or `/brainfuck code` in reply to a message.")
+            update.message.reply_text(
+                "Usage: `/brainfuck code [input]` or `/brainfuck code` in reply to a message."
+            )
             return
         else:
             _, instr, *inputs = update.message.text.split(" ", 2)
+
+            # check syntax (requires balanced brackets)
+            bracket_depth = 0
+            failed = False
+            for c in instr:
+                if c == "[":
+                    bracket_depth += 1
+                elif c == "]":
+                    bracket_depth -= 1
+                    if bracket_depth < 0:
+                        failed = True
+                        break
+            if failed or bracket_depth != 0:
+                update.message.reply_text("Invalid syntax, brackets are not balanced.")
+                return
+
             if not inputs:
                 replied_to = update.message.reply_to_message
                 if replied_to:
