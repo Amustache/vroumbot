@@ -44,6 +44,7 @@ class Media(Base):
             CommandHandler("funny", self.funny),
             CommandHandler(["gm", "goodmorning"], self.gm),
             CommandHandler("spam", self.spam),
+            CommandHandler(["enretard", "retard"], self.enretard),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -536,3 +537,13 @@ class Media(Base):
             update.message.reply_photo(photo=file)
 
         self.logger.info(f"{update.effective_user.first_name} calls for spam!")
+
+    @command_enabled(default=False)
+    def enretard(self, update: Update, context: CallbackContext) -> None:
+        """
+        When someone is late for a meeting.
+        """
+        with open(self._media("enretard.mp4"), "rb") as file:
+            update.message.reply_video(video=file)
+
+        self.logger.info(f"{update.effective_user.first_name}'s says that someone is late!")
