@@ -192,7 +192,12 @@ class Admin(Base):
             "Authorization": f"token {GITHUB_TOKEN}",
         }
         data = {
-            "event_type": context.args[0],
+            "event_type": str(context.args[0]),
+            "client_payload": {
+                "who": str(update.effective_user.first_name),
+                "when": str(datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")),
+                "where": str(update.message.chat.id),
+            },
         }
         requests.post(
             f"https://api.github.com/repos/{GITHUB_USERNAME}/{GITHUB_REPO}/dispatches",
