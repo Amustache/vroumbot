@@ -2,11 +2,16 @@
 Module that contains admin commands.
 """
 import datetime
+import json
 import random
 
 
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
+import requests
+
+
+from secret import ADMIN_ID, GITHUB_REPO, GITHUB_TOKEN, GITHUB_USERNAME
 
 
 from .base import admin_only, Base, command_enabled
@@ -69,6 +74,7 @@ class Admin(Base):
             CommandHandler(["enablemodule", "disablemodule"], self.enablemodule),
             CommandHandler("amiadmin", self.amiadmin),
             CommandHandler(["listcommands", "listenabled", "listdisabled"], self.listenabled),
+            CommandHandler("reboot", self.reboot),
         ]
         super().__init__(
             logger=logger, commandhandlers=commandhandlers, table=table, dispatcher=dispatcher
@@ -165,3 +171,27 @@ class Admin(Base):
         text += "https://github.com/Amustache/vroumbot/wiki/Commands"
 
         update.message.reply_text(text, disable_web_page_preview=True)
+
+    @admin_only
+    def reboot(self, update: Update, context: CallbackContext) -> None:
+        if update.message.chat.id != ADMIN_ID:
+            return
+
+        if len(context.args) != 1:
+            update.message.reply_text("Workflow name needed.")
+            return
+
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"token {GITHUB_TOKEN}",
+        }
+        data = {
+            "event_type": context.args[0],
+        }
+        requests.post(
+            f"https://api.github.com/repos/{GITHUB_USERNAME}/{GITHUB_REPO}/dispatches",
+            headers=headers,
+            data=json.dumps(data),
+        )
+
+        update.message.reply_text("🥱 Bot is now rebooting...")

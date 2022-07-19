@@ -8,3 +8,7 @@ TRELLO_API_SECRET = "token"
 TRELLO_FEEDBACK_BOARD = "name of the board"
 TRELLO_FEEDBACK_LIST = "name of the list in the board"
 TRELLO_LINK = "link to the trello"
+
+GITHUB_TOKEN = ""
+GITHUB_USERNAME = ""
+GITHUB_REPO = ""
