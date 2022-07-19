@@ -8,6 +8,7 @@ Main! yay!
 import logging
 
 
+from telegram import Message, Update
 from telegram.ext import Updater
 
 
@@ -22,7 +23,7 @@ from modules.spam.media import Media
 from modules.spam.privatejokes import PrivateJoke
 from modules.spam.text import Text
 from modules.special import Special
-from secret import TOKEN
+from secret import ADMIN_ID, TOKEN
 
 
 # Enable logging
@@ -69,6 +70,8 @@ def main() -> None:
 
     # Start the Bot
     updater.start_polling()
+
+    updater.bot.sendMessage(chat_id=ADMIN_ID, text="👋 Hi! I'm awake!")
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
