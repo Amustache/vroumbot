@@ -115,9 +115,7 @@ class Bot(Base):
         Says hello to the user and auto-enable the reply mode.
         """
         user = update.effective_user
-        update.message.reply_markdown_v2(
-            rf"Bonjour {user.mention_markdown_v2()} \!"
-        )
+        update.message.reply_markdown_v2(rf"Bonjour {user.mention_markdown_v2()} \!")
 
         self.logger.info(f"{user.first_name} says hi!")
 
@@ -180,6 +178,11 @@ class Bot(Base):
 
     # GDPR
     def optout(self, update: Update, context: CallbackContext) -> None:
+        """
+        If you do /optout in a random chat, it "locks" you out of the chat community stuff, and wipes your data related to that chat.
+        If you do /optout in @vroumbot, it "locks" you from everywhere, and wipes all your data.
+        In both cases, the bot doesn't collect anything anymore.
+        """
         user_id = update.effective_user.id
         chat_id = update.message.chat.id
 
@@ -205,6 +208,9 @@ class Bot(Base):
             )
 
     def gdpr(self, update: Update, context: CallbackContext) -> None:
+        """
+        Send the link to Vroumbot's Privacy Policy.
+        """
         text = "GDPR: "
         text += "https://github.com/Amustache/vroumbot/wiki/Privacy-Policy"
 

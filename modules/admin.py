@@ -142,6 +142,9 @@ class Admin(Base):
 
     @command_enabled(default=True)
     def listenabled(self, update: Update, context: CallbackContext) -> None:
+        """
+        Show explicitly enabled/disabled commands.
+        """
         if update.message.chat.type == "private":
             update.message.reply_text("You're in private, silly~")
             return
@@ -174,6 +177,9 @@ class Admin(Base):
 
     @admin_only
     def reboot(self, update: Update, context: CallbackContext) -> None:
+        """
+        Trigger a bot reboot on the server.
+        """
         if update.message.chat.id != ADMIN_ID:
             return
 
