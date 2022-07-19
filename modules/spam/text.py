@@ -5,7 +5,7 @@ import datetime
 import random
 
 
-from telegram import Update, Message
+from telegram import Message, Update
 from telegram.ext import CallbackContext, CommandHandler
 import requests
 
@@ -280,7 +280,11 @@ class Text(Base):
             return
 
         update.message.reply_text(
-            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}.\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially coming from such prominent members of our community.\n\nIt's a shame to see you go, friend.\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
+            f"I, comrade {from_user}, present this message from my peers:\n\nThe time commences "
+            f"that telegram's leftists contemplate the decision of cancelling dear comrade {target_user}."
+            f"\n\nThis divisive statement and those of its ilk cannot be allowed to stand, especially "
+            f"coming from such prominent members of our community.\n\nIt's a shame to see you go, friend."
+            f"\n\n🤧😭😢🤧😭😢🤧😭😢🤧😭😢"
         )
 
     @command_enabled(default=False)
@@ -291,15 +295,37 @@ class Text(Base):
         max_cell_value = 255
         do_wrapping = True
 
-        if not len(context.args) or len(context.args) > 2:
-            update.message.reply_text("Usage: /brainfuck code [input]")
+        if not len(context.args):
+            update.message.reply_text(
+                "Usage: `/brainfuck code [input]`, or `/brainfuck code` in reply to a message."
+            )
             return
-        elif len(context.args) == 1:
-            instr = context.args[0]
-            inputs = None
-        else:  # == 2
-            instr = context.args[0]
-            inputs = list(context.args[1])
+        else:
+            _, instr, *inputs = update.message.text.split(" ", 2)
+
+            # check syntax (requires balanced brackets)
+            bracket_depth = 0
+            failed = False
+            for c in instr:
+                if c == "[":
+                    bracket_depth += 1
+                elif c == "]":
+                    bracket_depth -= 1
+                    if bracket_depth < 0:
+                        failed = True
+                        break
+            if failed or bracket_depth != 0:
+                update.message.reply_text("Invalid syntax, brackets are not balanced.")
+                return
+
+            if not inputs:
+                replied_to = update.message.reply_to_message
+                if replied_to:
+                    text = replied_to.text or replied_to.caption
+                    if text:
+                        inputs = list(text)
+            else:
+                inputs = list(inputs[0])
 
         data, data_ptr, instr_ptr = [0], 0, 0
         result = ""
@@ -344,10 +370,8 @@ class Text(Base):
                 if inputs:
                     data[data_ptr] = ord(inputs.pop(0))
                 else:
-                    update.message.reply_text(
-                        f"Error at position {instr_ptr}: `,` expected input but none was provided."
-                    )
-                    return
+                    # if no input is given, a 0 byte is read
+                    data[data_ptr] = 0
             elif command == "[":
                 if data[data_ptr] == 0:
                     braces = 1
@@ -375,7 +399,14 @@ class Text(Base):
                 update.message.reply_text(f"This is taking too much time :/")
                 return
 
-        update.message.reply_text("Interpreted:")
-        message = context.dispatcher.bot.send_message(update.message.chat_id, result)
-        message.from_user = update.message.from_user
-        context.update_queue.put(Update(0, message))
+        if not result:
+            no_output_message = "No output generated."
+            if random.randint(1, 6) == 1:
+                no_output_message += "\nCongratulations, you warmed up the planet for nothing."
+            update.message.reply_text(no_output_message)
+        else:
+            message = context.dispatcher.bot.send_message(
+                update.message.chat_id, result, reply_to_message_id=update.message.message_id
+            )
+            message.from_user = update.message.from_user
+            context.update_queue.put(Update(0, message))
