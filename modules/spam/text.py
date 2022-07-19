@@ -296,7 +296,7 @@ class Text(Base):
         do_wrapping = True
 
         if not len(context.args):
-            update.message.reply_text("Usage: /brainfuck code [input]")
+            update.message.reply_text("Usage: `/brainfuck code [input]` or `/brainfuck code` in reply to a message.")
             return
         else:
             _, instr, *inputs = update.message.text.split(" ", 2)
