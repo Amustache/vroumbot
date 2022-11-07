@@ -45,6 +45,7 @@ class Media(Base):
             CommandHandler(["gm", "goodmorning"], self.gm),
             CommandHandler("spam", self.spam),
             CommandHandler(["enretard", "retard"], self.enretard),
+            CommandHandler("repo", self.repo),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -547,3 +548,13 @@ class Media(Base):
             update.message.reply_video(video=file)
 
         self.logger.info(f"{update.effective_user.first_name}'s says that someone is late!")
+
+    @command_enabled(default=False)
+    def repo(self, update: Update, context: CallbackContext) -> None:
+        """
+        GIV REPO
+        """
+        with open(self._media("repo.jpg"), "rb") as file:
+            update.message.reply_photo(photo=file)
+
+        self.logger.info(f"{update.effective_user.first_name} wants your repo!")
