@@ -33,6 +33,7 @@ class PrivateJoke(Base):
                 ["stopdoing", "stopdoingstopdoing", "stopdoingstopdoings"], self.stopdoing
             ),
             CommandHandler(["motiondordre"], self.motiondordre),
+            CommandHandler(["skil", "spot"], self.skil),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -215,3 +216,30 @@ class PrivateJoke(Base):
         )
 
         self.logger.info(f"{update.effective_user.first_name} gets a motion d'odre!")
+
+    @command_enabled(default=False)
+    def skil(self, update: Update, context: CallbackContext) -> None:
+        """
+        ON VA AU SKIL/SPOT
+        """
+        if "skil" not in context.chat_data:
+            context.chat_data["skil"] = []
+        if context.args:
+            if "remove" in context.args or "del" in context.args or "delete" in context.args:
+                for t in context.args:
+                    try:
+                        context.chat_data["skil"].remove(t)
+                    except ValueError:
+                        continue
+            else:
+                context.chat_data["skil"] += context.args
+        else:
+            where = update.message.text[1:]
+            with open(self._media("seagull1.png"), "rb") as file:
+                m = update.message.reply_photo(photo=file)
+
+            text = f"VENEZ ON VA AU {where.upper()}\n"
+            text += ", ".join(context.chat_data["skil"])
+
+            with open(self._media("seagull2.png"), "rb") as file:
+                m.reply_photo(photo=file, caption=text)
