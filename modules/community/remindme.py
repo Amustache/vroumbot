@@ -52,11 +52,12 @@ class RemindMe(Base):
 
         try:
             _, message = update.message.text.split(" ", 1)
-            interpreted = dateparser.parse(message)
+            interpreted = dateparser.parse(message, settings={"TIMEZONE": "UTC"})
             if not interpreted:
                 update.message.reply_text("I didn't understand, sorry...")
                 return
 
+            print(interpreted)
             delta = (interpreted - datetime.datetime.now()) + datetime.timedelta(seconds=1)
             if delta.total_seconds() < 0:
                 if delta.total_seconds() < -1:
