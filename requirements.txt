@@ -8,4 +8,4 @@ pre-commit-hooks==4.0.1
 pre-commit==2.13.0
 py-trello==0.18.0
 python-telegram-bot==13.13
-requests==2.26.0
+requests==2.31.0
