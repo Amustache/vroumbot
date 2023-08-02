@@ -158,10 +158,17 @@ class Bot(Base):
 
         feedback = message, f"Date: {date}\nChat: {chat_id}\nMessage: {message_id}\nUser: {user}"
 
-        self._add_feedback_to_trello(feedback)
-        context.bot.sendMessage(chat_id=ADMIN_ID, text=f"{user} says '{message}'")
-
-        self.logger.info(f"New feedback! {message}")
+        if self._add_feedback_to_trello(feedback):
+            context.bot.sendMessage(chat_id=ADMIN_ID, text=f"{user} says '{message}'")
+            update.message.reply_text(
+                f"Thank you for your feedback!\nIt should now be available on Trello: {TRELLO_LINK}."
+            )
+            self.logger.info(f"New feedback! {message}")
+        else:
+            context.bot.sendMessage(
+                chat_id=ADMIN_ID, text=f"Error with Trello!\n{user} says '{message}'"
+            )
+            self.logger.info(f"Error while putting feedback on Trello: {message}")
 
     def feedbacks(self, update: Update, context: CallbackContext) -> None:
         """
