@@ -1,6 +1,7 @@
 """
 Karma module is used to handle karma in groupchats.
 """
+from peewee import fn
 from telegram import Update
 from telegram.error import BadRequest
 from telegram.ext import CallbackContext, CommandHandler
@@ -28,6 +29,7 @@ class Karma(Base):
             ),
             CommandHandler(["karma", "getkarma"], self.getkarma),
             CommandHandler(["setkarma"], self.setkarma),
+            CommandHandler(["globalkarma"], self.global_getkarma),
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media")
 
@@ -183,3 +185,49 @@ class Karma(Base):
                 return
         else:
             return
+
+    @command_enabled(default=False)
+    def global_getkarma(self, update: Update, context: CallbackContext) -> None:
+        """
+        Give the global karma score for a user by replying, or karma scores from a chat.
+        """
+        if update.message.reply_to_message:
+            user = update.message.reply_to_message.from_user
+        else:
+            try:
+                _, num_people = update.message.text.split(" ", 1)
+                num_people = int(num_people)
+                if num_people < 1:
+                    num_people = 10
+            except ValueError:
+                num_people = 10
+
+            query = (
+                self.table.select(
+                    self.table.userid,
+                    self.table.userfirstname,
+                    fn.SUM(self.table.karma).alias("sum"),
+                )
+                .group_by(self.table.userid)
+                .order_by(fn.SUM(self.table.karma).desc())
+            )
+
+            karmas = {user.userid: [user.userfirstname, user.sum] for user in query}
+            num_people = min(len(karmas), num_people)
+
+            all_people = []
+            for i, (_, data) in enumerate(karmas.items()):
+                if i < num_people:
+                    username, karma = data
+                    if not username:
+                        username = "<please trigger karma action for name>"
+                    if karma != 0:
+                        all_people.append(f"{i + 1}. {username}: {karma} global points.")
+                else:
+                    break
+
+            if all_people:
+                update.message.reply_text("\n".join(all_people))
+            else:
+                update.message.reply_text("No global karma so far!")
+            self.logger.info(f"{update.effective_user.first_name} wants to know the global karmas!")
