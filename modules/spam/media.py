@@ -565,7 +565,7 @@ class Media(Base):
         """
         Speedrun time.
         """
-        with open(self._media("HOME_Were_Finally_Landing.mp3.mp3"), "rb") as file:
+        with open(self._media("HOME_Were_Finally_Landing.mp3"), "rb") as file:
             update.message.reply_audio(audio=file)
 
         self.logger.info(f"{update.effective_user.first_name} is ready for a speedrun!")
