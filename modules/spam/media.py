@@ -46,6 +46,7 @@ class Media(Base):
             CommandHandler("spam", self.spam),
             CommandHandler(["enretard", "retard"], self.enretard),
             CommandHandler("repo", self.repo),
+            CommandHandler(["speedrun", "summoningsalt"], self.speedrun),
         ]
         super().__init__(logger, commandhandlers, mediafolder="./media")
 
@@ -558,3 +559,13 @@ class Media(Base):
             update.message.reply_photo(photo=file)
 
         self.logger.info(f"{update.effective_user.first_name} wants your repo!")
+
+    @command_enabled(default=False)
+    def speedrun(self, update: Update, context: CallbackContext) -> None:
+        """
+        Speedrun time.
+        """
+        with open(self._media("HOME_Were_Finally_Landing.mp3.mp3"), "rb") as file:
+            update.message.reply_audio(audio=file)
+
+        self.logger.info(f"{update.effective_user.first_name} is ready for a speedrun!")
