@@ -34,7 +34,7 @@ class Karma(Base):
 
     def _get_karma(self, chatid):
         """
-        List all karma scores from a chat.
+        List all karma scores from a chat, without optouts.
         :param chatid: Telegram chatid.
         :return: {user_id: Int: [user_firstname: String, user_karma: Int]}
         """
@@ -42,9 +42,13 @@ class Karma(Base):
             self.table.select().where(self.table.chatid == chatid).order_by(self.table.karma.desc())
         )
 
-        return {user.userid: [user.userfirstname, user.karma] for user in users if not user.optouts}
+        return {user.userid: [user.userfirstname, user.karma] for user in users if not user.optout}
 
     def _get_global_karma(self):
+        """
+        List all global karma scores from a chat.
+        :return: {user_id: Int: [user_firstname: String, user_global_karma: Int]}
+        """
         query = (
             self.table.select(
                 self.table.userid,
@@ -55,7 +59,7 @@ class Karma(Base):
             .group_by(self.table.userid)
             .order_by(fn.SUM(self.table.karma).desc())
         )
-        return {user.userid: [user.userfirstname, user.karma] for user in query if not user.optouts}
+        return {user.userid: [user.userfirstname, user.karma] for user in query if not user.optout}
 
     @command_enabled(default=True)
     def change_karma(self, update: Update, context: CallbackContext) -> None:
