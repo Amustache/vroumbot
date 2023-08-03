@@ -144,7 +144,7 @@ class Karma(Base):
                 dbuser = get_user(self.table, user.id, update.message.chat.id)
 
             # GDPR and failsafe
-            if not dbuser or dbuser.optout or not dbuser.sum:
+            if not dbuser or dbuser.optout or not dbuser.karma:
                 update.message.reply_text(f"User not found.")
                 return
 
