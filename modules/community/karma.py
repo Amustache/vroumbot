@@ -194,11 +194,23 @@ class Karma(Base):
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
 
-            query = self.table.select(
-                self.table.userid,
-                self.table.userfirstname,
-                fn.SUM(self.table.karma).alias("sum"),
-            ).where(self.table.userid == user.id)
+            dbuser = (
+                self.table.select(
+                    self.table.userid,
+                    self.table.userfirstname,
+                    self.table.optout,
+                    fn.SUM(self.table.karma).alias("sum"),
+                )
+                .where(self.table.userid == user.id)
+                .get_or_none()
+            )
+
+            # GDPR and failsafe
+            if not dbuser or dbuser.optout or not dbuser.sum:
+                update.message.reply_text(f"User not found.")
+                return
+
+            update.message.reply_text(f"{dbuser.userfirstname} has {dbuser.sum} global points.")
         else:
             try:
                 _, num_people = update.message.text.split(" ", 1)
