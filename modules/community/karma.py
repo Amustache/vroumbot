@@ -193,6 +193,12 @@ class Karma(Base):
         """
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
+
+            query = self.table.select(
+                self.table.userid,
+                self.table.userfirstname,
+                fn.SUM(self.table.karma).alias("sum"),
+            ).where(self.table.userid == user.id)
         else:
             try:
                 _, num_people = update.message.text.split(" ", 1)
