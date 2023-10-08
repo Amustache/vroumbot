@@ -1,6 +1,7 @@
 """
 Karma module is used to handle karma in groupchats.
 """
+from peewee import fn
 from telegram import Update
 from telegram.error import BadRequest
 from telegram.ext import CallbackContext, CommandHandler
@@ -26,14 +27,14 @@ class Karma(Base):
             CommandHandler(
                 pos_commands + angrypos_commands + neg_commands + meh_commands, self.change_karma
             ),
-            CommandHandler(["karma", "getkarma"], self.getkarma),
+            CommandHandler(["karma", "getkarma", "globalkarma"], self.getkarma),
             CommandHandler(["setkarma"], self.setkarma),
         ]
         super().__init__(logger, commandhandlers, table, mediafolder="./media")
 
     def _get_karma(self, chatid):
         """
-        List all karma scores from a chat.
+        List all karma scores from a chat, without optouts.
         :param chatid: Telegram chatid.
         :return: {user_id: Int: [user_firstname: String, user_karma: Int]}
         """
@@ -41,7 +42,24 @@ class Karma(Base):
             self.table.select().where(self.table.chatid == chatid).order_by(self.table.karma.desc())
         )
 
-        return {user.userid: [user.userfirstname, user.karma] for user in users}
+        return {user.userid: [user.userfirstname, user.karma] for user in users if not user.optout}
+
+    def _get_global_karma(self):
+        """
+        List all global karma scores from a chat.
+        :return: {user_id: Int: [user_firstname: String, user_global_karma: Int]}
+        """
+        query = (
+            self.table.select(
+                self.table.userid,
+                self.table.userfirstname,
+                self.table.optout,
+                fn.SUM(self.table.karma).alias("karma"),
+            )
+            .group_by(self.table.userid)
+            .order_by(fn.SUM(self.table.karma).desc())
+        )
+        return {user.userid: [user.userfirstname, user.karma] for user in query if not user.optout}
 
     @command_enabled(default=True)
     def change_karma(self, update: Update, context: CallbackContext) -> None:
@@ -108,21 +126,41 @@ class Karma(Base):
     @command_enabled(default=True)
     def getkarma(self, update: Update, context: CallbackContext) -> None:
         """
-        Give the karma score for a user by replying, or karma scores from a chat.
+        Give the (global) karma score for a user by replying, or karma scores from a chat.
         """
+        global_request = "global" in update.message.text
+
         if update.message.reply_to_message:
             user = update.message.reply_to_message.from_user
-            dbuser = get_user(self.table, user.id, update.message.chat.id)
 
-            # GDPR
-            if not dbuser:
+            if global_request:
+                dbuser = (
+                    self.table.select(
+                        self.table.userid,
+                        self.table.userfirstname,
+                        self.table.optout,
+                        fn.SUM(self.table.karma).alias("karma"),
+                    )
+                    .where(self.table.userid == user.id)
+                    .get_or_none()
+                )
+            else:
+                dbuser = get_user(self.table, user.id, update.message.chat.id)
+
+            # GDPR and failsafe
+            if not dbuser or dbuser.optout or not dbuser.karma:
+                update.message.reply_text(f"User not found.")
                 return
 
             dbuser.userfirstname = user.first_name
             dbuser.save()
 
-            update.message.reply_text(f"{dbuser.userfirstname} has {dbuser.karma} points.")
-            self.logger.info(f"{dbuser.userfirstname} has {dbuser.karma} karma!")
+            update.message.reply_text(
+                f"{dbuser.userfirstname} has {dbuser.karma} {'global ' if global_request else ''}points."
+            )
+            self.logger.info(
+                f"{dbuser.userfirstname} has {dbuser.karma} {'global ' if global_request else ''}karma!"
+            )
 
         else:
             try:
@@ -133,7 +171,10 @@ class Karma(Base):
             except ValueError:
                 num_people = 10
 
-            karmas = self._get_karma(update.message.chat.id)
+            if global_request:
+                karmas = self._get_global_karma()
+            else:
+                karmas = self._get_karma(update.message.chat.id)
             num_people = min(len(karmas), num_people)
 
             all_people = []
@@ -143,15 +184,19 @@ class Karma(Base):
                     if not username:
                         username = "<please trigger karma action for name>"
                     if karma != 0:
-                        all_people.append(f"{i + 1}. {username}: {karma} points.")
+                        all_people.append(
+                            f"{i + 1}. {username}: {karma} {'global ' if global_request else ''}points."
+                        )
                 else:
                     break
 
             if all_people:
                 update.message.reply_text("\n".join(all_people))
             else:
-                update.message.reply_text("No karma so far!")
-            self.logger.info(f"{update.effective_user.first_name} wants to know the karmas!")
+                update.message.reply_text(f"No {'global ' if global_request else ''}karma so far!")
+            self.logger.info(
+                f"{update.effective_user.first_name} wants to know the {'global ' if global_request else ''}karmas!"
+            )
 
     @admin_only
     @command_enabled(default=True)
