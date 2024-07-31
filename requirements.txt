@@ -2,7 +2,7 @@ beautifulsoup4==4.10.0
 black==22.3.0
 dateparser==1.1.1
 isort==5.8.0
-peewee==3.14.4
+peewee==3.17.6
 Pillow==10.2.0
 pre-commit-hooks==4.0.1
 pre-commit==2.13.0
